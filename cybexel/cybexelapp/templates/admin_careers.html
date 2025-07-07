@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Cybexel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-[#151a37] font-sans">
+
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#151a37] text-white p-6">
+      <div class="flex items-center justify-center mb-8">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+      </div>
+      <nav>
+        <ul class="space-y-4 text-sm">
+             <li>
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37] ">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_blog' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_contact' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Contact Form
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_careers' %}" class="block py-2 px-4 rounded bg-white text-[#151a37]">
+              Careers
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_job_applications' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Job Applications
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+
+<main class="flex-1 p-8 overflow-y-auto">
+  <div class="w-full bg-[#151a37] text-white py-4 px-6 shadow mb-6">
+    <h2 class="text-xl font-semibold">Admin Careers Management</h2>
+  </div>
+
+<!-- Department Section -->
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4">{% if edit_department %}Edit{% else %}Add{% endif %} Department</h2>
+  <form method="POST" action="" class="bg-gray-50 p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="{% if edit_department %}edit_department{% else %}add_department{% endif %}">
+    {% if edit_department %}
+    <input type="hidden" name="department_id" value="{{ edit_department.id }}">
+    {% endif %}
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Department Name</label>
+      <input type="text" name="department_name" placeholder="Enter department name" class="w-full p-2 border border-gray-300 rounded" value="{% if edit_department %}{{ edit_department.name }}{% endif %}" required />
+    </div>
+    <div class="col-span-2">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">{% if edit_department %}Update{% else %}Add{% endif %} Department</button>
+    </div>
+  </form>
+
+  <div class="overflow-x-auto mt-4">
+    <table class="w-full border border-gray-300 text-sm text-left">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border border-gray-300 px-4 py-2">Name</th>
+          <th class="border border-gray-300 px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dept in departments %}
+        <tr class="bg-white hover:bg-gray-50">
+          <td class="border border-gray-300 px-4 py-2">{{ dept.name }}</td>
+          <td class="border border-gray-300 px-4 py-2">
+            <a href="?edit_type=department&id={{ dept.id }}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            <a href="{% url 'delete_department' dept.id %}" class="text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4">{% if edit_experience %}Edit{% else %}Add{% endif %} Experience Level</h2>
+  <form method="POST" action="" class="bg-gray-50 p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="{% if edit_experience %}edit_experience{% else %}add_experience{% endif %}">
+    {% if edit_experience %}
+    <input type="hidden" name="experience_id" value="{{ edit_experience.id }}">
+    {% endif %}
+    <div>
+      <label class="block font-medium mb-1">Experience Name</label>
+      <input type="text" name="experience_name" placeholder="e.g., Fresher" class="w-full p-2 border border-gray-300 rounded" value="{% if edit_experience %}{{ edit_experience.name }}{% endif %}" required />
+    </div>
+    <div>
+      <label class="block font-medium mb-1">Duration</label>
+      <input type="text" name="experience_duration" placeholder="e.g., 0-1 years" class="w-full p-2 border border-gray-300 rounded" value="{% if edit_experience %}{{ edit_experience.duration }}{% endif %}" required />
+    </div>
+    <div class="col-span-2">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">{% if edit_experience %}Update{% else %}Add{% endif %} Experience</button>
+    </div>
+  </form>
+
+  <div class="overflow-x-auto mt-4">
+    <table class="w-full border border-gray-300 text-sm text-left">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border border-gray-300 px-4 py-2">Name</th>
+          <th class="border border-gray-300 px-4 py-2">Duration</th>
+          <th class="border border-gray-300 px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for exp in experiences %}
+        <tr class="bg-white hover:bg-gray-50">
+          <td class="border border-gray-300 px-4 py-2">{{ exp.name }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ exp.duration }}</td>
+          <td class="border border-gray-300 px-4 py-2">
+            <a href="?edit_type=experience&id={{ exp.id }}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            <a href="{% url 'delete_experience' exp.id %}" class="text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Job Section -->
+<section>
+  <h2 class="text-2xl font-semibold mb-4">{% if edit_job %}Edit{% else %}Add{% endif %} Job Vacancy</h2>
+  <form method="POST" action="" class="bg-gray-50 p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="{% if edit_job %}edit_job{% else %}add_job{% endif %}">
+    {% if edit_job %}<input type="hidden" name="job_id" value="{{ edit_job.id }}">{% endif %}
+    <div>
+      <label class="block font-medium mb-1">Post Name</label>
+      <input type="text" name="post_name" class="w-full p-2 border border-gray-300 rounded" value="{% if edit_job %}{{ edit_job.post_name }}{% endif %}" required />
+    </div>
+    <div>
+      <label class="block font-medium mb-1">Department</label>
+      <select name="department_id" class="w-full p-2 border border-gray-300 rounded" required>
+        <option value="" disabled {% if not edit_job %}selected{% endif %}>Select department</option>
+        {% for dept in departments %}
+        <option value="{{ dept.id }}" {% if edit_job and dept.id == edit_job.department.id %}selected{% endif %}>{{ dept.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="block font-medium mb-1">Experience</label>
+      <select name="experience_id" class="w-full p-2 border border-gray-300 rounded" required>
+        <option value="" disabled {% if not edit_job %}selected{% endif %}>Select experience</option>
+        {% for exp in experiences %}
+        <option value="{{ exp.id }}" {% if edit_job and exp.id == edit_job.experience.id %}selected{% endif %}>{{ exp.name }} ({{ exp.duration }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="block font-medium mb-1">Job Description</label>
+      <textarea name="job_description" rows="3" class="w-full p-2 border border-gray-300 rounded" required>{% if edit_job %}{{ edit_job.job_description }}{% endif %}</textarea>
+    </div>
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Required Skills</label>
+      <div id="skillsContainer" class="space-y-2">
+        {% if edit_job and edit_job.required_skills %}
+          {% for skill in skills_list %}
+  <input type="text" name="skills[]" value="{{ skill }}" class="w-full p-2 border border-gray-300 rounded" />
+{% endfor %}
+
+        {% else %}
+          <input type="text" name="skills[]" placeholder="Enter a skill" class="w-full p-2 border border-gray-300 rounded" />
+        {% endif %}
+      </div>
+      <button type="button" onclick="addSkillField()" class="mt-2 text-sm text-blue-600 hover:underline">+ Add another skill</button>
+    </div>
+    <div class="col-span-2">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">{% if edit_job %}Update{% else %}Add{% endif %} Job Vacancy</button>
+    </div>
+  </form>
+
+  <div class="overflow-x-auto mt-4">
+    <table class="w-full border border-gray-300 text-sm text-left">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border border-gray-300 px-4 py-2">Post</th>
+          <th class="border border-gray-300 px-4 py-2">Department</th>
+          <th class="border border-gray-300 px-4 py-2">Experience</th>
+          <th class="border border-gray-300 px-4 py-2">Skills</th>
+          <th class="border border-gray-300 px-4 py-2">Description</th>
+          <th class="border border-gray-300 px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr class="bg-white hover:bg-gray-50">
+          <td class="border border-gray-300 px-4 py-2">{{ job.post_name }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ job.department.name }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ job.experience.name }} ({{ job.experience.duration }})</td>
+          <td class="border border-gray-300 px-4 py-2">
+            {% if job.required_skills %}
+            {{ job.required_skills }}
+            {% else %}-{% endif %}
+          </td>
+          <td class="border border-gray-300 px-4 py-2">{{ job.job_description|safe }}</td>
+          <td class="border border-gray-300 px-4 py-2">
+            <a href="?edit_type=job&id={{ job.id }}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            <a href="{% url 'delete_job' job.id %}" class="text-red-600 hover:underline">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+</main>
+
+
+       
+</div>
+
+<script src="{% static 'js/admin_scripts.js' %}"></script>
+</body>
+</html>
+
+

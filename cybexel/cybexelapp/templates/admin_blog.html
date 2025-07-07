@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Cybexel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-[#151a37] font-sans">
+
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
+      <div class="flex items-center justify-center mb-8">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+      </div>
+      <nav>
+        <ul class="space-y-4 text-sm">
+          <li>
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_blog' %}" class="block py-2 px-4 rounded bg-white text-[#151a37] ">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_contact' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Contact Form
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_careers' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Careers
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_job_applications' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Job Applications
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+<section class="mt-16 w-[85%] px-6 ml-64">
+
+  <!-- Title -->
+  <div class="w-full bg-[#151a37] text-white py-4 px-6 shadow mb-6">
+    <h2 class="text-xl font-semibold">Admin Blog Management</h2>
+  </div>
+
+  <!-- Add Blog Form -->
+  <h2 class="text-2xl font-semibold mb-6">Add New Blog</h2>
+  <form method="POST" enctype="multipart/form-data"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow">
+    {% csrf_token %}
+    <input type="hidden" name="edit_id" id="edit_id">
+
+    <!-- Form Fields (same as before) -->
+    <div class="col-span-1">
+      <label class="block font-medium mb-1">Tag Name</label>
+      <input type="text" name="keyword" id="keyword" class="w-full p-2 border border-gray-300 rounded" />
+    </div>
+    <div class="col-span-1">
+      <label class="block font-medium mb-1">Date</label>
+      <input type="date" name="date" id="date" class="w-full p-2 border border-gray-300 rounded" />
+    </div>
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Short Heading</label>
+      <input type="text" name="short_heading" id="short_heading" class="w-full p-2 border border-gray-300 rounded" />
+    </div>
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Full Heading</label>
+      <input type="text" name="full_heading" id="full_heading" class="w-full p-2 border border-gray-300 rounded" />
+    </div>
+    {% for i in "1234" %}
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Content - Paragraph {{ i }}</label>
+      <textarea name="paragraph{{ i }}" id="paragraph{{ i }}" rows="3"
+                class="w-full p-2 border border-gray-300 rounded"></textarea>
+    </div>
+    {% endfor %}
+    <div class="col-span-2">
+      <label class="block font-medium mb-1">Upload Blog Image</label>
+      <input type="file" name="image" id="image" class="w-full border p-2 border-gray-300 rounded" />
+    </div>
+    <div class="col-span-2">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">
+        Publish Blog
+      </button>
+    </div>
+  </form>
+
+  <!-- View Added Blogs Button -->
+  <button onclick="toggleBlogTable()" class="mt-10 mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+    View Added Blogs
+  </button>
+
+  <!-- Blog Table (Initially Hidden) -->
+  <div id="blogTable" class="hidden overflow-x-auto bg-white shadow rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="px-6 py-3">Date</th>
+          <th class="px-6 py-3">Tag</th>
+          <th class="px-6 py-3">Short Heading</th>
+          <th class="px-6 py-3">Image</th>
+          <th class="px-6 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for blog in blogs %}
+        <tr class="border-t">
+          <td class="px-6 py-4">{{ blog.date }}</td>
+          <td class="px-6 py-4">{{ blog.keyword }}</td>
+          <td class="px-6 py-4">{{ blog.short_heading }}</td>
+          <td class="px-6 py-4">
+            <img src="{{ blog.image.url }}" class="w-20 h-12 object-cover rounded">
+          </td>
+          <td class="px-6 py-4 text-center space-x-2">
+            <button type="button" onclick="openEditModal('{{ blog.id }}')"
+        class="bg-yellow-400 text-black px-3 py-1 rounded">
+  Edit
+</button>
+
+            <a href="{% url 'delete_blog' blog.id %}"
+               onclick="return confirm('Are you sure you want to delete this blog?')"
+               class="bg-red-500 text-white px-3 py-1 rounded">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+<div id="editModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative">
+    <button onclick="closeEditModal()" class="absolute top-2 right-4 text-2xl font-bold text-gray-600 hover:text-black">&times;</button>
+    <h2 class="text-xl font-bold mb-4">Edit Blog</h2>
+    <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_blog' %}">
+      {% csrf_token %}
+      <input type="hidden" name="id" id="editId">
+
+      <input type="text" name="keyword" id="editKeyword" class="w-full mb-2 p-2 border rounded" placeholder="Keyword">
+      <input type="date" name="date" id="editDate" class="w-full mb-2 p-2 border rounded">
+      <input type="text" name="short_heading" id="editShortHeading" class="w-full mb-2 p-2 border rounded" placeholder="Short Heading">
+      <input type="text" name="full_heading" id="editFullHeading" class="w-full mb-2 p-2 border rounded" placeholder="Full Heading">
+      <textarea name="paragraph1" id="editParagraph1" class="w-full mb-2 p-2 border rounded" rows="2"></textarea>
+      <textarea name="paragraph2" id="editParagraph2" class="w-full mb-2 p-2 border rounded" rows="2"></textarea>
+      <textarea name="paragraph3" id="editParagraph3" class="w-full mb-2 p-2 border rounded" rows="2"></textarea>
+      <textarea name="paragraph4" id="editParagraph4" class="w-full mb-2 p-2 border rounded" rows="2"></textarea>
+      <input type="file" name="image" class="w-full mb-4 border p-2 rounded">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded">Update Blog</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- Edit Modal Script -->
+  <script>
+    function toggleBlogTable() {
+      document.getElementById("blogTable").classList.toggle("hidden");
+    }
+
+    function openEditModal(blogId) {
+  fetch(`/get-blog/${blogId}/`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not OK");
+      }
+      return response.json();
+    })
+    .then(blog => {
+      document.getElementById('editId').value = blog.id;
+      document.getElementById('editKeyword').value = blog.keyword;
+      document.getElementById('editDate').value = blog.date;
+      document.getElementById('editShortHeading').value = blog.short_heading;
+      document.getElementById('editFullHeading').value = blog.full_heading;
+      document.getElementById('editParagraph1').value = blog.paragraph1 || '';
+      document.getElementById('editParagraph2').value = blog.paragraph2 || '';
+      document.getElementById('editParagraph3').value = blog.paragraph3 || '';
+      document.getElementById('editParagraph4').value = blog.paragraph4 || '';
+      document.getElementById('editModal').classList.remove('hidden');
+    })
+    .catch(error => {
+      alert('Failed to load blog details.');
+      console.error('Error:', error);
+    });
+}
+
+
+  </script>
+
+
+</div>
+
+</body>
+</html>

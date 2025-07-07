@@ -1,0 +1,443 @@
+{% load static %}
+ 
+ 
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Cybexel</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Comfortaa:wght@300..700&family=Michroma&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<link href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+</head>
+<body class="relative min-h-screen">
+
+  <div class="absolute inset-0 bg-cover bg-center opacity-20 -z-10" style="background-image: url('./static/images/bg2.jpg');"></div>
+ 
+ 
+
+ 
+<header class="relative z-[9999] w-full">
+  <nav id="navbar"
+       class="fixed top-0 left-0 w-full bg-transparent px-4 py-[0.8rem] transition-all duration-300 z-[9999] backdrop-blur-sm">
+    
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      
+      <a href="{% url 'index' %}" class="flex items-center">
+  <img id="logo" src="{% static 'images/logo1.png' %}" alt="Wise Logo" class="w-44 h-auto transition duration-300" />
+</a>
+
+
+      <div class="hidden md:flex items-center gap-8 text-base font-semibold nav-links text-white">
+        <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
+        <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
+        <a href="{% url 'careers' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Careers</a>
+        <a href="{% url 'about' %}" class="nav-link hover:text-purple-300 transition">About</a>
+        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="{% url 'contact' %}" class="hidden md:inline-block">
+          <button id="enquire-btn"
+            class="bg-white text-[#151a37] text-sm px-5 py-2 rounded-full font-medium transition">
+            Contact Us
+          </button>
+        </a>
+
+
+        <div class="md:hidden">
+  <button id="menu-toggle" class="focus:outline-none">
+    <svg id="menu-icon" class="w-6 h-6 text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2"
+         viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+</div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobile-menu"
+       class="md:hidden fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg px-6 py-10 space-y-6 transform translate-x-full transition-transform duration-300 ease-in-out z-[9999]">
+    <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
+    <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
+    <a href="{% url 'careers' %}" class="block text-purple-500 font-bold hover:text-purple-300">Careers</a>
+    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+    <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
+    <a href="{% url 'contact' %}">
+      <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 mt-4 rounded-full font-medium transition">
+        Contact Us
+      </button>
+    </a>
+  </div>
+</header>
+
+
+
+<section class="w-full bg-[#151a37] text-white h-[400px] px-6 sm:px-12 md:px-24">
+  <div class="max-w-7xl mx-auto h-full flex flex-col justify-center">
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 px-[0.9rem]">Careers</h1>
+    <p class="text-base sm:text-lg text-gray-300 px-[0.9rem] max-w-2xl">
+Be part of a team that values your ideas. Grow with us through innovation, collaboration and impact.    </p>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<section class="relative">
+  <img src="./static/images/careers2.jpg" 
+       alt="Creative meeting" 
+       class="w-full object-cover h-[500px] sm:h-[400px] md:h-[500px]"/>
+
+  <div class="absolute bottom-0 right-0 p-4 sm:p-6 md:p-10 max-w-full sm:max-w-md md:max-w-xl w-full bg-white/30 ">
+    <p class="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-black">
+      A fulfilling career needs both:
+      <span class="highlight font-semibold"> room to grow and a clear direction</span>.
+      We’ve built a workspace that balances innovation with purpose — and now we invite you to build your future with us.
+    </p>
+
+    <a href="#start">
+      <button class="mt-4 sm:mt-6 bg-black text-white py-2 px-5 sm:px-6 rounded-full text-sm hover:bg-gray-900 transition">
+        • Sure, let's start!
+      </button>
+    </a>
+  </div>
+</section>
+
+
+<div id="start"></div>
+
+
+
+
+<div id="opportunities"></div>
+<section class="w-full px-4 py-12 max-md:py-0 mt-16">
+  <h2 class="text-6xl md:text-7xl font-bold text-gray-300 uppercase mb-4 sm:ml-10 md:ml-28 select-none tracking-wide text-center md:text-left">
+    JOIN WITH US
+  </h2>
+  <p class="text-gray-400 text-md sm:ml-10 md:ml-28 mb-10 text-center md:text-left max-w-4xl">
+    Discover opportunities designed for students, freshers and experienced professionals. Apply now and take your next step with us!
+  </p>
+{% if show_success_modal %}
+<div id="successModal" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+  <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-sm">
+    <!-- Animated Tick -->
+    <svg class="mx-auto mb-4 text-[#151a37] w-16 h-16 animate-ping-once" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+    <h2 class="text-xl font-semibold text-[#151a37]">Application Submitted!</h2>
+    <p class="text-gray-600 mt-2">Thank you for applying. We'll get back to you soon.</p>
+  </div>
+</div>
+
+
+{% endif %}
+
+  <div class="max-w-7xl mx-auto flex flex-col gap-6 items-center">
+    <div class="relative w-full md:w-[80%]">
+      <img src="{% static 'images/office.jpg' %}"
+        alt="Office Team"
+        class="w-full h-[300px] sm:h-[400px] md:h-[450px] object-cover rounded-xl" />
+    </div>
+
+    <div class="w-full md:w-[70%]">
+      <div class="rounded-xl p-4 shadow">
+        <div class="grid sm:grid-cols-3 gap-4 items-center mb-6">
+
+          <!-- All Jobs Button with Label -->
+          <div class="w-full">
+            <label class="block text-sm text-[#151a37] mb-1 ml-1">Show</label>
+            <button id="allJobsBtn" onclick="resetFilters()"
+              class="tab-button w-full h-[42px] bg-[#151a37] text-white border border-white rounded-lg font-semibold shadow-sm hover:bg-white hover:text-[#151a37] transition">
+              All Jobs
+            </button>
+          </div>
+
+          <!-- Department Filter -->
+          <div class="w-full">
+            <label class="block text-sm text-[#151a37] mb-1 ml-1">Department</label>
+            <select id="departmentDropdown" onchange="filterDepartment(this.value)"
+              class="tab-dropdown w-full h-[42px] border border-white px-4 rounded-lg bg-[#151a37] text-white shadow-sm focus:ring-2 focus:ring-white focus:outline-none">
+              <option value="all">All</option>
+              {% for dept in departments %}
+                <option value="{{ dept.name }}">{{ dept.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Experience Filter -->
+          <div class="w-full">
+            <label class="block text-sm text-[#151a37] mb-1 ml-1">Experience</label>
+            <select id="experienceDropdown" onchange="filterJobs(this.value)"
+              class="tab-dropdown w-full h-[42px] border border-white px-4 rounded-lg bg-[#151a37] text-white shadow-sm focus:ring-2 focus:ring-white focus:outline-none">
+              <option value="all">All</option>
+              {% for exp in experiences %}
+                <option value="{{ exp.name }}">{{ exp.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<div id="jobs" class="max-w-7xl mx-auto mt-20 px-2 sm:px-4 ">
+  <div id="jobCards" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {% for job in jobs %}
+      <div class="bg-white shadow-md rounded-xl p-6 border">
+        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full mb-2">
+          {{ job.experience.name }}
+        </span>
+        <h4 class="text-xl font-semibold text-gray-800 mb-1">{{ job.post_name }}</h4>
+        <p class="text-sm text-gray-600 mb-1">Experience: {{ job.experience.duration }}</p>
+        <p class="text-sm text-gray-600 mb-2">Department: {{ job.department.name }}</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          {% for skill in job.skill_list %}
+            <span class="bg-gray-100 text-xs px-2 py-1 rounded">{{ skill }}</span>
+          {% endfor %}
+        </div>
+        <button onclick="openDetailsModal(
+          '{{ job.post_name|escapejs }}',
+          '{{ job.experience.duration|escapejs }}',
+          '{{ job.required_skills|escapejs }}',
+          `{{ job.job_description|safe|escapejs }}`,
+          '{{ job.department.name|escapejs }}'
+        )"
+        class="text-sm font-medium text-green-700 hover:underline">
+          View Details
+        </button>
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-500 text-sm mt-6">No roles found for this category.</p>
+    {% endfor %}
+  </div>
+  <p id="noResults" class="text-center text-gray-500 text-sm hidden mt-6">No roles found for this category.</p>
+</div>
+</section>
+
+<div id="jobModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center" onclick="checkBackdropClose(event)">
+  <div class="bg-white w-full max-w-xl rounded-xl p-6 relative" onclick="event.stopPropagation()">
+    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
+    <h3 id="modalTitle" class="text-xl font-bold text-gray-800 mb-1"></h3>
+    <p id="modalLabel" class="text-sm text-blue-600 mb-2"></p>
+    <p id="modalDepartment" class="text-sm text-gray-700 mb-4"></p>
+    <p id="modalDescription" class="text-sm text-gray-700 mb-4"></p>
+    <div class="flex flex-wrap gap-2 mb-4" id="modalTags"></div>
+    <div class="flex justify-between">
+      <button onclick="closeModal()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">Back</button>
+      <button onclick="openForm()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Apply Job</button>
+    </div>
+  </div>
+</div>
+
+<div id="formModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center">
+  <div class="bg-white w-full max-w-xl rounded-xl p-6 relative">
+    <button onclick="closeForm()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Job Application</h3>
+    <form method="POST" action="{% url 'submit_application' %}" enctype="multipart/form-data" class="space-y-4">
+  {% csrf_token %}
+  
+  <input id="formPosition" name="position" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+  <input id="formLabel" name="label" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+  <input id="formDepartment" name="department" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+  
+  <input required name="name" placeholder="Your Name" class="w-full border px-3 py-2 rounded" />
+  <input required name="email" type="email" placeholder="Your Email" class="w-full border px-3 py-2 rounded" />
+  <textarea name="cover_letter" placeholder="Cover Letter" class="w-full border px-3 py-2 rounded"></textarea>
+  <input name="resume" type="file" class="w-full border px-3 py-2 rounded" />
+
+  <button type="submit" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Submit Application</button>
+</form>
+
+  </div>
+</div>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<section class="w-full mt-10 max-md:mt-20">
+  <!-- <div class="bg-[#151a37] h-96 text-center text-white flex flex-col items-center justify-center">
+  <h3 class="text-3xl font-semibold mb-6 uppercase">Follow us on</h3>
+  <div class="flex justify-center gap-12 text-3xl md:text-5xl mt-10">
+    <a href="#" aria-label="Facebook" class="hover:text-gray-400"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" aria-label="Instagram" class="hover:text-gray-400"><i class="fab fa-instagram"></i></a>
+    <a href="#" aria-label="YouTube" class="hover:text-gray-400"><i class="fab fa-youtube"></i></a>
+    <a href="#" aria-label="LinkedIn" class="hover:text-gray-400"><i class="fab fa-linkedin-in"></i></a>
+  </div> -->
+</div>
+
+
+  <div class="relative">
+  <img src="{% static 'images/careers.jpeg' %}" 
+     alt="Inclusive Team" 
+     class="w-full h-[500px] object-cover">
+
+  <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+
+  <div class="absolute inset-0 flex flex-col justify-center px-6 md:px-16 text-white z-10">
+    <h2 class="text-2xl md:text-4xl font-bold leading-tight max-w-xl px-14">
+      Inclusion with Purpose,<br />
+      Equitable by Design,<br />
+      Equal Opportunity.
+    </h2>
+    <p class="italic font-serif text-lg md:text-4xl mt-20 max-w-7xl px-14">
+      We aim to create an equitable workplace for all, where each individual is treated with fairness and respect.
+    </p>
+  </div>
+</div>
+
+</section>
+
+
+
+
+
+
+
+<div class="fixed bottom-6 right-6 z-[9999]">
+  <div id="fabOptions" class="relative w-16 h-[2rem] max-md:w-12 max-md:h-0">
+
+    <a href="https://wa.me/+919072919991" target="_blank"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-16 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
+   id="whatsappBtn">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+       alt="WhatsApp"
+       class="w-5 h-5 max-md:w-4 max-md:h-4" />
+</a>
+
+<a href="tel:+919072919991"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-28 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
+   id="callBtn">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
+       stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
+  </svg>
+</a>
+
+  </div>
+
+  <button onclick="toggleFab()" id="fabBtn"
+    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
+         fill="none" stroke="#ffffff" stroke-width="2"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
+    </svg>
+  </button>
+</div>
+
+
+
+<footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
+
+    <div>
+      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
+      <p class="text-sm leading-6 text-gray-500">
+        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+      </p>
+    </div>
+
+    <div class="ml-16 max-md:ml-0">
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+
+      </ul>
+    </div>
+
+    <div>
+  <h3 class="text-lg font-semibold text-gray-500 mb-3">Get in Touch</h3>
+  <ul class="space-y-6 text-sm text-gray-500 mt-6">
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Email:</span>
+      <a href="mailto:info@cybexel.com" class="hover:text-[#151a37]">info@cybexel.com</a>
+    </li>
+
+   <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Phone:</span>
+  <div>
+    <a href="tel:+919072919991" class="hover:text-[#151a37] block">+91 9072919991</a>
+    <a href="tel:+919745109190" class="hover:text-[#151a37] block">+91 9745109190</a>
+  </div>
+</li>
+
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Address:</span>
+      <span>
+        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+
+Coimbatore<br><br>
+Bengaluru 
+      </span>
+    </li>
+
+  </ul>
+</div>
+
+  </div>
+
+  <div class="border-t border-gray-600 mt-32 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500">&copy; 2025 Cybexel. All rights reserved.</p>
+    <div class="mt-4 md:mt-0 flex space-x-4">
+  <a href="https://www.linkedin.com/company/cybexel/" aria-label="LinkedIn" class="hover:text-[#151a37] transition">
+    <i class="fab fa-linkedin text-xl"></i>
+  </a>
+  <a href="https://www.facebook.com/Cybexel.pvt.ltd" aria-label="Facebook" class="hover:text-[#151a37] transition">
+    <i class="fab fa-facebook-f text-xl"></i>
+  </a>
+  <a href="https://www.instagram.com/cybexel_pvtltd/?hl=en" aria-label="Instagram" class="hover:text-[#151a37] transition">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
+</div>
+
+  </div>
+</footer>
+
+
+
+
+<script src="{% static 'js/other_script.js' %}"></script>
+</body>
+</html>

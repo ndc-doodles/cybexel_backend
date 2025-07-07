@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Submissions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+       
+           <aside class="w-64 bg-[#151a37] text-white p-6">
+      <div class="flex items-center justify-center mb-8">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+      </div>
+      <nav>
+        <ul class="space-y-4 text-sm">
+           <li>
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_blog' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_contact' %}" class="block py-2 px-4 rounded bg-white text-[#151a37]">
+              Contact Form
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_careers' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Careers
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_job_applications' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Job Applications
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+        
+        <div class="flex-1 p-6">
+          <div class="w-full bg-[#151a37] text-white py-4 px-6 r shadow mb-6">
+    <h2 class="text-xl font-semibold">Admin Contact Form Management</h2>
+  </div>
+            <h1 class="text-2xl font-bold mb-6">Contact Form Submissions</h1>
+            <div class="bg-white p-6 rounded shadow">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+    <tr class="bg-gray-200">
+        <th class="border border-gray-300 px-4 py-2">Name</th>
+        <th class="border border-gray-300 px-4 py-2">Email</th>
+        <th class="border border-gray-300 px-4 py-2">Subject</th>
+        <th class="border border-gray-300 px-4 py-2">Message</th>
+        <th class="border border-gray-300 px-4 py-2">Date</th>
+    </tr>
+</thead>
+<tbody>
+    {% for contact in contacts %}
+    <tr class="text-center">
+        <td class="border border-gray-300 px-4 py-2">{{ contact.name }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ contact.email }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ contact.subject }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ contact.message }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ contact.submitted_at|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5" class="text-center py-4">No submissions yet.</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,920 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Cybexel</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Comfortaa:wght@300..700&family=Michroma&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+ <style>
+  
+</style>
+
+</head>
+<body class="relative min-h-screen">
+
+  <div class="absolute inset-0 bg-cover bg-center opacity-15 -z-10" style="background-image: url('./static/images/bg2.jpg');"></div>
+
+
+  
+  <header class="relative z-[9999] h-screen flex flex-col justify-between">
+
+<div id="navbar-container" class="w-full flex justify-center fixed top-0 z-[9999] transition-all duration-300">
+   <nav class="w-full max-w-7xl mx-auto px-4 py-[0.8rem] flex justify-between items-center">
+    
+
+
+<a href="{% url 'index' %}" class="flex items-center">
+  <img src="{% static 'images/logo2.png' %}" alt="Wise Logo" class="w-44 h-auto" />
+</a>
+
+
+    <div class="hidden md:flex items-center gap-8 text-base text-black font-semibold drop-shadow-sm">
+      <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 transition">Home</a>
+      <a href="{% url 'services' %}" class="hover:text-purple-300 transition">Services</a>
+      <a href="{% url 'careers' %}" class="hover:text-purple-300 transition">Careers</a>
+      <a href="{% url 'about' %}" class="hover:text-purple-300 transition">About</a>
+      <a href="{% url 'blog' %}" class="hover:text-purple-300 transition">Blog</a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="{% url 'contact' %}" class="hidden md:inline-block">
+        <button class="bg-[#151a37] text-white text-sm px-5 py-2 rounded-full font-medium transition">
+          Contact Us
+        </button>
+      </a>
+      <button id="menu-toggle" class="md:hidden text-black focus:outline-none pr-2">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<div id="mobile-menu"
+     class="md:hidden fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg px-6 py-10 space-y-6 transform translate-x-full transition-transform duration-300 ease-in-out z-[9999] overflow-y-auto">
+  <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 block">Home</a>
+  <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
+  <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
+  <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+  <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
+  <a href="{% url 'contact' %}" class="block">
+    <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 rounded-full font-medium transition">
+      Contact Us
+    </button>
+  </a>
+</div>
+
+
+
+<div id="enquiryModal" class="fixed inset-0 z-[99999] bg-black/50 flex items-center justify-center hidden">
+  <div class="bg-white w-[90%] max-w-lg rounded-lg p-6 relative shadow-xl">
+    <button onclick="closeEnquiryModal()" class="absolute top-3 right-4 text-2xl font-bold text-gray-400 hover:text-black">&times;</button>
+    
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Enquiry Form</h2>
+
+    <form id="enquiryForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" class="w-full border px-3 py-2 rounded" placeholder="Your Name" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" class="w-full border px-3 py-2 rounded" placeholder="Your Email" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Phone</label>
+        <input type="tel" class="w-full border px-3 py-2 rounded" placeholder="Your Phone Number">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Message</label>
+        <textarea class="w-full border px-3 py-2 rounded" rows="4" placeholder="How can we help you?" required></textarea>
+      </div>
+      <div class="text-right">
+        <button type="submit" class="bg-[#151a37] text-white px-5 py-2 rounded hover:bg-[#1d2042]">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+<section class="relative w-full min-h-screen overflow-hidden flex items-center justify-center">
+  
+  <div class="wave absolute inset-0 -z-10">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+<div class="max-w-7xl mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-2 items-center mt-20 gap-10 md:gap-16 relative z-10 max-md:mt-20">
+
+  <div class="text-center md:text-left flex flex-col gap-4 order-2 md:order-1">
+
+    <h1 class="text-3xl sm:text-4xl lg:text-[4rem] font-bold text-[#2D0C57] leading-snug sm:leading-tight lg:leading-[5rem] order-1">
+      Smart Tech, Smarter Business
+    </h1>
+
+    <p class="px-2 font-bold text-gray-400 text-sm md:text-base order-2">
+      Future Ready
+    </p>
+
+    <div class="block center-v-cut-left md:hidden order-3">
+      <img src="{% static 'images/intro.jpeg' %}" alt="Digital Expert"
+           class="w-full h-[300px] sm:h-[400px] object-cover rounded-lg shadow-md">
+    </div>
+
+    <p class="text-gray-600 mt-4 pl-2 text-sm md:text-base order-4">
+      Empower your digital journey with Cybexel. We craft powerful websites, scalable applications and comprehensive IT solutions to elevate your brand and fuel your success.
+    </p>
+
+  </div>
+
+  <div class="hidden md:block order-1 md:order-2 center-v-cut-left shadow-lg overflow-hidden w-full max-w-full">
+    <img src="{% static 'images/intro.jpeg' %}" alt="Digital Expert"
+         class="w-full h-[500px] object-cover rounded-lg shadow-md">
+  </div>
+
+</div>
+
+</section>
+
+
+
+
+
+</header>
+
+
+
+<section class="min-h-screen flex flex-col justify-center relative overflow-hidden max-md:mt-[-2rem]">
+ <div class="relative max-w-7xl px-4 sm:px-8 pt-16 md:ml-24 z-10 
+            bg-[url('./static/images/logotexture2.png')] 
+            bg-contain bg-center bg-no-repeat 
+            md:bg-none">
+  <!-- Optional overlay for mobile -->
+  <div class="absolute inset-0 bg-white/90 md:hidden pointer-events-none z-0"></div>
+
+  <!-- Text content -->
+  <div class="relative z-10">
+    <h1 class="text-4xl md:text-7xl font-bold text-gray-400 select-none uppercase leading-snug">
+      Find Nearby, Fast.
+    </h1>
+    <p class="md:text-md text-gray-500 mt-4 max-w-7xl pl-1">
+      Easily discover a wide range of trusted local services and businesses near you, tailored to your exact location. Whether it's a quick errand or an urgent need, everything is just around the corner and only a tap away.
+    </p>
+  </div>
+</div>
+
+
+
+  <div class="relative mt-10 max-md:mt-6 w-full">
+    <div class="absolute inset-0 w-[40%] bg-[#151a37] mt-32 z-20 hidden md:flex flex-col px-36 justify-start pt-2 gap-4">
+      <!-- <img src="./static/images/nmeapp.png" alt="App Logo" class="w-36 h-auto" /> -->
+    </div>
+
+    <div id="videoSection" class=" flex md:justify-end justify-center relative mt-10 md:mt-20 w-full">
+      <div class="w-full md:w-[60%] h-[250px] sm:h-[350px] md:h-[600px] overflow-hidden relative">
+        <video
+          id="scrollVideo"
+          src="./static/images/video5.mp4"
+          class="w-full h-full object-cover"
+          muted
+          playsinline
+          autoplay
+          loop
+        ></video>
+        <div class="absolute inset-0 bg-black bg-opacity-50 pointer-events-none"></div>
+      </div>
+    </div>
+
+    <div class="relative md:absolute md:bottom-10 md:left-44 bg-white/20 text-white p-4 md:p-10 mx-4 mt-6 md:mt-10 max-w-full md:max-w-lg text-sm md:text-base z-30 max-md:text-[#151a37]">
+      <h1 class="text-5xl font-medium">n-me app</h1>
+      <p class="mb-2 mt-6">
+Looking for local services or businesses? Our app makes it easy to discover and connect with trusted options nearby in just a few taps—saving you time and effort every day      </p>
+      <p>
+        No matter where you are, our smart listing system connects you instantly to the essentials around you. From errands to urgent needs, discover local fast and stress-free.
+      </p>
+    </div>
+  </div>
+
+ <div class="w-full px-4 sm:px-8 py-16 bg-[#151a37] flex flex-col md:flex-row items-center gap-10 md:gap-16 pt-32">
+  <div class="w-full md:w-[55%] flex justify-center">
+    <img src="./static/images/frame.png" alt="Phone UI" class="w-75 sm:w-[28rem] md:w-[32rem] h-auto rounded-lg shadow-lg" />
+  </div>
+  <div class="w-full md:w-[45%] text-gray-300 max-md:px-[2rem]">
+    <h2 class="text-4xl md:text-7xl font-bold text-gray-300 select-none uppercase leading-snug mb-4">Our App</h2>
+    <p class="text-gray-400 leading-relaxed text-base md:text-lg pr-32 max-md:pr-0">
+N-ME is an innovative app that helps you quickly find and connect with trusted local businesses near you. Whether it’s dining, home services, healthcare or shopping, everything is right at your fingertips. Launched in 2022 by Cybexel, our mission is to grow local businesses and make daily life simpler and more convenient. With real-time updates, easy booking and instant access to thousands of services, N-ME builds stronger, more connected communities.    </p>
+  </div>
+</div>
+
+</section>
+
+<section class="w-full px-4 sm:px-8 py-20 bg-[#151a37] text-gray-300">
+  <div class="max-w-4xl mx-auto text-center mb-12">
+    <h2 class="text-4xl md:text-7xl font-bold uppercase text-gray-300 mb-4">Key Features</h2>
+    <p class="text-gray-400 text-base md:text-lg">
+      Discover how N-ME makes finding and booking local services effortless.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+  <div class="relative group overflow-hidden rounded-lg shadow-lg bg-gradient-to-br from-purple-600 to-purple-800 cursor-pointer">
+    <div class="absolute bottom-3 right-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
+        <path fill="#fff" fill-rule="evenodd" d="M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0"/>
+      </svg>
+    </div>
+    <div class="flex flex-col items-center justify-center py-16 px-4 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      <img src="./static/images/smart.png" width="48" height="48">
+      <h3 class="text-xl font-semibold text-white">Smart</h3>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity duration-300 mt-[-4rem] ">
+      <img src="./static/images/smart.png" class="w-28 h-28" alt="Smart Icon Large">
+    </div>
+    <div class="absolute bottom-0 left-0 w-full bg-purple-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <p class="text-sm text-white text-center">
+        Advanced algorithms match you with the best local services.
+      </p>
+    </div>
+  </div>
+
+  <div class="relative group overflow-hidden rounded-lg shadow-lg bg-gradient-to-br from-green-600 to-green-800 cursor-pointer">
+    <div class="absolute bottom-3 right-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
+        <path fill="#fff" fill-rule="evenodd" d="M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0"/>
+      </svg>
+    </div>
+    <div class="flex flex-col items-center justify-center py-16 px-4 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      <img src="./static/images/speed.png" width="48" height="48">
+      <h3 class="text-xl font-semibold text-white">Speed</h3>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity duration-300 mt-[-4rem]">
+      <img src="./static/images/speed.png" class="w-28 h-28" alt="Speed Icon Large">
+    </div>
+    <div class="absolute bottom-0 left-0 w-full bg-green-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <p class="text-sm text-white text-center">
+        Find and book services instantly with no delays.
+      </p>
+    </div>
+  </div>
+
+  <div class="relative group overflow-hidden rounded-lg shadow-lg bg-gradient-to-br from-blue-600 to-blue-800 cursor-pointer">
+    <div class="absolute bottom-3 right-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
+        <path fill="#fff" fill-rule="evenodd" d="M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0"/>
+      </svg>
+    </div>
+    <div class="flex flex-col items-center justify-center py-16 px-4 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      <img src="./static/images/secure.png" width="48" height="48">
+      <h3 class="text-xl font-semibold text-white">Secure</h3>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity duration-300 mt-[-4rem]">
+      <img src="./static/images/secure.png" class="w-28 h-28" alt="Secure Icon Large">
+    </div>
+    <div class="absolute bottom-0 left-0 w-full bg-blue-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <p class="text-sm text-white text-center">
+        Every user’s data is private and fully secure.
+      </p>
+    </div>
+  </div>
+
+  <div class="relative group overflow-hidden rounded-lg shadow-lg bg-gradient-to-br from-pink-600 to-pink-800 cursor-pointer">
+    <div class="absolute bottom-3 right-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
+        <path fill="#fff" fill-rule="evenodd" d="M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0"/>
+      </svg>
+    </div>
+    <div class="flex flex-col items-center justify-center py-16 px-4 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      <img src="./static/images/support.png" width="48" height="48">
+      <h3 class="text-xl font-semibold text-white">24/7 Support</h3>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-10 transition-opacity duration-300 mt-[-4rem]">
+      <img src="./static/images/support.png" class="w-28 h-28" alt="Support Icon Large">
+    </div>
+    <div class="absolute bottom-0 left-0 w-full bg-pink-600 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <p class="text-sm text-white text-center">
+        Our team is always here to help you anytime.
+      </p>
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+
+
+<section class="relative bg-[#151a37] py-10 px-4 sm:px-8 flex flex-col items-center text-center text-white">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex items-center justify-center mb-6">
+      <div class="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+        <i class="fas fa-link text-3xl text-white"></i>
+      </div>
+    </div>
+    <h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-300 uppercase">No Middlemen. Direct Access</h2>
+    <p class="text-gray-300 text-base md:text-lg leading-relaxed mb-6">
+      N-ME empowers you to connect directly with service providers without any third parties or hidden layers. Enjoy transparent communication, faster responses and complete trust—everything you need, right at your fingertips.
+    </p>
+    <a
+      href="https://nmeapp.in/"
+      target="_blank"
+      class="inline-block mt-4 px-6 py-3 bg-white text-[#151a37] font-medium rounded-full hover:bg-gray-200 transition duration-300"
+    >
+      Learn More About N-ME App
+    </a>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="py-20 px-4 md:px-20 relative overflow-hidden mt-20 max-md:mt-10">
+  <div class="max-w-7xl mx-auto">
+
+    <h2 class="text-4xl md:text-7xl font-bold text-gray-300 absolute top-10  md:px-8 z-0 select-none uppercase">
+      Solutions
+    </h2>
+
+    <div class="mb-20 relative z-10">
+      
+      <p class="text-gray-500 px-9 max-md:px-2 text-md mt-10 max-md:mt-4 md:pr-32 ">
+Discover powerful features designed to simplify complex processes and elevate performance.
+Fuel sustainable growth and drive your business forward with confidence.     </p>
+    </div>
+
+  <div class="max-w-7xl mx-auto px-9 text-center">
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+  <div class="relative bg-[#151a37]/10 rounded-xl p-4 sm:p-6 text-left shadow hover:shadow-md transition overflow-hidden group">
+  <i class="fas fa-sync-alt vibrate-icon text-[#151a37] text-[4rem] sm:text-[5rem] opacity-10 absolute top-2 right-2 sm:top-4 sm:right-4 z-0 pointer-events-none"></i>
+  <div class="relative z-10 mt-8">
+    <p class="text-xs sm:text-sm font-medium bg-white inline-block px-3 py-1 rounded-full mb-3 text-gray-600">360° Digital</p>
+    <h3 class="text-lg sm:text-xl font-semibold mb-2 leading-snug">Achieve More with 360° Digital Coverage</h3>
+    <p class="text-gray-600 text-sm sm:text-base">End-to-end solutions that simplify complex tasks, boost productivity and drive sustainable growth across your business.</p>
+  </div>
+</div>
+
+
+  <div class="relative bg-blue-50 rounded-xl p-4 sm:p-6 text-left shadow hover:shadow-md transition overflow-hidden group">
+    <i class="fas fa-sliders-h vibrate-icon  text-blue-900 text-[4rem] sm:text-[5rem] opacity-10 absolute top-2 right-2 sm:top-4 sm:right-4 z-0 pointer-events-none"></i>
+    <div class="relative z-10 mt-8">
+      <p class="text-xs sm:text-sm font-medium bg-white inline-block px-3 py-1 rounded-full mb-3 text-gray-600">Custom-Fit</p>
+      <h3 class="text-lg sm:text-xl font-semibold mb-2 leading-snug">Custom-Fit Solutions, Built Around You</h3>
+      <p class="text-gray-600 text-sm sm:text-base">Get exactly what you need with solutions tailored to your goals, workflows and challenges—no one-size-fits-all approach here.</p>
+    </div>
+  </div>
+
+  <div class="relative bg-[#fdebfd] rounded-xl p-4 sm:p-6 text-left shadow hover:shadow-md transition overflow-hidden group">
+    <i class="fas fa-headset vibrate-icon  text-pink-700 text-[4rem] sm:text-[5rem] opacity-10 absolute top-2 right-2 sm:top-4 sm:right-4 z-0 pointer-events-none"></i>
+    <div class="relative z-10 mt-8">
+      <p class="text-xs sm:text-sm font-medium bg-white inline-block px-3 py-1 rounded-full mb-3 text-gray-600">Expert Support</p>
+      <h3 class="text-lg sm:text-xl font-semibold mb-2 leading-snug">Expert Support You Can Rely On</h3>
+      <p class="text-gray-600 text-sm sm:text-base">Get dedicated help from real professionals who understand your needs and are here to ensure your success every step of the way.</p>
+    </div>
+  </div>
+
+  <div class="relative bg-[#151a37]/10 rounded-xl p-4 sm:p-6 text-left shadow hover:shadow-md transition overflow-hidden group">
+    <i class="fas fa-mouse-pointer vibrate-icon  text-[#151a37] text-[4rem] sm:text-[5rem] opacity-10 absolute top-2 right-2 sm:top-4 sm:right-4 z-0 pointer-events-none"></i>
+    <div class="relative z-10 mt-8">
+      <p class="text-xs sm:text-sm font-medium bg-white inline-block px-3 py-1 rounded-full mb-3 text-gray-600">Smooth UX</p>
+      <h3 class="text-lg sm:text-xl font-semibold mb-2 leading-snug">Deliver a Smooth UX</h3>
+      <p class="text-gray-600 text-sm sm:text-base">Delight users with intuitive design, fast performance and effortless navigation that keeps them engaged and coming back.</p>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="relative text-gray-800 mt-10 px-4 md:px-10 max-md:pt-0 max-md:mt-6">
+  <div class="max-w-7xl mx-auto mb-20 px-10 max-md:px-4">
+    <h2 class="text-4xl md:text-7xl font-bold text-gray-300 uppercase select-none ">
+      Services
+    </h2>
+    <p class="text-gray-600 text-md md:w-2/3 mt-4">
+Transform your business with tailored IT services, expert consulting and innovative tools that evolve as you do.    </p>
+  </div>
+
+
+  <div class="max-w-5xl mx-auto grid grid-cols-12 gap-6 mt-20 max-md:px-2">
+    
+<div class="card group relative col-span-12 sm:col-span-6 lg:col-span-4 h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"         style="background-image: url('./static/images/app.jpg');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+      <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+App Development</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">         Custom mobile and desktop apps to streamline your business processes.
+      </p>
+    </div>
+  </div>
+
+<div class="card group relative col-span-12 sm:col-span-6 lg:col-span-4 h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"         style="background-image: url('https://img.freepik.com/free-photo/ideas-design-draft-creative-sketch-objective-concept_53876-121105.jpg?ga=GA1.1.1888351375.1703911423&semt=ais_hybrid&w=740');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+      <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+Branding & Designing</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">         Build a strong identity with creative visuals and brand strategies.
+      </p>
+    </div>
+  </div>
+
+<div class="card group relative col-span-12 sm:col-span-6 lg:col-span-4 h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"         style="background-image: url('https://img.freepik.com/free-photo/website-development-links-seo-webinar-cyberspace-concept_53876-120953.jpg?ga=GA1.1.1888351375.1703911423&semt=ais_hybrid&w=740');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+     <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+Web Development</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">         Responsive and modern websites tailored to your business goals.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-span-12 sm:col-span-6 lg:col-span-4 group relative h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"         style="background-image: url('https://img.freepik.com/free-photo/marketing-ideas-share-research-planning-concept_53876-127431.jpg?ga=GA1.1.1888351375.1703911423&semt=ais_hybrid&w=740');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+      <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+Digital Marketing</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">         Boost your reach with SEO, social media and campaign strategies.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-span-12 sm:col-span-6 lg:col-span-4 group relative h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"           style="background-image: url('https://img.freepik.com/free-vector/smart-home-management_52683-43471.jpg?ga=GA1.1.1888351375.1703911423&semt=ais_hybrid&w=740');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+      <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+UI/UX Design</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">        Craft smooth, user-friendly experiences across platforms.
+
+      </p>
+    </div>
+  </div>
+
+  <div class="col-span-12 sm:col-span-6 lg:col-span-4 group relative h-[400px] rounded-xl overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-700 
+  group-hover:scale-110 group-hover:blur-sm 
+  clicked:scale-110 clicked:blur-sm"           style="background-image: url('https://img.freepik.com/free-photo/programming-background-collage_23-2149901770.jpg?ga=GA1.1.1888351375.1703911423&semt=ais_hybrid&w=740');"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-all duration-700"></div>
+    <div class="relative z-10 h-full flex flex-col justify-end items-center text-center p-6 transition-all duration-700 ease-in-out group-hover:justify-center">
+     <h3 class="text-white text-xl font-bold mb-2 
+  transition-all duration-700 ease-in-out 
+  transform group-hover:-translate-y-2 group-hover:mb-4 
+  clicked:-translate-y-2 clicked:mb-4">
+Softwares</h3>
+<p class="text-white text-sm max-w-xs opacity-0 translate-y-6 
+  group-hover:opacity-100 group-hover:translate-y-0 
+  clicked:opacity-100 clicked:translate-y-0 
+  transition-all duration-700 ease-in-out">         Custom software solutions that simplify work and accelerate progress.
+      </p>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<section class=" bg-white mt-20 pt-20 max-md:pt-4">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <h2 class="text-4xl md:text-7xl font-bold text-gray-300 uppercase select-none">
+  Our Trusted Clients
+</h2>
+
+    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+      We proudly collaborate with industry-leading brands to deliver exceptional digital solutions.
+    </p>
+
+<div class="marquee-container mt-14">
+  <div class="marquee-track">
+    <div class="marquee-content">
+      {% for logo in logos %}
+        <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }}" class="logo" />
+      {% endfor %}
+    </div>
+
+    <!-- Duplicate logos for smooth looping -->
+    <div class="marquee-content">
+      {% for logo in logos %}
+        <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }} duplicate" class="logo" />
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+<div class="max-w-7xl rounded-xl mx-auto px-10 py-20 min-h-[600px] grid grid-cols-1 md:grid-cols-6 gap-6 mt-20 max-md:mt-4">
+  <div class="md:col-span-4 bg-[#151a37] text-white rounded-3xl p-5 flex flex-col justify-center">
+    <span class="inline-block text-xs mb-2 py-1 px-2 bg-white/10 rounded-full w-fit">About Us</span>
+    <h2 class="text-2xl font-bold leading-snug uppercase">Cybexel: Powering Your Digital Future.
+</h2>
+<p class="mt-3 text-sm text-white/90">
+  We’re your dedicated IT partner, delivering tailored strategies, cutting-edge tools and unwavering support to help your business thrive.
+</p>
+<a href="{% url 'about' %}" class="mt-2 inline-block text-sm text-white  hover:text-white/70 transition">
+  Know more →
+</a>
+
+  </div>
+<div class="grid grid-cols-3 gap-2 md:grid-cols-2 md:col-span-2">
+
+  <!-- Box 1 -->
+  <div class="h-[90px] bg-[#30bfe9]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center">
+    <div class="mb-1 flex justify-center">
+     <i class="fi fi-rs-globe text-[#151a37]"></i>
+    </div>
+    <h3 class="text-sm font-semibold text-[#151a37]">30+</h3>
+    <p class="text-[12px] text-gray-600">Countries</p>
+  </div>
+
+  <!-- Box 2 -->
+<div class="h-[90px] bg-[#eaa23a]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center self-end mt-20 max-md:mt-0">
+    <div class="mb-1 flex justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#151a37]" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M15 11a4 4 0 10-8 0 4 4 0 008 0zM17 11a4 4 0 014 4v1a4 4 0 01-4 4h-2.5" />
+      </svg>
+    </div>
+    <h3 class="text-sm font-semibold text-[#151a37]">120+</h3>
+    <p class="text-[12px] text-gray-600">Clients</p>
+  </div>
+
+  <!-- Box 3 -->
+  <div class="h-[90px] bg-[#e3d544]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center ">
+    <div class="mb-1 flex justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#151a37]" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+      </svg>
+    </div>
+    <h3 class="text-sm font-semibold text-[#151a37]">1450+</h3>
+    <p class="text-[12px] text-gray-600">Projects</p>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+  <div class="md:col-span-6">
+<img src="{% static 'images/about2.jpeg' %}" alt="Hiking Image" class="w-full h-[300px] object-cover rounded-3xl" />  </div>
+</div>
+
+
+
+
+<section class="relative w-full sm:py-6 px-4 sm:px-6 md:px-16 lg:px-32 mt-6">
+  <h2 class="text-[2.5rem] md:text-7xl font-bold text-gray-300 select-none leading-none px-2 max-md:mb-4 md:text-left">
+    CAREERS
+  </h2>
+
+  <div class="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-10 md:gap-12">
+    
+    <div class="flex flex-col justify-center space-y-6 text-center md:text-left px-4 order-1">
+      <p class="text-lg text-gray-700 font-medium ">
+  Join us and do work that matters
+</p>
+
+      <p class="text-md text-gray-600 leading-relaxed text-left md:text-left ">
+        At our company, we believe in innovation, collaboration and impact. From engineers to designers, every team member plays a vital role in shaping solutions that serve millions. We offer flexible work environments, continuous learning and a chance to grow with us.
+      </p>
+
+     
+      <div class="flex flex-wrap justify-center md:justify-start gap-4">
+        <!-- <a href="{% url 'careers' %}#opportunities" class="px-6 py-2 bg-[#151a37] text-white text-sm rounded-full hover:bg-[#1f254f] transition-all duration-300">
+          Explore Opportunities
+        </a> -->
+        <a href="{% url 'careers' %}" class="px-6 py-2 border border-[#151a37] text-[#151a37] text-sm rounded-full hover:bg-[#151a37] hover:text-white transition-all">
+          Explore Cybexel Life
+        </a>
+      </div>
+    </div>
+
+
+    <div class="order-2 md:order-1 mt-6 md:mt-16 overflow-hidden rounded-xl">
+      <img
+        src="https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg"
+        alt="Team working"
+        class="rounded-xl shadow-lg w-full max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-cover transform transition-transform duration-500 hover:scale-105"
+      >
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+<div class="relative z-10 w-full text-center px-4 sm:px-10 md:px-20 lg:px-32 bg-[#151a37] py-16 sm:py-20 mt-10">
+  <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-200 uppercase">
+    Reach Out
+  </h2>
+  <p class="text-sm sm:text-base text-gray-400 mt-4 leading-relaxed max-w-4xl mx-auto ">
+Let’s connect to discuss how our technology solutions can accelerate your business.
+Reach out today—our team is ready to support your goals every step of the way.  </p>
+  <a href="{% url 'contact' %}" class="inline-block mt-6 px-6 py-3 text-white rounded-lg shadow border border-white transition duration-300 hover:bg-white hover:text-[#151a37]">
+    Contact Us
+  </a>
+</div>
+
+
+
+
+<div class="fixed bottom-6 right-6 z-[9999]">
+  <div id="fabOptions" class="relative w-16 h-16 max-md:w-12 max-md:h-12">
+
+    <a href="https://wa.me/+919072919991" target="_blank"
+       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-20 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+       id="whatsappBtn">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+           alt="WhatsApp"
+           class="w-5 h-5 max-md:w-4 max-md:h-4" />
+    </a>
+
+    <a href="tel:+919072919991"
+       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-36 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg"
+       id="callBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
+           stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
+      </svg>
+    </a>
+  </div>
+
+  <button onclick="toggleFab()" id="fabBtn"
+    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
+         fill="none" stroke="#ffffff" stroke-width="2"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
+    </svg>
+  </button>
+</div>
+
+
+<div class="fixed bottom-6 right-6 z-[9999]">
+  <div id="fabOptions" class="relative w-16 h-[2rem] max-md:w-12 max-md:h-0">
+
+    <a href="https://wa.me/+919072919991" target="_blank"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-16 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
+   id="whatsappBtn">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+       alt="WhatsApp"
+       class="w-5 h-5 max-md:w-4 max-md:h-4" />
+</a>
+
+<a href="tel:+919072919991"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-28 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
+   id="callBtn">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
+       stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
+  </svg>
+</a>
+
+  </div>
+
+  <button onclick="toggleFab()" id="fabBtn"
+    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
+         fill="none" stroke="#ffffff" stroke-width="2"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
+    </svg>
+  </button>
+</div>
+
+
+
+<footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
+
+    <div>
+      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
+      <p class="text-sm leading-6 text-gray-500">
+        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+      </p>
+    </div>
+
+    <div class="ml-16 max-md:ml-0">
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+
+      </ul>
+    </div>
+
+    <div>
+  <h3 class="text-lg font-semibold text-gray-500 mb-3">Get in Touch</h3>
+  <ul class="space-y-6 text-sm text-gray-500 mt-6">
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Email:</span>
+      <a href="mailto:info@cybexel.com" class="hover:text-[#151a37]">info@cybexel.com</a>
+    </li>
+
+   <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Phone:</span>
+  <div>
+    <a href="tel:+919072919991" class="hover:text-[#151a37] block">+91 9072919991</a>
+    <a href="tel:+919745109190" class="hover:text-[#151a37] block">+91 9745109190</a>
+  </div>
+</li>
+
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Address:</span>
+      <span>
+        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+
+Coimbatore<br><br>
+Bengaluru 
+      </span>
+    </li>
+
+  </ul>
+</div>
+
+  </div>
+
+  <div class="border-t border-gray-600 mt-32 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500">&copy; 2025 Cybexel. All rights reserved.</p>
+    <div class="mt-4 md:mt-0 flex space-x-4">
+  <a href="https://www.linkedin.com/company/cybexel/" aria-label="LinkedIn" class="hover:text-[#151a37] transition">
+    <i class="fab fa-linkedin text-xl"></i>
+  </a>
+  <a href="https://www.facebook.com/Cybexel.pvt.ltd" aria-label="Facebook" class="hover:text-[#151a37] transition">
+    <i class="fab fa-facebook-f text-xl"></i>
+  </a>
+  <a href="https://www.instagram.com/cybexel_pvtltd/?hl=en" aria-label="Instagram" class="hover:text-[#151a37] transition">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
+</div>
+
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true,
+  });
+</script>
+
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

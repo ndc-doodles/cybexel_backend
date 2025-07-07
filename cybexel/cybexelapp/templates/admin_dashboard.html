@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Cybexel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-[#151a37] font-sans">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#151a37] text-white p-6">
+      <div class="flex items-center justify-center mb-8">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+      </div>
+      <nav>
+        <ul class="space-y-4 text-sm">
+           <li>
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 px-4 rounded bg-white text-[#151a37]">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_blog' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_contact' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Contact Form
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_careers' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Careers
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_job_applications' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Job Applications
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+  <!-- Main Content -->
+<main class="flex-1 p-8">
+  <h1 class="text-4xl font-bold mb-2 bg-[#151a37] text-white pl-1 py-4">Admin Dashboard</h1>
+  <p class="text-lg text-gray-600 mb-10">Overview of key performance indicators</p>
+
+<!-- KPI Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+  {% for stat in stats %}
+  <div class="relative bg-[#151a37] text-white p-6 rounded-lg shadow text-center group">
+    <h2 class="text-lg font-semibold">{{ stat.title }}</h2>
+    <p class="text-4xl font-bold mt-2" id="stat-count-{{ stat.id }}">{{ stat.count }}</p>
+
+    <!-- Edit Button -->
+   <button onclick="editStat('{{ stat.id }}', '{{ stat.title }}', '{{ stat.count }}')"
+        class="absolute top-2 right-2 text-xs bg-yellow-400 text-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+  Edit
+</button>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Add New KPI Form Below -->
+<!-- <div class="bg-white p-6 rounded-lg shadow mb-12 max-w-xl mx-auto">
+  <h3 class="text-lg font-semibold mb-4 text-[#151a37] text-center">Add New KPI</h3>
+<form method="POST" action="{% url 'add_stat' %}">
+    {% csrf_token %}
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Title</label>
+      <input type="text" name="title" class="w-full px-4 py-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-1">Count</label>
+      <input type="number" name="count" class="w-full px-4 py-2 border border-gray-300 rounded" required>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">Add KPI</button>
+    </div>
+  </form>
+</div> -->
+
+
+<!-- Modal -->
+<div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg w-full max-w-sm relative">
+    <h3 class="text-lg font-semibold mb-4">Edit <span id="modal-title"></span></h3>
+  <form id="editForm" onsubmit="return saveStat(this)" data-url="{% url 'update_stat' %}">
+
+      {% csrf_token %}
+      <input type="hidden" id="statId">
+      <input type="number" id="statCount" class="w-full border border-gray-300 px-4 py-2 rounded mb-4" required>
+      <div class="flex justify-end space-x-2">
+        <button type="button" onclick="closeModal()" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+        <button type="submit" class="bg-[#151a37] text-white px-4 py-2 rounded">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <div class="flex justify-between items-center mb-6">
+  <h2 class="text-2xl font-semibold">Our Trusted Clients</h2>
+  <button onclick="showAddLogoForm()" class="bg-[#151a37] text-white px-4 py-2 rounded hover:bg-[#2d2a58]">
+    + Add Logo
+  </button>
+</div>
+
+<!-- Logo Form -->
+<!-- Logo Upload Form -->
+<form id="logoForm" method="POST" enctype="multipart/form-data"
+      class="hidden mb-10 bg-gray-50 p-6 rounded-lg shadow w-full max-w-xl">
+  {% csrf_token %}
+
+  <!-- Remove hidden logo_id since we're not editing in bulk -->
+  <div class="mb-4">
+    <label class="block font-medium mb-1">Upload Logos</label>
+    <input type="file" name="images" id="images" multiple required class="w-full border rounded p-2" />
+  </div>
+
+  <div class="mb-4">
+    <label class="block font-medium mb-1">Alt Text (optional – same for all)</label>
+    <input type="text" name="alt_text" class="w-full border rounded p-2" />
+  </div>
+
+  <div class="flex justify-between">
+    <button type="submit" class="bg-[#151a37] text-white px-4 py-2 rounded">Upload Logos</button>
+    <button type="button" onclick="resetLogoForm()" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+  </div>
+</form>
+
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+  {% for logo in logos %}
+    <div class="relative group">
+      <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }}" class="w-24 h-auto mx-auto ">
+      <div class="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition">
+        <button onclick="editLogo(this)" data-id="{{ logo.id }}" data-alt="{{ logo.alt_text }}"
+                class="text-xs bg-yellow-400 text-black px-2 py-1 rounded">Edit</button>
+        <a href="{% url 'delete_client_logo' logo.id %}" onclick="return confirm('Delete this logo?')"
+           class="text-xs bg-red-500 text-white px-2 py-1 rounded">Delete</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+</div>
+
+</main>
+
+  </div>
+
+<script>
+  function showAddLogoForm() {
+    document.getElementById('logoForm').classList.remove('hidden');
+    document.getElementById('logoId').value = '';
+    document.getElementById('altText').value = '';
+  }
+
+  function editLogo(button) {
+    const id = button.dataset.id;
+    const alt = button.dataset.alt;
+
+    document.getElementById('logoForm').classList.remove('hidden');
+    document.getElementById('logoId').value = id;
+    document.getElementById('altText').value = alt;
+
+    // Scroll to form
+    window.scrollTo({ top: document.getElementById('logoForm').offsetTop - 80, behavior: 'smooth' });
+  }
+
+  function resetLogoForm() {
+    document.getElementById('logoForm').classList.add('hidden');
+    document.getElementById('logoId').value = '';
+    document.getElementById('altText').value = '';
+  }
+</script>
+
+
+
+  <script src="{% static 'js/admin_scripts.js' %}" defer></script>
+</body>
+</html>
