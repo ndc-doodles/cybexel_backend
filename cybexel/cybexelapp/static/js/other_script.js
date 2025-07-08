@@ -1,72 +1,71 @@
-const toggleBtn = document.getElementById('menu-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
-const navbar = document.getElementById('navbar');
-const enquireBtn = document.getElementById('enquire-btn');
-const navLinks = document.querySelectorAll('.nav-link');
-const menuIcon = document.getElementById('menu-icon');
+document.addEventListener('DOMContentLoaded', function () {
+  const toggleBtn = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navbar = document.getElementById('navbar');
+  const enquireBtn = document.getElementById('enquire-btn');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const menuIcon = document.getElementById('menu-icon');
+  const logo = document.getElementById('logo');
 
-// Toggle mobile menu open/close
-toggleBtn.addEventListener('click', (e) => {
-  e.stopPropagation(); // Prevent immediate close from document click
-  mobileMenu.classList.toggle('translate-x-full');
-  mobileMenu.classList.toggle('translate-x-0');
-});
+  // Toggle mobile menu
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileMenu.classList.toggle('translate-x-full');
+    mobileMenu.classList.toggle('translate-x-0');
+  });
 
-// Close mobile menu when clicking outside
-window.addEventListener('click', (e) => {
-  if (
-    !mobileMenu.contains(e.target) &&
-    !toggleBtn.contains(e.target) &&
-    !e.target.closest('#menu-icon')
-  ) {
-    mobileMenu.classList.add('translate-x-full');
-    mobileMenu.classList.remove('translate-x-0');
-  }
-});
-
-const logo = document.getElementById('logo');
-
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
-    navbar.classList.remove('text-white');
-
-    if (enquireBtn) {
-      enquireBtn.classList.remove('bg-white', 'text-[#151a37]');
-      enquireBtn.classList.add('bg-[#151a37]', 'text-white');
+  // Close menu when clicking outside
+  window.addEventListener('click', (e) => {
+    if (
+      !mobileMenu.contains(e.target) &&
+      !toggleBtn.contains(e.target) &&
+      !e.target.closest('#menu-icon')
+    ) {
+      mobileMenu.classList.add('translate-x-full');
+      mobileMenu.classList.remove('translate-x-0');
     }
+  });
 
-    navLinks.forEach(link => {
-      link.classList.remove('text-white');
-      link.classList.add('text-black');
-    });
+  // Scroll behavior
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.remove('text-white');
 
-    menuIcon.classList.remove('text-white');
-    menuIcon.classList.add('text-black');
+      if (enquireBtn) {
+        enquireBtn.classList.remove('bg-white', 'text-[#151a37]');
+        enquireBtn.classList.add('bg-[#151a37]', 'text-white');
+      }
 
-    // Swap logo image
-    logo.src = "./static/images/logo2.png";
-  } else {
-    navbar.classList.remove('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
-    navbar.classList.add('text-white');
+      navLinks.forEach(link => {
+        link.classList.remove('text-white');
+        link.classList.add('text-black');
+      });
 
-    if (enquireBtn) {
-      enquireBtn.classList.add('bg-white', 'text-[#151a37]');
-      enquireBtn.classList.remove('bg-[#151a37]', 'text-white');
+      menuIcon.classList.remove('text-white');
+      menuIcon.classList.add('text-black');
+      logo.src = "/static/images/logo2.png"; // Correct Django static path
+    } else {
+      navbar.classList.remove('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.add('text-white');
+
+      if (enquireBtn) {
+        enquireBtn.classList.add('bg-white', 'text-[#151a37]');
+        enquireBtn.classList.remove('bg-[#151a37]', 'text-white');
+      }
+
+      navLinks.forEach(link => {
+        link.classList.add('text-white');
+        link.classList.remove('text-black');
+      });
+
+      menuIcon.classList.add('text-white');
+      menuIcon.classList.remove('text-black');
+      logo.src = "/static/images/logo1.png"; // Correct Django static path
     }
-
-    navLinks.forEach(link => {
-      link.classList.add('text-white');
-      link.classList.remove('text-black');
-    });
-
-    menuIcon.classList.add('text-white');
-    menuIcon.classList.remove('text-black');
-
-    // Revert logo image
-    logo.src = "./static/images/logo1.png";
-  }
+  });
 });
+
 
 
 let fabOpen = false;
@@ -195,15 +194,21 @@ function openDetailsModal(title, label, skills, description, department) {
   }
 
 
-  setTimeout(() => {
-    document.getElementById('successModal').classList.add('hidden');
-  }, 3000);
+setTimeout(() => {
+  const modal = document.getElementById('successModal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+}, 3000);
+
 
 
 
 //  blog
 
- const blogData = document.getElementById("blogData");
+const blogData = document.getElementById("blogData");
+
+if (blogData) {
   const blogs = JSON.parse(blogData.dataset.blogs);
 
   document.querySelectorAll(".open-modal-btn").forEach((btn) => {
@@ -225,3 +230,61 @@ function openDetailsModal(title, label, skills, description, department) {
   function closeBlogModal() {
     document.getElementById("blogModal").classList.add("hidden");
   }
+}
+
+
+
+
+
+
+
+
+
+  
+  
+ document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const closeModal = document.getElementById('closeModal');
+  const prevButton = document.getElementById('prevImage');
+  const nextButton = document.getElementById('nextImage');
+
+  const images = Array.from(document.querySelectorAll('.event-image'));
+  let currentIndex = 0;
+
+  // Click on image to open modal
+  images.forEach((img, index) => {
+    img.dataset.index = index;
+    img.addEventListener('click', () => {
+      currentIndex = index;
+      modalImage.src = img.src;
+      modal.classList.remove('hidden');
+    });
+  });
+
+  // Close modal
+  closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  // Click outside image to close
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+
+  // Navigate to previous image
+  prevButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    modalImage.src = images[currentIndex].src;
+  });
+
+  // Navigate to next image
+  nextButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % images.length;
+    modalImage.src = images[currentIndex].src;
+  });
+});

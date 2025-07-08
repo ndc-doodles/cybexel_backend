@@ -75,6 +75,17 @@ def services(request):
     return render(request,'services.html')
 
 
+def cybexel_life(request):
+    entries = LifeEvent.objects.prefetch_related('images').all()
+    return render(request, 'cybexelife.html', {'entries': entries})
+
+
+
+def detail(request, pk):
+    event = get_object_or_404(LifeEvent, pk=pk)
+    return render(request, 'detail.html', {'event': event})
+
+
 
 
 
@@ -393,4 +404,46 @@ def delete_job_application(request, id):
         app.delete()
         messages.success(request, "Application deleted successfully.")
     return redirect('admin_job_applications')
-                                                                                                                                                                                                                   
+
+
+
+def admin_cybexelife(request):
+    if request.method == 'POST':
+        heading = request.POST.get('heading')
+        description = request.POST.get('short_sentence')
+        para1 = request.POST.get('paragraph1')
+        para2 = request.POST.get('paragraph2')
+        para3 = request.POST.get('paragraph3')
+        category = request.POST.get('keyword')
+
+        event = LifeEvent.objects.create(
+            heading=heading,
+            description=description,
+            para1=para1,
+            para2=para2,
+            para3=para3,
+            category=category
+        )
+
+        for img in request.FILES.getlist('images[]'):
+            LifeEventImage.objects.create(event=event, image=img)
+
+        return redirect('admin_cybexelife')
+
+    events = LifeEvent.objects.all()
+    return render(request, 'admin_cybexelife.html', {'Events': events})
+
+def delete_event(request, event_id):
+    event = get_object_or_404(LifeEvent, id=event_id)
+    event.delete()
+    return redirect('admin_cybexelife')
+def get_event_images(request, event_id):
+    images = LifeEventImage.objects.filter(event_id=event_id)
+    data = {
+        "images": [{"id": img.id, "url": img.image.url} for img in images]
+    }
+    return JsonResponse(data)
+def delete_event_image(request, id):
+    image = get_object_or_404(LifeEventImage, id=id)
+    image.delete()
+    return redirect('admin_cybexelife') 

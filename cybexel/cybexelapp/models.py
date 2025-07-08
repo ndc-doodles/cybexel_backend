@@ -93,3 +93,25 @@ class ClientLogo(models.Model):
 
     def __str__(self):
         return self.alt_text or f"Client Logo {self.id}"
+    
+
+
+
+
+class LifeEvent(models.Model):
+    heading = models.CharField(max_length=255)
+    description = models.TextField()
+    para1 = models.TextField(blank=True, null=True)
+    para2 = models.TextField(blank=True, null=True)
+    para3 = models.TextField(blank=True, null=True)
+    category = models.CharField(max_length=100, default="Anniversary")
+
+    def __str__(self):
+        return self.heading
+
+class LifeEventImage(models.Model):
+    event = models.ForeignKey(LifeEvent, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='life_events/')
+
+    def __str__(self):
+        return f"{self.event.heading} - Image"

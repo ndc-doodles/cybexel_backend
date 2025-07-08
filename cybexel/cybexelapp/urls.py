@@ -8,6 +8,8 @@ urlpatterns = [
     path('careers', views.careers, name='careers'),
     path('contact', views.contact, name='contact'),
     path('services', views.services, name='services'),
+    path('cybexel_life', views.cybexel_life, name='cybexel_life'),
+    path('life-event/<int:pk>/', views.detail, name='life_event_detail'),
 
 
 
@@ -38,5 +40,9 @@ urlpatterns = [
     path("edit-job/<int:pk>/", views.edit_job, name="edit_job"),
     path('delete_job_application/<int:id>/', views.delete_job_application, name='delete_job_application'),
     path('admin_job_applications/', views.admin_job_applications, name='admin_job_applications'),
+    path('admin_cybexelife/', views.admin_cybexelife, name='admin_cybexelife'),
+    path('custom-admin/delete-event/<int:event_id>/', views.delete_event, name='delete_Event'),
+    path('get-event-images/<int:event_id>/', views.get_event_images, name='get_event_images'),
+    path('delete-event-image/<int:id>/', views.delete_event_image, name='delete_event_image'),
 
 ]

@@ -1,0 +1,236 @@
+ {% load static %}
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cybexel</title>
+
+<link rel="icon" href="./static/images/favicon.png" type="image/png" sizes="32x32">
+    <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Comfortaa:wght@300..700&family=Michroma&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<link href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+
+
+
+</head>
+<body class="relative min-h-screen">
+
+  <div class="absolute inset-0 bg-cover bg-center opacity-20 -z-10" style="background-image: url('./static/images/bg2.jpg');"></div>
+ 
+ 
+
+ 
+<header class="relative z-[9999] w-full">
+  <nav id="navbar"
+       class="fixed top-0 left-0 w-full bg-transparent px-4 py-[0.6rem]  transition-all duration-300 z-[9999] backdrop-blur-sm">
+    
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+
+      <a href="{% url 'index' %}" class="flex items-center">
+  <img id="logo" src="{% static 'images/logo1.png' %}" alt="Wise Logo" class="w-44 h-auto transition duration-300" />
+</a>
+
+
+      <div class="hidden md:flex items-center gap-8 text-base font-semibold nav-links text-white">
+        <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
+        <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
+        <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
+<div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1  text-purple-500 :outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>
+
+        <a href="{% url 'blog' %}" class="nav-link  font-bold hover:text-purple-300 transition">Blog</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="{% url 'contact' %}" class="hidden md:inline-block">
+          <button id="enquire-btn"
+            class="bg-white text-[#151a37] text-sm px-5 py-2 rounded-full font-medium transition">
+            Contact Us
+          </button>
+        </a>
+
+       <div class="md:hidden">
+  <button id="menu-toggle" class="focus:outline-none">
+    <svg id="menu-icon" class="w-6 h-6 text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2"
+         viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+</div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobile-menu"
+       class="md:hidden fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg px-6 py-10 space-y-6 transform translate-x-full transition-transform duration-300 ease-in-out z-[9999]">
+    
+ 
+
+    <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
+    <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
+    <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
+<a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
+<a href="{% url 'cybexel_life' %}" class="block text-black font-medium hover:text-purple-300">Cybexel Life</a>
+    <a href="{% url 'blog' %}" class="block text-purple-500 font-bold hover:text-purple-300">Blog</a>
+    <a href="{% url 'contact' %}">
+      <button class="w-full bg-[#151a37] mt-4 text-white text-sm px-5 py-2 rounded-full font-medium transition">
+        Contact Us
+      </button>
+    </a>
+  </div>
+</header>
+
+
+
+
+
+<section class="w-full bg-[#151a37] text-white h-[400px] px-6 sm:px-12 md:px-24">
+  <div class="max-w-7xl mx-auto h-full flex flex-col justify-center">
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 px-[0.9rem]">Cybexel Life</h1>
+    <p class="text-base sm:text-lg text-gray-300 max-w-2xl px-[0.9rem]">
+Explore our culture, milestones and the people who make it all possible. Discover what makes our journey unique.    </p>
+  </div>
+</section>
+<section class="py-12 relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% for entry in entries %}
+      <a href="{% url 'life_event_detail' entry.pk %}">
+  <div class="card bg-white rounded-lg shadow hover:shadow-lg transition duration-300 overflow-hidden relative cursor-pointer">
+    <img src="{{ entry.images.first.image.url }}" alt="Cover" class="w-full h-48 object-cover">
+    <div class="absolute top-3 left-3">
+      <span class="text-xs font-medium px-3 py-1 rounded-full bg-white/70 backdrop-blur text-gray-800">
+        {{ entry.category }}
+      </span>
+    </div>
+    <div class="p-4">
+      <h3 class="text-lg font-bold text-gray-800 mb-2">{{ entry.heading }}</h3>
+      <p class="text-gray-600 text-sm">{{ entry.description|truncatewords:15 }}</p>
+    </div>
+  </div>
+</a>
+
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+
+<footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
+
+    <div>
+      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
+      <p class="text-sm leading-6 text-gray-500">
+        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+      </p>
+    </div>
+
+    <div class="ml-16 max-md:ml-0">
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+
+      </ul>
+    </div>
+
+    <div>
+  <h3 class="text-lg font-semibold text-gray-500 mb-3">Get in Touch</h3>
+  <ul class="space-y-6 text-sm text-gray-500 mt-6">
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Email:</span>
+      <a href="mailto:info@cybexel.com" class="hover:text-[#151a37]">info@cybexel.com</a>
+    </li>
+
+   <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Phone:</span>
+  <div>
+    <a href="tel:+919072919991" class="hover:text-[#151a37] block">+91 9072919991</a>
+    <a href="tel:+919745109190" class="hover:text-[#151a37] block">+91 9745109190</a>
+  </div>
+</li>
+
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Address:</span>
+      <span>
+        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+
+Coimbatore<br><br>
+Bengaluru 
+      </span>
+    </li>
+
+  </ul>
+</div>
+
+  </div>
+
+  <div class="border-t border-gray-600 mt-32 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500">&copy; 2025 Cybexel. All rights reserved.</p>
+    <div class="mt-4 md:mt-0 flex space-x-4">
+  <a href="https://www.linkedin.com/company/cybexel/" aria-label="LinkedIn" class="hover:text-[#151a37] transition">
+    <i class="fab fa-linkedin text-xl"></i>
+  </a>
+  <a href="https://www.facebook.com/Cybexel.pvt.ltd" aria-label="Facebook" class="hover:text-[#151a37] transition">
+    <i class="fab fa-facebook-f text-xl"></i>
+  </a>
+  <a href="https://www.instagram.com/cybexel_pvtltd/?hl=en" aria-label="Instagram" class="hover:text-[#151a37] transition">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
+</div>
+
+  </div>
+</footer>
+
+
+
+
+<script src="{% static 'js/other_script.js' %}"></script>
+</body>
+</html>
+
+
+
+
