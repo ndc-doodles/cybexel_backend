@@ -128,25 +128,38 @@ def submit_job_application(request):
 
 def admin_register(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        # Basic validation
+        if not username or not email or not password1 or not password2:
+            messages.error(request, "All fields are required.")
+            return redirect('admin_register')
+
         if password1 != password2:
-            messages.error(request, "Passwords do not match")
+            messages.error(request, "Passwords do not match.")
             return redirect('admin_register')
-        
+
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
+            messages.error(request, "Username already exists.")
             return redirect('admin_register')
-        
-        user = User.objects.create_user(username=username, email=email, password=password1)
-        user.is_staff = True  # Mark as admin
-        user.save()
-        messages.success(request, "Admin account created. Please login.")
-        return redirect('admin_login')
-    
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect('admin_register')
+
+        try:
+            user = User.objects.create_user(username=username, email=email, password=password1)
+            user.is_staff = True  # Mark as admin
+            user.save()
+            messages.success(request, "Admin account created successfully. Please login.")
+            return redirect('admin_login')
+        except Exception as e:
+            messages.error(request, f"Error creating user: {str(e)}")
+            return redirect('admin_register')
+
     return render(request, 'admin_register.html')
 
 def admin_login(request):

@@ -18,3 +18,6 @@ class LifeEventImageInline(admin.TabularInline):
 class LifeEventAdmin(admin.ModelAdmin):
     inlines = [LifeEventImageInline]
     list_display = ('heading', 'category')
+
+
+admin.site.register(AdminProfile)
