@@ -5,6 +5,10 @@ from .models import Statistic
 from django.http import JsonResponse
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -122,10 +126,55 @@ def submit_job_application(request):
 
 
 
+def admin_register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        
+        if password1 != password2:
+            messages.error(request, "Passwords do not match")
+            return redirect('admin_register')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect('admin_register')
+        
+        user = User.objects.create_user(username=username, email=email, password=password1)
+        user.is_staff = True  # Mark as admin
+        user.save()
+        messages.success(request, "Admin account created. Please login.")
+        return redirect('admin_login')
+    
+    return render(request, 'admin_register.html')
+
+def admin_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect('admin_dashboard')  # Change as per your admin panel
+        else:
+            messages.error(request, "Invalid credentials or not an admin user")
+            return redirect('admin_login')
+    
+    return render(request, 'admin_login.html')
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login')
 
 
-
+@login_required(login_url='admin_login')  # redirects if not logged in
 def admin_dashboard(request):
+    # Allow only staff users (admins)
+    if not request.user.is_staff:
+        return redirect('admin_login')
+
     stats = Statistic.objects.all()
     logos = ClientLogo.objects.all()
 
@@ -139,6 +188,7 @@ def admin_dashboard(request):
         return redirect("admin_dashboard")
 
     return render(request, "admin_dashboard.html", {"stats": stats, "logos": logos})
+
 
 def delete_client_logo(request, id):
     logo = get_object_or_404(ClientLogo, id=id)

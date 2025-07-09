@@ -164,8 +164,11 @@
 </div>
 
 
-<!-- Edit Modal Script -->
+
   <script>
+     function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
+  }
     function toggleBlogTable() {
       document.getElementById("blogTable").classList.toggle("hidden");
     }

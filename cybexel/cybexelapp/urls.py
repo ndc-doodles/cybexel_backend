@@ -16,7 +16,9 @@ urlpatterns = [
     
 
 
-
+    path('admin_register/', views.admin_register, name='admin_register'),
+    path('admin_login/', views.admin_login, name='admin_login'),
+    path('admin_logout/', views.admin_logout, name='admin_logout'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     
     # path('edit-client-logo/<int:id>/', views.edit_client_logo, name='edit_client_logo'),
