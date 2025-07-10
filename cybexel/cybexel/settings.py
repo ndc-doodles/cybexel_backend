@@ -128,18 +128,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.yourdomain.com'   
-EMAIL_PORT = 587                     
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'admin@yourdomain.com'
-EMAIL_HOST_PASSWORD = 'your_email_password'  
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # settings.py
-LOGIN_URL = 'admin_login'  # fallback if not specified in @login_required
+LOGIN_URL = 'admin_login' 
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.hostinger.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'info@cybexel.com'        # Your full email address
+EMAIL_HOST_PASSWORD = 'Cybexelnme@1990'    # Password for the above email
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+# Auto logout after 1 hour (3600 seconds)
+SESSION_COOKIE_AGE = 3600  # seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # optional: expire on browser close

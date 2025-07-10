@@ -8,7 +8,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator
+from django.templatetags.static import static
+from django.core.mail import EmailMessage
 
 
 
@@ -25,10 +30,15 @@ def about(request):
     stats = Statistic.objects.all()
     return render(request, 'about.html', {'stats': stats})
 
+
 def blog(request):
     blogs = Blog.objects.all().order_by('-date')
-    return render(request, 'blog.html', {'blogs': blogs})
+    paginator = Paginator(blogs, 6)  # 6 blogs per page
 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'blog.html', {'page_obj': page_obj})
 
 def careers(request):
     dept_filter = request.GET.get('department', 'all')
@@ -58,6 +68,7 @@ def careers(request):
     return render(request, 'careers.html', context)
 
 
+
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -65,16 +76,38 @@ def contact(request):
         subject = request.POST.get('subject')
         message = request.POST.get('message')
 
+        # Save to database
         ContactSubmission.objects.create(
             name=name,
             email=email,
             subject=subject,
             message=message
         )
-        return redirect('contact') 
+
+        # Send email
+        email_subject = f"New Contact Form Submission: {subject}"
+        email_message = f"""
+        Name: {name}
+        Email: {email}
+        Subject: {subject}
+        Message:
+        {message}
+        """
+
+        email_obj = EmailMessage(
+            subject=email_subject,
+            body=email_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['info@cybexel.com'],
+            reply_to=[email]
+        )
+        email_obj.send(fail_silently=False)
+
+        # ✅ Set success message
+        messages.success(request, "Your message has been sent successfully!")
+        return redirect('contact')  # redirect back to contact page
 
     return render(request, 'contact.html')
-
 def services(request):
     return render(request,'services.html')
 
@@ -94,11 +127,9 @@ def detail(request, pk):
 
 
 
-
-
-
 def submit_job_application(request):
     if request.method == 'POST':
+        # Get form data
         department_name = request.POST.get('department')
         department = get_object_or_404(Department, name=department_name)
 
@@ -109,6 +140,7 @@ def submit_job_application(request):
         cover_letter = request.POST.get('cover_letter')
         resume = request.FILES.get('resume')
 
+        # Save to DB
         JobApplication.objects.create(
             department=department,
             position=position,
@@ -119,11 +151,52 @@ def submit_job_application(request):
             resume=resume
         )
 
-        # ✅ Add success flag to session
+        # Send admin notification
+        admin_subject = f"New Job Application: {position} - {label}"
+        admin_body = f"""
+        A new job application was submitted.
+
+        Name: {name}
+        Email: {email}
+        Department: {department.name}
+        Position: {position}
+        Label: {label}
+        Cover Letter: {cover_letter}
+        """
+
+        admin_email = EmailMessage(
+            subject=admin_subject,
+            body=admin_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['info@cybexel.com'],  # Replace with your admin email
+            reply_to=[email]
+        )
+
+        if resume:
+            resume.seek(0)
+            admin_email.attach(resume.name, resume.read(), resume.content_type)
+
+        admin_email.send(fail_silently=False)
+        logo_url = request.build_absolute_uri(static("images/logo.png"))
+        bg_url = request.build_absolute_uri(static("images/mail.jpeg"))
+
+        # Send confirmation to applicant
+        html_message = render_to_string("job_confirmation.html", {
+            "name": name,
+            "position": position
+        })
+
+        confirmation_email = EmailMessage(
+            subject="Thank You for Your Application",
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email]
+        )
+        confirmation_email.content_subtype = "html"
+        confirmation_email.send(fail_silently=False)
+
         request.session['show_success_modal'] = True
         return redirect('careers')
-
-
 
 
 def admin_register(request):
@@ -460,6 +533,19 @@ def edit_job(request, pk):
 def admin_job_applications(request):
     applications = JobApplication.objects.all().order_by('-submitted_at')  # or .created_at if you're using that field
     return render(request, 'admin_job_applications.html', {'applications': applications})
+
+
+
+@csrf_protect
+def bulk_delete_job_applications(request):
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_ids')
+        if selected_ids:
+            JobApplication.objects.filter(id__in=selected_ids).delete()
+    return redirect('admin_job_applications')
+
+
+
 
 def delete_job_application(request, id):
     if request.method == 'POST':

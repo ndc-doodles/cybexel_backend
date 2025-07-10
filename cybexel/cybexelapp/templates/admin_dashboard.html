@@ -11,7 +11,7 @@
 
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#151a37] text-white p-6">
+    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen"">
       <div class="flex items-center justify-center mb-8">
         <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
       </div>
@@ -47,12 +47,18 @@
               Cybexel Life
             </a>
           </li>
+          <li>
+  <a href="{% url 'logout' %}" class="block py-2 px-4 rounded bg-[red]/30 text-white">
+    Logout
+  </a>
+</li>
+
         </ul>
       </nav>
     </aside>
 
   <!-- Main Content -->
-<main class="flex-1 p-8">
+<main class="flex-1 p-8 pl-[18rem]">
   <h1 class="text-4xl font-bold mb-2 bg-[#151a37] text-white pl-1 py-4">Admin Dashboard</h1>
   <p class="text-lg text-gray-600 mb-10">Overview of key performance indicators</p>
 

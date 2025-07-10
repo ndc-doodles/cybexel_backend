@@ -46,6 +46,11 @@
               Cybexel Life
             </a>
           </li>
+          <li>
+  <a href="{% url 'logout' %}" class="block py-2 px-4 rounded bg-[red]/30 text-white">
+    Logout
+  </a>
+</li>
         </ul>
       </nav>
     </aside>
@@ -123,7 +128,13 @@
           <td class="px-6 py-4">{{ blog.keyword }}</td>
           <td class="px-6 py-4">{{ blog.short_heading }}</td>
           <td class="px-6 py-4">
-            <img src="{{ blog.image.url }}" class="w-20 h-12 object-cover rounded">
+{% if blog.image %}
+  <img src="{{ blog.image.url }}" class="w-20 h-12 object-cover rounded" />
+{% else %}
+  <div class="w-20 h-12 bg-gray-300 rounded flex items-center justify-center text-xs text-gray-600">
+    No Image
+  </div>
+{% endif %}
           </td>
           <td class="px-6 py-4 text-center space-x-2">
             <button type="button" onclick="openEditModal('{{ blog.id }}')"

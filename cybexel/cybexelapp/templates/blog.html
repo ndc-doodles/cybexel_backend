@@ -115,7 +115,7 @@ Read about cutting-edge innovations, practical development guides and thought le
 </div>
 <!-- BLOG CARDS -->
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 md:px-20">
-  {% for blog in blogs %}
+{% for blog in page_obj %}
   <div class="bg-[#121525] rounded-xl overflow-hidden shadow-lg blog-card">
     <img src="{{ blog.image.url }}" alt="{{ blog.short_heading }}" class="w-full h-64 object-cover" />
     <div class="p-5">
@@ -132,10 +132,27 @@ Read about cutting-edge innovations, practical development guides and thought le
   </div>
   {% endfor %}
 </div>
+<div class="flex justify-center mt-10 space-x-2 text-sm">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 border rounded bg-gray-800 text-white">Prev</a>
+  {% endif %}
+
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+      <span class="px-4 py-2 bg-[#151a37] text-white rounded">{{ num }}</span>
+    {% else %}
+      <a href="?page={{ num }}" class="px-4 py-2 border rounded bg-gray-800 text-white">{{ num }}</a>
+    {% endif %}
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 border rounded bg-gray-800 text-white">Next</a>
+  {% endif %}
+</div>
 
 <!-- HIDDEN JSON DATA HOLDER -->
 <div id="blogData" data-blogs='[
-  {% for blog in blogs %}
+{% for blog in page_obj %}
     {
       "title": "{{ blog.full_heading|escapejs }}",
       "date": "{{ blog.date|date:"F d, Y" }}",

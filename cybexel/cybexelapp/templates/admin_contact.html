@@ -10,7 +10,7 @@
 <body class="bg-gray-100">
     <div class="flex h-screen">
        
-           <aside class="w-64 bg-[#151a37] text-white p-6">
+           <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen"">
       <div class="flex items-center justify-center mb-8">
         <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
       </div>
@@ -46,12 +46,17 @@
               Cybexel Life
             </a>
           </li>
+          <li>
+  <a href="{% url 'logout' %}" class="block py-2 px-4 rounded bg-[red]/30 text-white">
+    Logout
+  </a>
+</li>
         </ul>
       </nav>
     </aside>
 
         
-        <div class="flex-1 p-6">
+        <div class="flex-1 p-6 pl-[18rem]">
           <div class="w-full bg-[#151a37] text-white py-4 px-6 r shadow mb-6">
     <h2 class="text-xl font-semibold">Admin Contact Form Management</h2>
   </div>
@@ -74,7 +79,7 @@
         <td class="border border-gray-300 px-4 py-2">{{ contact.email }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ contact.subject }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ contact.message }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ contact.submitted_at|date:"Y-m-d H:i" }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ contact.submitted_at|date:"Y-m-d" }}</td>
     </tr>
     {% empty %}
     <tr>

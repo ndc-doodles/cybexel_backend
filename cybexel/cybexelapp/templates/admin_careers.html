@@ -10,7 +10,7 @@
 <body class="bg-white text-[#151a37] font-sans">
 
   <div class="flex min-h-screen">
-    <aside class="w-64 bg-[#151a37] text-white p-6">
+    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
       <div class="flex items-center justify-center mb-8">
         <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
       </div>
@@ -46,12 +46,17 @@
               Cybexel Life
             </a>
           </li>
+          <li>
+  <a href="{% url 'logout' %}" class="block py-2 px-4 rounded bg-[red]/30 text-white">
+    Logout
+  </a>
+</li>
         </ul>
       </nav>
     </aside>
 
 
-<main class="flex-1 p-8 overflow-y-auto">
+<main class="flex-1 p-8 overflow-y-auto pl-[18rem]">
   <div class="w-full bg-[#151a37] text-white py-4 px-6 shadow mb-6">
     <h2 class="text-xl font-semibold">Admin Careers Management</h2>
   </div>
