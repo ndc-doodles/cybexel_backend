@@ -61,36 +61,59 @@
     <h2 class="text-xl font-semibold">Admin Contact Form Management</h2>
   </div>
             <h1 class="text-2xl font-bold mb-6">Contact Form Submissions</h1>
-            <div class="bg-white p-6 rounded shadow">
-                <table class="w-full border-collapse border border-gray-300">
-                    <thead>
-    <tr class="bg-gray-200">
-        <th class="border border-gray-300 px-4 py-2">Name</th>
-        <th class="border border-gray-300 px-4 py-2">Email</th>
-        <th class="border border-gray-300 px-4 py-2">Subject</th>
-        <th class="border border-gray-300 px-4 py-2">Message</th>
-        <th class="border border-gray-300 px-4 py-2">Date</th>
-    </tr>
-</thead>
-<tbody>
-    {% for contact in contacts %}
-    <tr class="text-center">
-        <td class="border border-gray-300 px-4 py-2">{{ contact.name }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ contact.email }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ contact.subject }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ contact.message }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ contact.submitted_at|date:"Y-m-d" }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="5" class="text-center py-4">No submissions yet.</td>
-    </tr>
-    {% endfor %}
-</tbody>
+            <form method="POST" action="{% url 'bulk_delete_contacts' %}" onsubmit="return confirm('Delete selected contacts?')">
+  {% csrf_token %}
 
-                </table>
-                
-            </div>
+  <div class="bg-white p-6 rounded shadow">
+    <div class="flex justify-end mb-4">
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm">
+        Delete Selected
+      </button>
+    </div>
+
+    <table class="w-full border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-200 text-center">
+          <th class="border border-gray-300 px-4 py-2">
+            <input type="checkbox" id="select-all" />
+          </th>
+          <th class="border border-gray-300 px-4 py-2">Name</th>
+          <th class="border border-gray-300 px-4 py-2">Email</th>
+          <th class="border border-gray-300 px-4 py-2">Subject</th>
+          <th class="border border-gray-300 px-4 py-2">Message</th>
+          <th class="border border-gray-300 px-4 py-2">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contact in contacts %}
+        <tr class="text-center">
+          <td class="border border-gray-300 px-4 py-2">
+            <input type="checkbox" name="selected_ids" value="{{ contact.id }}">
+          </td>
+          <td class="border border-gray-300 px-4 py-2">{{ contact.name }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ contact.email }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ contact.subject }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ contact.message }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ contact.submitted_at|date:"Y-m-d" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4">No submissions yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<script>
+  // Handle "Select All" checkbox
+  document.getElementById("select-all").addEventListener("change", function () {
+    const checkboxes = document.querySelectorAll("input[name='selected_ids']");
+    checkboxes.forEach(cb => cb.checked = this.checked);
+  });
+</script>
+
         </div>
     </div>
 </body>

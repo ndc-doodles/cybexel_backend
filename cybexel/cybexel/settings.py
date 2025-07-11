@@ -147,6 +147,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
-# Auto logout after 1 hour (3600 seconds)
-SESSION_COOKIE_AGE = 3600  # seconds
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # optional: expire on browser close
+
+SESSION_COOKIE_AGE = 3600  
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'

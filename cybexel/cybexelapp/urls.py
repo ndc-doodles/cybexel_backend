@@ -26,6 +26,7 @@ urlpatterns = [
     path('stat/update/', views.update_stat, name='update_stat'),
     path('stat/add/', views.add_stat, name='add_stat'),  # <-- Fix this line
     path('admin_contact/', views.admin_contact, name='admin_contact'),
+    path('bulk_delete_contacts/', views.bulk_delete_contacts, name='bulk_delete_contacts'),
     path("admin_blog/", views.admin_blog, name="admin_blog"),
     path("delete-blog/<int:id>/", views.delete_blog, name="delete_blog"),
     path('get-blog/<int:blog_id>/', views.get_blog, name='get_blog'),
@@ -47,5 +48,5 @@ urlpatterns = [
     path('custom-admin/delete-event/<int:event_id>/', views.delete_event, name='delete_Event'),
     path('get-event-images/<int:event_id>/', views.get_event_images, name='get_event_images'),
     path('delete-event-image/<int:id>/', views.delete_event_image, name='delete_event_image'),
-
+    
 ]

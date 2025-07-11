@@ -85,7 +85,7 @@
           <th class="border border-gray-300 px-4 py-2">Experience</th>
           <th class="border border-gray-300 px-4 py-2">Cover Letter</th>
           <th class="border border-gray-300 px-4 py-2">Resume</th>
-          <th class="border border-gray-300 px-4 py-2">Action</th>
+          <!-- <th class="border border-gray-300 px-4 py-2">Action</th> -->
         </tr>
       </thead>
       <tbody>
@@ -100,7 +100,14 @@
           <td class="border border-gray-300 px-4 py-2">{{ application.position }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ application.department.name }}</td>
           <td class="border border-gray-300 px-4 py-2">
-            <button onclick="showCoverLetterModal(`{{ application.cover_letter|escapejs }}`)" class="text-blue-600 hover:underline text-sm">View</button>
+<button 
+  type="button"
+  class="text-blue-600 hover:underline text-sm"
+  onclick="showCoverLetterModal(this)"
+  data-cover-letter="{{ application.cover_letter|escapejs }}">
+  View
+</button>
+
           </td>
           <td class="border border-gray-300 px-4 py-2">
             {% if application.resume %}
@@ -109,12 +116,13 @@
               N/A
             {% endif %}
           </td>
-          <td class="border border-gray-300 px-4 py-2">
+          <!-- <td class="border border-gray-300 px-4 py-2">
             <form method="POST" action="{% url 'delete_job_application' application.id %}" onsubmit="return confirm('Delete this application?')">
-              {% csrf_token %}
-              <button type="submit" class="text-red-600 hover:underline text-sm">Delete</button>
-            </form>
-          </td>
+  {% csrf_token %}
+  <button type="submit" class="text-red-600 hover:underline text-sm">Delete</button>
+</form>
+
+          </td> -->
         </tr>
         {% empty %}
         <tr>
@@ -149,7 +157,8 @@
   </div>
 </div>
 <script>
-  function showCoverLetterModal(content) {
+  function showCoverLetterModal(button) {
+    const content = button.getAttribute('data-cover-letter');
     const modal = document.getElementById('coverLetterModal');
     document.getElementById('coverLetterContent').textContent = content;
     modal.classList.remove('hidden');

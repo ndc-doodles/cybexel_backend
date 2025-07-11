@@ -266,7 +266,8 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
   <input required name="name" placeholder="Your Name" class="w-full border px-3 py-2 rounded" />
   <input required name="email" type="email" placeholder="Your Email" class="w-full border px-3 py-2 rounded" />
   <textarea name="cover_letter" placeholder="Cover Letter" class="w-full border px-3 py-2 rounded"></textarea>
-  <input name="resume" type="file" class="w-full border px-3 py-2 rounded" />
+<input name="resume" type="file" id="resumeInput" accept=".pdf" class="w-full border px-3 py-2 rounded" />
+<p id="fileError" class="text-red-600 text-sm mt-1 hidden">Only PDF files are allowed.</p>
 
   <button type="submit" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Submit Application</button>
 </form>

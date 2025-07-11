@@ -122,24 +122,34 @@
   {% csrf_token %}
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <input type="text" name="name" required placeholder="Your Name"
+    <input type="text" name="name" required placeholder="Your Name "
+           pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
            class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
 
     <input type="email" name="email" required placeholder="Email Address"
            class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
   </div>
 
-  <input type="text" name="subject" required placeholder="Subject"
+  <input type="text" name="subject" required placeholder="Subject "
+         pattern="[A-Za-z0-9 ]+" title="Only letters, numbers, and spaces allowed"
          class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
 
-  <textarea name="message" rows="4" required placeholder="Your Message"
-            class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]"></textarea>
+  <textarea name="message" required
+          pattern="[A-Za-z0-9\s.,]+"
+          title="Only letters, numbers, spaces, commas, and periods allowed."
+          class="w-full border px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]">{{ form_data.message|default:'' }}</textarea>
+
+{% if form_errors.message %}
+  <p class="text-red-600 text-sm mt-1">{{ form_errors.message }}</p>
+{% endif %}
+
 
   <button type="submit"
           class="bg-[#151a37] text-white px-6 py-3 rounded-md hover:bg-[#1f254f] transition">
     Send Message
   </button>
 </form>
+
 
     </div>
 

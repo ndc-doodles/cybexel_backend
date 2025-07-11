@@ -14,7 +14,9 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.templatetags.static import static
 from django.core.mail import EmailMessage
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+import re
 
 
 
@@ -67,16 +69,62 @@ def careers(request):
     }
     return render(request, 'careers.html', context)
 
-
-
 def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
+    context = {
+        'form_errors': {}
+    }
 
-        # Save to database
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        form_errors = {}
+
+        if not name:
+            form_errors['name'] = "Name is required."
+        elif not re.match(r'^[A-Za-z ]+$', name):
+            form_errors['name'] = "Name must not contain numbers or special characters."
+        elif len(name) > 100:
+            form_errors['name'] = "Name is too long (max 100 characters)."
+
+        if not email:
+            form_errors['email'] = "Email is required."
+        else:
+            try:
+                validate_email(email)
+            except ValidationError:
+                form_errors['email'] = "Please enter a valid email address."
+            if len(email) > 100:
+                form_errors['email'] = "Email is too long (max 100 characters)."
+
+        if not subject:
+            form_errors['subject'] = "Subject is required."
+        elif not re.match(r'^[A-Za-z0-9 ]+$', subject):
+            form_errors['subject'] = "Subject must not contain special characters."
+        elif len(subject) > 100:
+            form_errors['subject'] = "Subject is too long (max 100 characters)."
+
+        if not message:
+            form_errors['message'] = "Message is required."
+        elif not re.match(r'^[A-Za-z0-9\s.,]+$', message):
+            form_errors['message'] = "Message can only include letters, numbers, spaces, commas, and periods."
+
+        elif len(message) > 2000:
+            form_errors['message'] = "Message is too long (max 2000 characters)."
+
+        if form_errors:
+            context['form_errors'] = form_errors
+            context['form_data'] = {
+                'name': name,
+                'email': email,
+                'subject': subject,
+                'message': message,
+            }
+            return render(request, 'contact.html', context)
+
+        # Save and send
         ContactSubmission.objects.create(
             name=name,
             email=email,
@@ -84,14 +132,12 @@ def contact(request):
             message=message
         )
 
-        # Send email
         email_subject = f"New Contact Form Submission: {subject}"
         email_message = f"""
         Name: {name}
         Email: {email}
         Subject: {subject}
-        Message:
-        {message}
+        Message: {message}
         """
 
         email_obj = EmailMessage(
@@ -103,11 +149,11 @@ def contact(request):
         )
         email_obj.send(fail_silently=False)
 
-        # ✅ Set success message
         messages.success(request, "Your message has been sent successfully!")
-        return redirect('contact')  # redirect back to contact page
+        return redirect('contact')
 
-    return render(request, 'contact.html')
+    return render(request, 'contact.html', context)
+
 def services(request):
     return render(request,'services.html')
 
@@ -127,20 +173,59 @@ def detail(request, pk):
 
 
 
+ALLOWED_EXTENSIONS = ['pdf']
+MAX_RESUME_SIZE = 5 * 1024 * 1024   
+
 def submit_job_application(request):
     if request.method == 'POST':
-        # Get form data
-        department_name = request.POST.get('department')
-        department = get_object_or_404(Department, name=department_name)
-
-        position = request.POST.get('position')
-        label = request.POST.get('label')
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        cover_letter = request.POST.get('cover_letter')
+       
+        department_name = request.POST.get('department', '').strip()
+        position = request.POST.get('position', '').strip()
+        label = request.POST.get('label', '').strip()
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        cover_letter = request.POST.get('cover_letter', '').strip()
         resume = request.FILES.get('resume')
 
-        # Save to DB
+        if not all([department_name, position, label, name, email]):
+            messages.error(request, "Please fill in all the required fields.")
+            return redirect('careers')
+
+        try:
+            department = Department.objects.get(name=department_name)
+        except Department.DoesNotExist:
+            messages.error(request, "Selected department is invalid.")
+            return redirect('careers')
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return redirect('careers')
+
+        if resume:
+
+           if not resume.name.lower().endswith('.pdf'):
+               messages.error(request, "Only PDF files are allowed.")
+               return redirect('careers')
+
+    
+           if resume.content_type != 'application/pdf':
+              messages.error(request, "Invalid file type. Upload a PDF.")
+              return redirect('careers')
+
+
+           if resume.size > 5 * 1024 * 1024:  
+            messages.error(request, "Resume file size should not exceed 5MB.")
+            return redirect('careers')
+
+
+    
+        if cover_letter and len(cover_letter) > 3000:
+            messages.error(request, "Cover letter is too long.")
+            return redirect('careers')
+
+   
         JobApplication.objects.create(
             department=department,
             position=position,
@@ -151,7 +236,7 @@ def submit_job_application(request):
             resume=resume
         )
 
-        # Send admin notification
+      
         admin_subject = f"New Job Application: {position} - {label}"
         admin_body = f"""
         A new job application was submitted.
@@ -168,7 +253,7 @@ def submit_job_application(request):
             subject=admin_subject,
             body=admin_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['info@cybexel.com'],  # Replace with your admin email
+            to=['info@cybexel.com'],
             reply_to=[email]
         )
 
@@ -177,10 +262,8 @@ def submit_job_application(request):
             admin_email.attach(resume.name, resume.read(), resume.content_type)
 
         admin_email.send(fail_silently=False)
-        logo_url = request.build_absolute_uri(static("images/logo.png"))
-        bg_url = request.build_absolute_uri(static("images/mail.jpeg"))
 
-        # Send confirmation to applicant
+     
         html_message = render_to_string("job_confirmation.html", {
             "name": name,
             "position": position
@@ -197,8 +280,7 @@ def submit_job_application(request):
 
         request.session['show_success_modal'] = True
         return redirect('careers')
-
-
+    
 def admin_register(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -300,9 +382,20 @@ def add_stat(request):
         count = request.POST.get('count')
         Statistic.objects.create(title=title, count=count)
         return redirect('admin_dashboard')
+    
 def admin_contact(request):
     contacts = ContactSubmission.objects.all().order_by('-submitted_at')
     return render(request, 'admin_contact.html', {'contacts': contacts})
+
+@csrf_protect
+def bulk_delete_contacts(request):
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_ids')
+        if selected_ids:
+            ContactSubmission.objects.filter(id__in=selected_ids).delete()
+    return redirect('admin_contact')
+
+
 
 def admin_blog(request):
     if request.method == "POST":
@@ -543,7 +636,6 @@ def bulk_delete_job_applications(request):
         if selected_ids:
             JobApplication.objects.filter(id__in=selected_ids).delete()
     return redirect('admin_job_applications')
-
 
 
 

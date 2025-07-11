@@ -288,3 +288,36 @@ if (blogData) {
     modalImage.src = images[currentIndex].src;
   });
 });
+
+
+
+
+
+
+// alert on job form
+
+
+
+
+
+
+ document.addEventListener("DOMContentLoaded", function () {
+    const resumeInput = document.getElementById("resumeInput");
+    const fileError = document.getElementById("fileError");
+
+    resumeInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const fileName = file.name.toLowerCase();
+        const fileType = file.type;
+
+        // Validate file extension and MIME type
+        if (!fileName.endsWith(".pdf") || fileType !== "application/pdf") {
+          fileError.classList.remove("hidden");
+          this.value = ""; // Clear invalid file
+        } else {
+          fileError.classList.add("hidden"); // Hide error
+        }
+      }
+    });
+  });
