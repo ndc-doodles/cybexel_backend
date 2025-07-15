@@ -50,8 +50,22 @@
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
-        <a href="{% url 'about' %}" class="nav-link hover:text-purple-300 transition">About</a>
-        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
+<div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>        
+<a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
       </div>
 
       <div class="flex items-center gap-4">
@@ -79,7 +93,9 @@
     <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
     <a href="{% url 'services' %}" class="block text-purple-500 font-bold hover:text-purple-300">Services</a>
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
-    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-medium hover:text-purple-300">Cybexel Life</a>
+
     <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 mt-4 rounded-full font-medium transition">
@@ -303,12 +319,14 @@ Automate workflows, improve efficiency and solve unique challenges with tailored
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
-        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
-        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
-        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
-        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
     </div>
 

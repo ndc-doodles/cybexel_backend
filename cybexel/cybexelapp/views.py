@@ -69,7 +69,7 @@ def careers(request):
         'show_success_modal': show_success_modal,  
     }
     return render(request, 'careers.html', context)
-
+ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
 def contact(request):
     context = {
         'form_errors': {}
@@ -90,22 +90,34 @@ def contact(request):
         elif len(name) > 100:
             form_errors['name'] = "Name is too long (max 100 characters)."
 
+
+
         if not email:
-            form_errors['email'] = "Email is required."
+          form_errors['email'] = "Email is required."
         else:
             try:
-                validate_email(email)
+              validate_email(email)
             except ValidationError:
-                form_errors['email'] = "Please enter a valid email address."
-            if len(email) > 100:
-                form_errors['email'] = "Email is too long (max 100 characters)."
+              form_errors['email'] = "Please enter a valid email address."
+    
+   
+        domain = email.split('@')[-1].lower()
+        if domain not in ALLOWED_DOMAINS:
+           form_errors['email'] = "Please use a valid common email provider like Gmail or Outlook."
 
-        if not subject:
-            form_errors['subject'] = "Subject is required."
-        elif not re.match(r'^[A-Za-z0-9 ]+$', subject):
-            form_errors['subject'] = "Subject must not contain special characters."
-        elif len(subject) > 100:
-            form_errors['subject'] = "Subject is too long (max 100 characters)."
+        if len(email) > 100:
+            form_errors['email'] = "Email is too long (max 100 characters)."
+
+ 
+            if not subject:
+               form_errors['subject'] = "Subject is required."
+            elif not re.match(r'^[A-Za-z ]+$', subject):
+               form_errors['subject'] = "Subject must contain only letters and spaces."
+            elif len(subject) > 100:
+               form_errors['subject'] = "Subject is too long (max 100 characters)."
+            elif contains_url(subject):  
+               form_errors['subject'] = "Subject cannot contain URLs or links."
+
 
         if not message:
             form_errors['message'] = "Message is required."
@@ -731,22 +743,34 @@ def delete_job_application(request, id):
 
 def admin_cybexelife(request):
     if request.method == 'POST':
+        event_id = request.POST.get('edit_id')
         heading = request.POST.get('heading')
-        description = request.POST.get('short_sentence')
+        description = request.POST.get('description')
         para1 = request.POST.get('paragraph1')
         para2 = request.POST.get('paragraph2')
         para3 = request.POST.get('paragraph3')
         category = request.POST.get('keyword')
 
-        event = LifeEvent.objects.create(
-            heading=heading,
-            description=description,
-            para1=para1,
-            para2=para2,
-            para3=para3,
-            category=category
-        )
+        if event_id:  # ✅ Edit existing
+            event = get_object_or_404(LifeEvent, id=event_id)
+            event.heading = heading
+            event.description = description
+            event.para1 = para1
+            event.para2 = para2
+            event.para3 = para3
+            event.category = category
+            event.save()
+        else:  # ✅ Create new
+            event = LifeEvent.objects.create(
+                heading=heading,
+                description=description,
+                para1=para1,
+                para2=para2,
+                para3=para3,
+                category=category
+            )
 
+        # ✅ Handle new image uploads (for both new/edit)
         for img in request.FILES.getlist('images[]'):
             LifeEventImage.objects.create(event=event, image=img)
 
@@ -754,6 +778,7 @@ def admin_cybexelife(request):
 
     events = LifeEvent.objects.all()
     return render(request, 'admin_cybexelife.html', {'Events': events})
+
 
 def delete_event(request, event_id):
     event = get_object_or_404(LifeEvent, id=event_id)

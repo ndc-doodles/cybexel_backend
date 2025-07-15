@@ -7,7 +7,7 @@
   
   <title>Cybexel</title>
 
-  <!-- Favicon -->
+
   <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -49,7 +49,21 @@
       <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 transition">Home</a>
       <a href="{% url 'services' %}" class="hover:text-purple-300 transition">Services</a>
       <a href="{% url 'careers' %}" class="hover:text-purple-300 transition">Careers</a>
-      <a href="{% url 'about' %}" class="hover:text-purple-300 transition">About</a>
+      <div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>
       <a href="{% url 'blog' %}" class="hover:text-purple-300 transition">Blog</a>
     </div>
 
@@ -74,8 +88,9 @@
   <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 block">Home</a>
   <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
   <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
-  <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
-  <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
+<a href="{% url 'about' %}" class="block text-black font-bold hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+      <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
   <a href="{% url 'contact' %}" class="block">
     <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 rounded-full font-medium transition">
       Contact Us
@@ -85,7 +100,7 @@
 
 
 
-<div id="enquiryModal" class="fixed inset-0 z-[99999] bg-black/50 flex items-center justify-center hidden">
+<!-- <div id="enquiryModal" class="fixed inset-0 z-[99999] bg-black/50 flex items-center justify-center hidden">
   <div class="bg-white w-[90%] max-w-lg rounded-lg p-6 relative shadow-xl">
     <button onclick="closeEnquiryModal()" class="absolute top-3 right-4 text-2xl font-bold text-gray-400 hover:text-black">&times;</button>
     
@@ -113,7 +128,7 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->
 
 
 
@@ -171,10 +186,10 @@
             bg-[url('./static/images/logotexture2.png')] 
             bg-contain bg-center bg-no-repeat 
             md:bg-none">
-  <!-- Optional overlay for mobile -->
+
   <div class="absolute inset-0 bg-white/90 md:hidden pointer-events-none z-0"></div>
 
-  <!-- Text content -->
+
   <div class="relative z-10">
     <h1 class="text-4xl md:text-7xl font-bold text-gray-400 select-none uppercase leading-snug">
       Find Nearby, Fast.
@@ -214,23 +229,51 @@ Looking for local services or businesses? Our app makes it easy to discover and 
       <p>
         No matter where you are, our smart listing system connects you instantly to the essentials around you. From errands to urgent needs, discover local fast and stress-free.
       </p>
+ <div class="flex gap-4 mt-6">
+  <a href="https://play.google.com/store/apps/details?id=com.smart.nme" target="_blank">
+    <img 
+      src="./static/images/playstore2.png" 
+      alt="Get it on Google Play" 
+      class="h-12 w-auto max-w-[180px] max-md:h-10 max-md:max-w-[130px]"
+    >
+  </a>
+  <a href="https://apps.apple.com/in/app/n-me/id1614150675" target="_blank">
+    <img 
+      src="./static/images/appstore2.png" 
+      alt="Download on the App Store" 
+      class="h-12 w-auto max-w-[180px] max-md:h-10 max-md:max-w-[130px]"
+    >
+  </a>
+</div>
     </div>
   </div>
 
  <div class="w-full px-4 sm:px-8 py-16 bg-[#151a37] flex flex-col md:flex-row items-center gap-10 md:gap-16 pt-32">
   <div class="w-full md:w-[55%] flex justify-center">
-    <img src="./static/images/frame.png" alt="Phone UI" class="w-75 sm:w-[28rem] md:w-[32rem] h-auto rounded-lg shadow-lg" />
-  </div>
+  <img 
+    src="./static/images/frame2.png" 
+    alt="Phone UI" 
+    class="w-75 sm:w-[28rem] md:w-[32rem] h-auto  float-bounce"
+  />
+</div>
+
   <div class="w-full md:w-[45%] text-gray-300 max-md:px-[2rem]">
-    <h2 class="text-4xl md:text-7xl font-bold text-gray-300 select-none uppercase leading-snug mb-4">Our App</h2>
-    <p class="text-gray-400 leading-relaxed text-base md:text-lg pr-32 max-md:pr-0">
-N-ME is an innovative app that helps you quickly find and connect with trusted local businesses near you. Whether it’s dining, home services, healthcare or shopping, everything is right at your fingertips. Launched in 2022 by Cybexel, our mission is to grow local businesses and make daily life simpler and more convenient. With real-time updates, easy booking and instant access to thousands of services, N-ME builds stronger, more connected communities.    </p>
-  </div>
+  <img 
+    src="./static/images/nmeapp.png" 
+    alt="N-ME Logo" 
+    class="h-[160px] md:h-36 mb-10 select-none ml-[-8px]"
+  >
+  
+  <p class="text-gray-400 leading-relaxed text-base md:text-lg pr-32 max-md:pr-0">
+    N-ME is an innovative app that helps you quickly find and connect with trusted local businesses near you. Whether it’s dining, home services, healthcare or shopping, everything is right at your fingertips. Launched in 2022 by Cybexel, our mission is to grow local businesses and make daily life simpler and more convenient. With real-time updates, easy booking and instant access to thousands of services, N-ME builds stronger, more connected communities.
+  </p>
+</div>
+
 </div>
 
 </section>
 
-<section class="w-full px-4 sm:px-8 py-20 bg-[#151a37] text-gray-300">
+<!-- <section class="w-full px-4 sm:px-8 py-20 bg-[#151a37] text-gray-300">
   <div class="max-w-4xl mx-auto text-center mb-12">
     <h2 class="text-4xl md:text-7xl font-bold uppercase text-gray-300 mb-4">Key Features</h2>
     <p class="text-gray-400 text-base md:text-lg">
@@ -320,7 +363,7 @@ N-ME is an innovative app that helps you quickly find and connect with trusted l
   </div>
 </div>
 
-</section>
+</section> -->
 
 
 
@@ -348,7 +391,105 @@ N-ME is an innovative app that helps you quickly find and connect with trusted l
 
 
 
+<section class="bg-[#151a37] py-12 px-4 sm:px-6 lg:px-32">
+  <div class="flex flex-col md:flex-row gap-6 items-start">
+    <!-- Large Sliding Card -->
+    <div
+      x-data="{
+        images: [
+          './static/images/pic1.JPG',
+          './static/images/pic2.JPG',
+          './static/images/pic3.JPG'
+        ],
+        currentIndex: 0,
+        interval: null,
+        start() {
+          this.interval = setInterval(() => {
+            this.currentIndex = (this.currentIndex + 1) % this.images.length;
+          }, 4000);
+        },
+        stop() {
+          clearInterval(this.interval);
+        }
+      }"
+      x-init="start()"
+      @mouseenter="stop()"
+      @mouseleave="start()"
+      class="relative w-full md:w-2/3 h-80 md:h-[600px] rounded-lg overflow-hidden shadow-lg"
+    >
+      <!-- Slide images -->
+      <template x-for="(image, index) in images" :key="index">
+        <div
+          x-show="currentIndex === index"
+          x-transition:enter="transition-opacity duration-700"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition-opacity duration-700"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="absolute inset-0"
+        >
+          <img
+            :src="image"
+            alt=""
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-black/50 flex items-end p-6">
+            <div>
+              <p class="text-xs uppercase text-gray-300">Memorable Moments</p>
+              <h3 class="text-xl font-semibold text-white">
+                Celebrating Success and Togetherness
+              </h3>
+            </div>
+          </div>
+        </div>
+      </template>
 
+      <!-- Dots navigation -->
+      <div class="absolute bottom-4 left-0 right-0 flex justify-end px-2 space-x-2">
+        <template x-for="(image, index) in images" :key="'dot-' + index">
+          <button
+            @click="currentIndex = index"
+            :class="{
+              'bg-white': currentIndex === index,
+              'bg-white/50': currentIndex !== index
+            }"
+            class="w-3 h-3 rounded-full focus:outline-none transition-colors duration-300"
+          ></button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Smaller Static Card + Heading -->
+    <div class="flex flex-col w-full md:w-[35%] space-y-4">
+      <div class="relative max-md:hidden">
+        <img
+          src="./static/images/pic1.JPG"
+          alt=""
+          class="w-full h-56 md:h-[90%] object-contain rounded-lg shadow-lg"
+        />
+        <div class="absolute inset-0 flex items-end p-4">
+          <div class="bg-white bg-opacity-90 rounded p-3">
+            <p class="text-xs uppercase text-[#151a37] font-semibold">Special Highlights</p>
+            <h3 class="text-base font-semibold mt-1 text-gray-900">
+              Honoring the People Who Make It All Possible
+            </h3>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-[2.5rem] md:text-[3.9rem] font-bold text-gray-300 select-none leading-none uppercase md:text-left pr-32">
+        Celebrating Us
+      </h2>
+      <p class="text-white mt-2 md:mt-4 md:text-left text-base md:text-lg">
+  Honoring every milestone and memory we’ve created together.
+</p>
+
+    </div>
+  </div>
+</section>
+
+<!-- Alpine.js CDN -->
+<script src="//unpkg.com/alpinejs" defer></script>
 
 
 
@@ -574,6 +715,95 @@ Softwares</h3>
 
 
 
+<section class="py-16 px-6 md:px-12 mt-32 bg-gray-50">
+  <div class="w-full mx-auto flex flex-col md:flex-row items-center gap-12 px-24 max-md:px-0">
+    
+    <div class="md:w-[60%] text-center md:text-left">
+      <h2 class="text-4xl md:text-7xl font-bold text-gray-300 uppercase select-none  mb-4">Hardware Support</h2>
+      <p class="text-sm text-gray-600 mb-4">Empowering your business with advanced technology.</p>
+      <p class="text-gray-700 text-base leading-relaxed">
+Specialized hardware and IT support crafted for diverse industries-from export and logistics to retail and services. Our offerings are built to boost performance, enhance security and optimize operations through reliable infrastructure and tailored service.
+
+We also provide complete solutions for digital classroom setups, network configuration and comprehensive support for schools, offices, computer labs and all types of hardware, including desktops, accessories and essential tech equipment.      </p>
+    </div>
+
+    <div class="md:w-[40%]">
+      <img src="./static/images/hardware3.png" alt="Desktop or Laptop" class="w-full h-64 object-cover max-w-md mx-auto max-md:h-[11rem]">
+    </div>
+
+  </div>
+</section>
+
+
+<section class="px-4 py-12 bg-gray-50 mt-[-4rem]">
+  <div class="flex flex-wrap md:flex-nowrap items-center gap-0 ">
+   <div class="w-full overflow-x-auto scrollbar-hide md:overflow-visible">
+      <div class="flex flex-row gap-4 md:flex-nowrap pl-32 max-md:pl-0">
+
+        <div class="max-w-sm p-[1.3rem] md:p-6 rounded-md bg-gradient-to-br from-[#e0f2fe] to-[#f0f9ff] h-[160px] md:h-[200px] flex flex-col justify-center">
+  <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#e0f2fe] flex items-center justify-center mb-3 md:mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-20 md:h-20" viewBox="0 0 15 15">
+      <path fill="#7bc7fa" d="M13.792 3.262s-1.676 1.675-2.116 2.12a.3.3 0 0 1-.282.097c-.149-.023-.298-.038-.447-.056l-1.229-.146c-.069-.592-.14-1.172-.2-1.753c-.006-.055.033-.13.074-.172c.508-.513 1.927-1.928 2.134-2.136c-.45-.213-1.224-.297-1.8-.203a3.545 3.545 0 0 0-2.82 4.625c.037.115.013.182-.069.264q-2.771 2.766-5.539 5.535a3 3 0 0 0-.178.192a1.457 1.457 0 0 0 .298 2.102c.604.42 1.365.344 1.905-.195q2.78-2.778 5.556-5.56c.092-.092.165-.123.299-.078a3.4 3.4 0 0 0 1.888.089a3.544 3.544 0 0 0 2.655-4.304c-.031-.13-.078-.259-.13-.421"/>
+    </svg>
+  </div>
+  <h3 class="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2">Hardware Support</h3>
+  <p class="text-xs md:text-sm text-gray-600">Diagnostics, upgrades & repairs across devices.</p>
+</div>
+
+
+       <div class="max-w-sm p-[1.3rem] md:p-6 rounded-md bg-gradient-to-br from-[#fce7f3] to-[#fdf2f8] h-[160px] md:h-[200px] flex flex-col justify-center">
+  <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#fce7f3] flex items-center justify-center mb-3 md:mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-20 md:h-20" viewBox="0 0 24 24">
+      <path fill="#fca6d7" d="M23.87 11.525c.071.013.13.084.13.157v3.033a.166.166 0 0 1-.13.157l-2.875.535a.24.24 0 0 0-.17.151l-.898 2.242a.25.25 0 0 0 .017.229l1.633 2.379a.17.17 0 0 1-.02.204l-2.144 2.144a.17.17 0 0 1-.203.019l-2.338-1.604a.23.23 0 0 0-.224-.008l-1.03.55a.12.12 0 0 1-.17-.062l-2.125-5.135a.16.16 0 0 1 .062-.192l.258-.158c.048-.03.113-.08.163-.125a3.354 3.354 0 1 0-3.612 0c.05.046.115.096.163.125l.258.158a.16.16 0 0 1 .062.192L8.552 21.65a.12.12 0 0 1-.17.063l-1.03-.55a.23.23 0 0 0-.224.007L4.79 22.775a.17.17 0 0 1-.204-.019l-2.145-2.144a.17.17 0 0 1-.019-.204l1.633-2.38a.25.25 0 0 0 .017-.228l-.897-2.242a.24.24 0 0 0-.17-.15L.13 14.871a.166.166 0 0 1-.13-.157v-3.032c0-.073.059-.144.13-.157l2.947-.548a.25.25 0 0 0 .175-.15l.903-2.108a.25.25 0 0 0-.014-.227L2.424 5.989a.17.17 0 0 1 .019-.203L4.587 3.64a.166.166 0 0 1 .204-.019L7.337 5.37c.06.041.163.048.229.016l2.043-.836c.07-.023.137-.1.15-.173l.567-3.047a.17.17 0 0 1 .157-.131h3.034c.073 0 .143.059.157.13l.567 3.048a.25.25 0 0 0 .15.173l2.043.836a.25.25 0 0 0 .23-.016l2.546-1.748a.166.166 0 0 1 .203.02l2.144 2.144c.052.051.06.143.02.203l-1.718 2.503a.25.25 0 0 0-.014.227l.903 2.108a.26.26 0 0 0 .175.15z"/>
+    </svg>
+  </div>
+  <h3 class="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2">Sales & Service</h3>
+  <p class="text-xs md:text-sm text-gray-600">Affordable sales and ongoing tech assistance.</p>
+</div>
+
+
+      </div>
+    </div>
+
+<div class="w-full flex justify-center gap-4 h-[200px] max-md:mt-6">
+  <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0">
+    <img src="./static/images/gardget1.jpeg" class="w-full h-full object-cover" alt="Laptop" />
+  </div>
+  <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0">
+    <img src="./static/images/gardget2.jpeg" class="w-full h-full object-cover" alt="CPU" />
+  </div>
+  <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0">
+    <img src="./static/images/gardget5.jpeg" class="w-full h-full object-cover" alt="Monitor" />
+  </div>
+  <!-- <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0">
+    <img src="./static/images/gardget4.jpeg" class="w-full h-full object-cover" alt="Printer" />
+  </div> -->
+  <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0 max-md:hidden">
+    <img src="./static/images/gardget3.jpeg" class="w-full h-full object-cover" alt="Mouse" />
+  </div>
+  <div class="w-24 h-[200px] bg-white rounded-md flex-shrink-0 max-md:hidden">
+    <img src="./static/images/gardget6.jpeg" class="w-full h-full object-cover" alt="Mouse" />
+  </div>
+</div>
+
+
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -633,16 +863,15 @@ Softwares</h3>
   </div>
 <div class="grid grid-cols-3 gap-2 md:grid-cols-2 md:col-span-2">
 
-  <!-- Box 1 -->
   <div class="h-[90px] bg-[#30bfe9]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center">
     <div class="mb-1 flex justify-center">
-     <i class="fi fi-rs-globe text-[#151a37]"></i>
-    </div>
-    <h3 class="text-sm font-semibold text-[#151a37]">30+</h3>
-    <p class="text-[12px] text-gray-600">Countries</p>
+  <i class="fi fi-rs-headset text-[#151a37]"></i>
+</div>
+<h3 class="text-sm font-semibold text-[#151a37]">24/7</h3>
+<p class="text-[12px] text-gray-600">Support</p>
+
   </div>
 
-  <!-- Box 2 -->
 <div class="h-[90px] bg-[#eaa23a]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center self-end mt-20 max-md:mt-0">
     <div class="mb-1 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#151a37]" fill="none"
@@ -655,7 +884,6 @@ Softwares</h3>
     <p class="text-[12px] text-gray-600">Clients</p>
   </div>
 
-  <!-- Box 3 -->
   <div class="h-[90px] bg-[#e3d544]/20 rounded-2xl p-2 hover:shadow-md transition-shadow text-center ">
     <div class="mb-1 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#151a37]" fill="none"

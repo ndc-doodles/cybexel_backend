@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 
 class ContactSubmission(models.Model):
@@ -102,11 +102,12 @@ class ClientLogo(models.Model):
 
 class LifeEvent(models.Model):
     heading = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(default="No description")
     para1 = models.TextField(blank=True, null=True)
     para2 = models.TextField(blank=True, null=True)
     para3 = models.TextField(blank=True, null=True)
     category = models.CharField(max_length=100, default="Anniversary")
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.heading

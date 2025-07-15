@@ -359,3 +359,15 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
 .animate-ping-once {
   animation: ping-once 0.6s ease-in-out 1;
 }
+
+@keyframes floatBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+}
+.float-bounce {
+  animation: floatBounce 3s ease-in-out infinite;
+}

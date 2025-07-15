@@ -10,7 +10,7 @@
   
   <title>Cybexel</title>
 
-  <!-- Favicon -->
+ 
   <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -46,8 +46,21 @@
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Careers</a>
-        <a href="{% url 'about' %}" class="nav-link hover:text-purple-300 transition">About</a>
-        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
+<div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
       </div>
 
       <div class="flex items-center gap-4">
@@ -76,7 +89,9 @@
     <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
     <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
     <a href="{% url 'careers' %}" class="block text-purple-500 font-bold hover:text-purple-300">Careers</a>
-    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+
     <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 mt-4 rounded-full font-medium transition">
@@ -141,7 +156,6 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
 {% if show_success_modal %}
 <div id="successModal" class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
   <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-sm">
-    <!-- Animated Tick -->
     <svg class="mx-auto mb-4 text-[#151a37] w-16 h-16 animate-ping-once" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
     </svg>
@@ -164,7 +178,6 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
       <div class="rounded-xl p-4 shadow">
         <div class="grid sm:grid-cols-3 gap-4 items-center mb-6">
 
-          <!-- All Jobs Button with Label -->
           <div class="w-full">
             <label class="block text-sm text-[#151a37] mb-1 ml-1">Show</label>
             <button id="allJobsBtn" onclick="resetFilters()"
@@ -173,7 +186,7 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
             </button>
           </div>
 
-          <!-- Department Filter -->
+
           <div class="w-full">
             <label class="block text-sm text-[#151a37] mb-1 ml-1">Department</label>
             <select id="departmentDropdown" onchange="filterDepartment(this.value)"
@@ -185,7 +198,7 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
             </select>
           </div>
 
-          <!-- Experience Filter -->
+    
           <div class="w-full">
             <label class="block text-sm text-[#151a37] mb-1 ml-1">Experience</label>
             <select id="experienceDropdown" onchange="filterJobs(this.value)"

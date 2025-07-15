@@ -48,8 +48,21 @@
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
-        <a href="{% url 'about' %}" class="nav-link hover:text-purple-300 transition">About</a>
-        <a href="{% url 'blog' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Blog</a>
+<div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>        <a href="{% url 'blog' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Blog</a>
       </div>
 
       <div class="flex items-center gap-4">
@@ -80,7 +93,9 @@
     <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
     <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
-    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+
     <a href="{% url 'blog' %}" class="block text-purple-500 font-bold hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] mt-4 text-white text-sm px-5 py-2 rounded-full font-medium transition">
@@ -113,7 +128,6 @@
   <p class="text-gray-400 mt-4 max-w-xl text-sm md:text-base px-6">
 Read about cutting-edge innovations, practical development guides and thought leadership from our tech experts.  </p>
 </div>
-<!-- BLOG CARDS -->
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 md:px-20">
 {% for blog in page_obj %}
   <div class="bg-[#121525] rounded-xl overflow-hidden shadow-lg blog-card">
@@ -150,7 +164,6 @@ Read about cutting-edge innovations, practical development guides and thought le
   {% endif %}
 </div>
 
-<!-- HIDDEN JSON DATA HOLDER -->
 <div id="blogData" data-blogs='[
 {% for blog in page_obj %}
     {
@@ -162,7 +175,6 @@ Read about cutting-edge innovations, practical development guides and thought le
   {% endfor %}
 ]'></div>
 
-<!-- MODAL -->
 <div id="blogModal" class="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center hidden">
   <div class="bg-white text-black max-w-4xl w-[95%] md:w-[80%] rounded-lg shadow-lg p-8 relative overflow-y-auto max-h-[90vh]">
     <button onclick="closeBlogModal()" class="absolute top-2 right-3 text-2xl font-bold text-gray-600 hover:text-black">&times;</button>

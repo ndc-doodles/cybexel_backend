@@ -46,8 +46,21 @@
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
-        <a href="{% url 'about' %}" class="nav-link hover:text-purple-300 transition">About</a>
-        <a href="{% url 'blog' %}" class="nav-link  hover:text-purple-300 transition">Blog</a>
+<div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>        <a href="{% url 'blog' %}" class="nav-link  hover:text-purple-300 transition">Blog</a>
       </div>
 
       <div class="flex items-center gap-4">
@@ -78,7 +91,9 @@
     <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
     <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
-    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About</a>
+    <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+
     <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] mt-4 text-white text-sm px-5 py-2 rounded-full font-medium transition">
@@ -139,8 +154,8 @@
 
   </div>
 
- <input type="text" name="subject" required placeholder="Subject"
-       pattern="[A-Za-z0-9 ]+" title="Only letters, numbers, and spaces allowed"
+<input type="text" name="subject" required placeholder="Subject"
+       pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
        value="{{ form_data.subject|default:'' }}"
        class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
 {% if form_errors.subject %}
@@ -148,7 +163,8 @@
 {% endif %}
 
 
-  <textarea name="message" required
+
+  <textarea name="message" required placeholder="Message"
           pattern="[A-Za-z0-9\s.,]+"
           title="Only letters, numbers, spaces, commas, and periods allowed."
           class="w-full border px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]">{{ form_data.message|default:'' }}</textarea>
