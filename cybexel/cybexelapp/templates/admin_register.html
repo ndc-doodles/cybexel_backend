@@ -8,20 +8,55 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
   <form method="POST" action="{% url 'admin_register' %}" class="bg-white p-8 rounded shadow-md w-full max-w-md">
-    {% csrf_token %}
-    <h2 class="text-2xl font-bold mb-6 text-center">Admin Register</h2>
-    
-    <input type="text" name="username" placeholder="Username" class="w-full p-2 border rounded mb-4" required>
-    <input type="email" name="email" placeholder="Email" class="w-full p-2 border rounded mb-4" required>
-    <input type="password" name="password1" placeholder="Password" class="w-full p-2 border rounded mb-4" required>
-    <input type="password" name="password2" placeholder="Confirm Password" class="w-full p-2 border rounded mb-6" required>
-    
-    <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Register</button>
+  {% csrf_token %}
+  <h2 class="text-2xl font-bold mb-6 text-center">Admin Register</h2>
 
-    <p class="mt-4 text-center text-sm text-gray-600">
-      Already have an account?
-      <a href="{% url 'admin_login' %}" class="text-blue-600 hover:underline">Login here</a>
-    </p>
-  </form>
+  <!-- Username Field -->
+  <input type="text" name="username" placeholder="Username"
+         value="{{ form_data.username|default:'' }}"
+         class="w-full p-2 border rounded mb-1 {% if form_errors.username %}border-red-500{% endif %}" required>
+  {% if form_errors.username %}
+    <p class="text-red-600 text-sm mb-3">{{ form_errors.username }}</p>
+  {% else %}
+    <div class="mb-3"></div>
+  {% endif %}
+
+  <!-- Email Field -->
+  <input type="email" name="email" placeholder="Email"
+         value="{{ form_data.email|default:'' }}"
+         class="w-full p-2 border rounded mb-1 {% if form_errors.email %}border-red-500{% endif %}" required>
+  {% if form_errors.email %}
+    <p class="text-red-600 text-sm mb-3">{{ form_errors.email }}</p>
+  {% else %}
+    <div class="mb-3"></div>
+  {% endif %}
+
+  <!-- Password Field -->
+  <input type="password" name="password1" placeholder="Password"
+         class="w-full p-2 border rounded mb-1 {% if form_errors.password1 %}border-red-500{% endif %}" required>
+  {% if form_errors.password1 %}
+    <p class="text-red-600 text-sm mb-3">{{ form_errors.password1 }}</p>
+  {% else %}
+    <div class="mb-3"></div>
+  {% endif %}
+
+  <!-- Confirm Password Field -->
+  <input type="password" name="password2" placeholder="Confirm Password"
+         class="w-full p-2 border rounded mb-1 {% if form_errors.password2 %}border-red-500{% endif %}" required>
+  {% if form_errors.password2 %}
+    <p class="text-red-600 text-sm mb-4">{{ form_errors.password2 }}</p>
+  {% else %}
+    <div class="mb-4"></div>
+  {% endif %}
+
+  <!-- Submit Button -->
+  <button type="submit" class="w-full bg-[#151a37] text-white p-2 rounded hover:bg-blue-700">Register</button>
+
+  <p class="mt-4 text-center text-sm text-gray-600">
+    Already have an account?
+    <a href="{% url 'admin_login' %}" class="text-[#151a37] hover:underline">Login here</a>
+  </p>
+</form>
+
 </body>
 </html>

@@ -17,8 +17,9 @@ from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import re
-
-
+from django.utils.timezone import now
+from datetime import timedelta
+from dateutil.parser import parse as parse_datetime 
 
 
 
@@ -35,7 +36,7 @@ def about(request):
 
 def blog(request):
     blogs = Blog.objects.all().order_by('-date')
-    paginator = Paginator(blogs, 6)  # 6 blogs per page
+    paginator = Paginator(blogs, 6) 
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -56,7 +57,7 @@ def careers(request):
     if exp_filter != 'all':
         jobs = jobs.filter(experience__name=exp_filter)
 
-    # ✅ Get and clear the success modal flag
+
     show_success_modal = request.session.pop('show_success_modal', False)
 
     context = {
@@ -65,7 +66,7 @@ def careers(request):
         'jobs': jobs,
         'selected_dept': dept_filter,
         'selected_exp': exp_filter,
-        'show_success_modal': show_success_modal,  # ✅ send to template
+        'show_success_modal': show_success_modal,  
     }
     return render(request, 'careers.html', context)
 
@@ -108,8 +109,9 @@ def contact(request):
 
         if not message:
             form_errors['message'] = "Message is required."
-        elif not re.match(r'^[A-Za-z0-9\s.,]+$', message):
+        elif not re.match(r'^[A-Za-z0-9\s.,\n\r]+$', message):
             form_errors['message'] = "Message can only include letters, numbers, spaces, commas, and periods."
+ 
 
         elif len(message) > 2000:
             form_errors['message'] = "Message is too long (max 2000 characters)."
@@ -124,7 +126,7 @@ def contact(request):
             }
             return render(request, 'contact.html', context)
 
-        # Save and send
+
         ContactSubmission.objects.create(
             name=name,
             email=email,
@@ -173,12 +175,22 @@ def detail(request, pk):
 
 
 
+
 ALLOWED_EXTENSIONS = ['pdf']
-MAX_RESUME_SIZE = 5 * 1024 * 1024   
+MAX_RESUME_SIZE = 5 * 1024 * 1024
+
+URL_PATTERN = re.compile(
+    r'(https?://|www\.)|(\.com|\.net|\.org|\.in|\.co)'
+)
+
+
+
+def contains_url(text):
+    return bool(URL_PATTERN.search(text))
+
 
 def submit_job_application(request):
     if request.method == 'POST':
-       
         department_name = request.POST.get('department', '').strip()
         position = request.POST.get('position', '').strip()
         label = request.POST.get('label', '').strip()
@@ -187,15 +199,30 @@ def submit_job_application(request):
         cover_letter = request.POST.get('cover_letter', '').strip()
         resume = request.FILES.get('resume')
 
+      
         if not all([department_name, position, label, name, email]):
             messages.error(request, "Please fill in all the required fields.")
             return redirect('careers')
+
 
         try:
             department = Department.objects.get(name=department_name)
         except Department.DoesNotExist:
             messages.error(request, "Selected department is invalid.")
             return redirect('careers')
+
+        NAME_PATTERN = re.compile(r'^[A-Za-z ]+$')  
+
+        if not NAME_PATTERN.match(name):
+           messages.error(request, "Name must contain only letters and spaces (no numbers or special characters).")
+           return redirect('careers')
+
+
+
+        for field_value in [name, label, position]:
+            if contains_url(field_value):
+                messages.error(request, "No links or URLs are allowed in the form.")
+                return redirect('careers')
 
         try:
             validate_email(email)
@@ -204,28 +231,26 @@ def submit_job_application(request):
             return redirect('careers')
 
         if resume:
+            if not resume.name.lower().endswith('.pdf'):
+                messages.error(request, "Only PDF files are allowed.")
+                return redirect('careers')
 
-           if not resume.name.lower().endswith('.pdf'):
-               messages.error(request, "Only PDF files are allowed.")
-               return redirect('careers')
+            if resume.content_type != 'application/pdf':
+                messages.error(request, "Invalid file type. Upload a PDF.")
+                return redirect('careers')
 
-    
-           if resume.content_type != 'application/pdf':
-              messages.error(request, "Invalid file type. Upload a PDF.")
-              return redirect('careers')
+            if resume.size > MAX_RESUME_SIZE:
+                messages.error(request, "Resume file size should not exceed 5MB.")
+                return redirect('careers')
 
+        if cover_letter:
+            if len(cover_letter) > 3000:
+                messages.error(request, "Cover letter is too long (max 3000 characters).")
+                return redirect('careers')
+            if contains_url(cover_letter):
+                messages.error(request, "Cover letter must not contain any URLs or links.")
+                return redirect('careers')
 
-           if resume.size > 5 * 1024 * 1024:  
-            messages.error(request, "Resume file size should not exceed 5MB.")
-            return redirect('careers')
-
-
-    
-        if cover_letter and len(cover_letter) > 3000:
-            messages.error(request, "Cover letter is too long.")
-            return redirect('careers')
-
-   
         JobApplication.objects.create(
             department=department,
             position=position,
@@ -236,7 +261,6 @@ def submit_job_application(request):
             resume=resume
         )
 
-      
         admin_subject = f"New Job Application: {position} - {label}"
         admin_body = f"""
         A new job application was submitted.
@@ -263,7 +287,6 @@ def submit_job_application(request):
 
         admin_email.send(fail_silently=False)
 
-     
         html_message = render_to_string("job_confirmation.html", {
             "name": name,
             "position": position
@@ -281,55 +304,113 @@ def submit_job_application(request):
         request.session['show_success_modal'] = True
         return redirect('careers')
     
-def admin_register(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        password1 = request.POST.get('password1', '')
-        password2 = request.POST.get('password2', '')
+# def admin_register(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username', '').strip()
+#         email = request.POST.get('email', '').strip()
+#         password1 = request.POST.get('password1', '')
+#         password2 = request.POST.get('password2', '')
 
-        # Basic validation
-        if not username or not email or not password1 or not password2:
-            messages.error(request, "All fields are required.")
-            return redirect('admin_register')
+#         form_errors = {}
+#         form_data = {
+#             'username': username,
+#             'email': email
+#         }
 
-        if password1 != password2:
-            messages.error(request, "Passwords do not match.")
-            return redirect('admin_register')
+#         # Field required check
+#         if not username:
+#             form_errors['username'] = "Username is required."
+#         elif not re.match(r'^[A-Za-z0-9_]+$', username):
+#             form_errors['username'] = "Username must not contain spaces or special characters."
+#         elif len(username) > 30:
+#             form_errors['username'] = "Username must be under 30 characters."
+#         elif User.objects.filter(username=username).exists():
+#             form_errors['username'] = "Username already exists."
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists.")
-            return redirect('admin_register')
+#         if not email:
+#             form_errors['email'] = "Email is required."
+#         else:
+#             try:
+#                 validate_email(email)
+#             except ValidationError:
+#                 form_errors['email'] = "Invalid email address."
+#             if User.objects.filter(email=email).exists():
+#                 form_errors['email'] = "Email already registered."
 
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered.")
-            return redirect('admin_register')
+#         if not password1:
+#             form_errors['password1'] = "Password is required."
+#         elif len(password1) < 8:
+#             form_errors['password1'] = "Password must be at least 8 characters long."
+#         elif not re.search(r'[A-Za-z]', password1) or not re.search(r'[0-9]', password1):
+#             form_errors['password1'] = "Password must include letters and numbers."
 
-        try:
-            user = User.objects.create_user(username=username, email=email, password=password1)
-            user.is_staff = True  # Mark as admin
-            user.save()
-            messages.success(request, "Admin account created successfully. Please login.")
-            return redirect('admin_login')
-        except Exception as e:
-            messages.error(request, f"Error creating user: {str(e)}")
-            return redirect('admin_register')
+#         if not password2:
+#             form_errors['password2'] = "Please confirm your password."
+#         elif password1 != password2:
+#             form_errors['password2'] = "Passwords do not match."
 
-    return render(request, 'admin_register.html')
+#         if form_errors:
+#             return render(request, 'admin_register.html', {
+#                 'form_errors': form_errors,
+#                 'form_data': form_data
+#             })
+#         # Create user
+#         user = User.objects.create_user(username=username, email=email, password=password1)
+#         user.is_staff = True
+#         user.save()
+
+#         return redirect('admin_login')
+
+#     return render(request, 'admin_register.html')
+
+
+
+MAX_LOGIN_ATTEMPTS = 5
+LOCKOUT_TIME = timedelta(minutes=5)
 
 def admin_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        attempts = request.session.get('login_attempts', 0)
+        lockout_until_str = request.session.get('lockout_until')
+
+        if lockout_until_str:
+            try:
+                lockout_until = parse_datetime(lockout_until_str)
+                if now() < lockout_until:
+                    remaining = (lockout_until - now()).seconds // 60 + 1
+                    messages.error(request, f"⛔ Too many failed login attempts. Try again in {remaining} minute(s).")
+                    return redirect('admin_login')
+                else:
+                    request.session['login_attempts'] = 0
+                    request.session['lockout_until'] = None
+            except Exception:
+                request.session['login_attempts'] = 0
+                request.session['lockout_until'] = None
+
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None and user.is_staff:
             login(request, user)
-            return redirect('admin_dashboard')  # Change as per your admin panel
+            request.session['login_attempts'] = 0
+            request.session['lockout_until'] = None
+            return redirect('admin_dashboard')
         else:
-            messages.error(request, "Invalid credentials or not an admin user")
+            attempts += 1
+            request.session['login_attempts'] = attempts
+
+            if attempts >= MAX_LOGIN_ATTEMPTS:
+                lockout_until = now() + LOCKOUT_TIME
+                request.session['lockout_until'] = lockout_until.isoformat()
+                messages.error(request, f"🚫 Account locked. Too many failed attempts. Try again in {LOCKOUT_TIME.seconds // 60} minutes.")
+            else:
+                remaining = MAX_LOGIN_ATTEMPTS - attempts
+                messages.error(request, f"❌ Invalid username or password. {remaining} attempt(s) remaining.")
+
             return redirect('admin_login')
-    
+
     return render(request, 'admin_login.html')
 
 def admin_logout(request):
@@ -337,9 +418,9 @@ def admin_logout(request):
     return redirect('admin_login')
 
 
-@login_required(login_url='admin_login')  # redirects if not logged in
+@login_required(login_url='admin_login')  
 def admin_dashboard(request):
-    # Allow only staff users (admins)
+
     if not request.user.is_staff:
         return redirect('admin_login')
 
@@ -348,7 +429,7 @@ def admin_dashboard(request):
 
     if request.method == "POST":
         alt_text = request.POST.get("alt_text", "")
-        images = request.FILES.getlist("images")  # Get multiple images
+        images = request.FILES.getlist("images")  
 
         for image in images:
             ClientLogo.objects.create(image=image, alt_text=alt_text)
@@ -471,7 +552,7 @@ def admin_careers(request):
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
-        # Department Add/Edit
+   
         if form_type == "add_department":
             name = request.POST.get("department_name")
             if name:
@@ -483,7 +564,7 @@ def admin_careers(request):
             department.name = request.POST.get("department_name")
             department.save()
 
-        # Experience Add/Edit
+
         elif form_type == "add_experience":
             name = request.POST.get("experience_name")
             duration = request.POST.get("experience_duration")
@@ -497,7 +578,7 @@ def admin_careers(request):
             experience.duration = request.POST.get("experience_duration")
             experience.save()
 
-        # Job Vacancy Add/Edit
+
         elif form_type == "add_job":
             post_name = request.POST.get("post_name")
             department_id = request.POST.get("department_id")
@@ -526,7 +607,7 @@ def admin_careers(request):
 
         return redirect("admin_careers")
 
-    # Edit context when GET
+
     edit_type = request.GET.get("edit_type")
     edit_id = request.GET.get("id")
 
@@ -537,7 +618,7 @@ def admin_careers(request):
     elif edit_type == "job":
         edit_job = get_object_or_404(JobVacancy, pk=edit_id)
     
-    # 👇 Split required_skills and pass as a list
+
         if edit_job.required_skills:
             skills_list = edit_job.required_skills.split(",")
         else:
@@ -553,7 +634,7 @@ def admin_careers(request):
     "edit_department": edit_department,
     "edit_experience": edit_experience,
     "edit_job": edit_job,
-    "skills_list": skills_list,  # 👈 Add this
+    "skills_list": skills_list,
 }
 
     return render(request, "admin_careers.html", context)

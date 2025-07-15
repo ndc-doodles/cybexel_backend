@@ -263,9 +263,19 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
   <input id="formLabel" name="label" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
   <input id="formDepartment" name="department" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
   
-  <input required name="name" placeholder="Your Name" class="w-full border px-3 py-2 rounded" />
+ <input required name="name" placeholder="Your Name"
+       pattern="[A-Za-z ]+"
+       title="Only letters and spaces are allowed"
+       class="w-full border px-3 py-2 rounded" />
+
   <input required name="email" type="email" placeholder="Your Email" class="w-full border px-3 py-2 rounded" />
-  <textarea name="cover_letter" placeholder="Cover Letter" class="w-full border px-3 py-2 rounded"></textarea>
+<textarea name="cover_letter"
+          class="w-full border px-3 py-2 rounded {% if form_errors.cover_letter %}border-red-500{% endif %}"
+          placeholder="Cover Letter">{{ form_data.cover_letter|default:'' }}</textarea>
+
+{% if form_errors.cover_letter %}
+  <p class="text-red-600 text-sm mt-1">{{ form_errors.cover_letter }}</p>
+{% endif %}
 <input name="resume" type="file" id="resumeInput" accept=".pdf" class="w-full border px-3 py-2 rounded" />
 <p id="fileError" class="text-red-600 text-sm mt-1 hidden">Only PDF files are allowed.</p>
 
