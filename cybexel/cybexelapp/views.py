@@ -187,135 +187,112 @@ def detail(request, pk):
 
 
 
-
 ALLOWED_EXTENSIONS = ['pdf']
 MAX_RESUME_SIZE = 5 * 1024 * 1024
-
-URL_PATTERN = re.compile(
-    r'(https?://|www\.)|(\.com|\.net|\.org|\.in|\.co)'
-)
-
-
+ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
 
 def contains_url(text):
-    return bool(URL_PATTERN.search(text))
-
+    return bool(re.search(r'(http[s]?://|www\.|\.\w{2,})', text))
 
 def submit_job_application(request):
     if request.method == 'POST':
-        department_name = request.POST.get('department', '').strip()
-        position = request.POST.get('position', '').strip()
-        label = request.POST.get('label', '').strip()
-        name = request.POST.get('name', '').strip()
-        email = request.POST.get('email', '').strip()
-        cover_letter = request.POST.get('cover_letter', '').strip()
-        resume = request.FILES.get('resume')
-
-      
-        if not all([department_name, position, label, name, email]):
-            messages.error(request, "Please fill in all the required fields.")
-            return redirect('careers')
-
-
         try:
-            department = Department.objects.get(name=department_name)
-        except Department.DoesNotExist:
-            messages.error(request, "Selected department is invalid.")
-            return redirect('careers')
+            department_name = request.POST.get('department', '').strip()
+            position = request.POST.get('position', '').strip()
+            label = request.POST.get('label', '').strip()
+            name = request.POST.get('name', '').strip()
+            email = request.POST.get('email', '').strip()
+            cover_letter = request.POST.get('cover_letter', '').strip()
+            resume = request.FILES.get('resume')
 
-        NAME_PATTERN = re.compile(r'^[A-Za-z ]+$')  
+            if not all([department_name, position, label, name, email]):
+                return JsonResponse({'success': False, 'error': 'Please fill in all required fields.'})
 
-        if not NAME_PATTERN.match(name):
-           messages.error(request, "Name must contain only letters and spaces (no numbers or special characters).")
-           return redirect('careers')
+            try:
+                department = Department.objects.get(name=department_name)
+            except Department.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Selected department is invalid.'})
 
+            NAME_PATTERN = re.compile(r'^[A-Za-z ]+$')
+            if not NAME_PATTERN.match(name):
+                return JsonResponse({'success': False, 'error': 'Name must contain only letters and spaces.'})
 
+            for field_value in [name, label, position]:
+                if contains_url(field_value):
+                    return JsonResponse({'success': False, 'error': 'No links or URLs allowed in name, label, or position.'})
 
-        for field_value in [name, label, position]:
-            if contains_url(field_value):
-                messages.error(request, "No links or URLs are allowed in the form.")
-                return redirect('careers')
+            try:
+                validate_email(email)
+                domain = email.split('@')[-1].lower()
+                if domain not in ALLOWED_DOMAINS:
+                    raise ValidationError("Invalid domain.")
+            except ValidationError:
+                return JsonResponse({'success': False, 'error': 'Enter a valid email address from allowed domains.'})
 
-        try:
-            validate_email(email)
-        except ValidationError:
-            messages.error(request, "Please enter a valid email address.")
-            return redirect('careers')
+            if resume:
+                if not resume.name.lower().endswith('.pdf'):
+                    return JsonResponse({'success': False, 'error': 'Only PDF files are allowed.'})
+                if resume.content_type != 'application/pdf':
+                    return JsonResponse({'success': False, 'error': 'Invalid file type. Upload a PDF.'})
+                if resume.size > MAX_RESUME_SIZE:
+                    return JsonResponse({'success': False, 'error': 'Resume size must not exceed 5MB.'})
 
-        if resume:
-            if not resume.name.lower().endswith('.pdf'):
-                messages.error(request, "Only PDF files are allowed.")
-                return redirect('careers')
+            if cover_letter:
+                if len(cover_letter) > 3000:
+                    return JsonResponse({'success': False, 'error': 'Cover letter too long (max 3000 characters).'})
+                if contains_url(cover_letter):
+                    return JsonResponse({'success': False, 'error': 'Cover letter must not contain any URLs.'})
+                if not re.fullmatch(r"[A-Za-z0-9\s.,]+", cover_letter):
+                    return JsonResponse({'success': False, 'error': 'Cover letter contains invalid characters.'})
 
-            if resume.content_type != 'application/pdf':
-                messages.error(request, "Invalid file type. Upload a PDF.")
-                return redirect('careers')
+            # Save to database
+            JobApplication.objects.create(
+                department=department,
+                position=position,
+                label=label,
+                name=name,
+                email=email,
+                cover_letter=cover_letter,
+                resume=resume
+            )
 
-            if resume.size > MAX_RESUME_SIZE:
-                messages.error(request, "Resume file size should not exceed 5MB.")
-                return redirect('careers')
+            # Send admin email
+            admin_subject = f"New Job Application: {position} - {label}"
+            admin_body = f"""A new job application was submitted.\n\nName: {name}\nEmail: {email}\nDepartment: {department.name}\nPosition: {position}\nLabel: {label}\nCover Letter: {cover_letter}"""
 
-        if cover_letter:
-            if len(cover_letter) > 3000:
-                messages.error(request, "Cover letter is too long (max 3000 characters).")
-                return redirect('careers')
-            if contains_url(cover_letter):
-                messages.error(request, "Cover letter must not contain any URLs or links.")
-                return redirect('careers')
+            admin_email = EmailMessage(
+                subject=admin_subject,
+                body=admin_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=['info@cybexel.com'],
+                reply_to=[email]
+            )
+            if resume:
+                resume.seek(0)
+                admin_email.attach(resume.name, resume.read(), resume.content_type)
+            admin_email.send(fail_silently=False)
 
-        JobApplication.objects.create(
-            department=department,
-            position=position,
-            label=label,
-            name=name,
-            email=email,
-            cover_letter=cover_letter,
-            resume=resume
-        )
+            # Send confirmation to user
+            html_message = render_to_string("job_confirmation.html", {
+                "name": name,
+                "position": position
+            })
 
-        admin_subject = f"New Job Application: {position} - {label}"
-        admin_body = f"""
-        A new job application was submitted.
+            confirmation_email = EmailMessage(
+                subject="Thank You for Your Application",
+                body=html_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[email]
+            )
+            confirmation_email.content_subtype = "html"
+            confirmation_email.send(fail_silently=False)
 
-        Name: {name}
-        Email: {email}
-        Department: {department.name}
-        Position: {position}
-        Label: {label}
-        Cover Letter: {cover_letter}
-        """
+            return JsonResponse({'success': True})
 
-        admin_email = EmailMessage(
-            subject=admin_subject,
-            body=admin_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['info@cybexel.com'],
-            reply_to=[email]
-        )
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
-        if resume:
-            resume.seek(0)
-            admin_email.attach(resume.name, resume.read(), resume.content_type)
-
-        admin_email.send(fail_silently=False)
-
-        html_message = render_to_string("job_confirmation.html", {
-            "name": name,
-            "position": position
-        })
-
-        confirmation_email = EmailMessage(
-            subject="Thank You for Your Application",
-            body=html_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[email]
-        )
-        confirmation_email.content_subtype = "html"
-        confirmation_email.send(fail_silently=False)
-
-        request.session['show_success_modal'] = True
-        return redirect('careers')
-    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 # def admin_register(request):
 #     if request.method == 'POST':
 #         username = request.POST.get('username', '').strip()

@@ -218,12 +218,48 @@ function openDetailsModal(title, label, skills, description, department) {
   }
 
 
-setTimeout(() => {
-  const modal = document.getElementById('successModal');
-  if (modal) {
-    modal.classList.add('hidden');
+document.getElementById("jobApplicationForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const errorDiv = document.getElementById("formErrors");
+
+  errorDiv.innerHTML = "";
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": formData.get("csrfmiddlewaretoken")
+      },
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // ✅ Show success modal
+      const modal = document.getElementById("successModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+
+        // ✅ Auto-close after 3 seconds
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 3000);
+      }
+
+      form.reset();
+      closeForm();
+    } else {
+      errorDiv.innerText = data.error || "Something went wrong. Please check your input.";
+    }
+  } catch (error) {
+    errorDiv.innerText = "Something went wrong. Please try again.";
+    console.error("Form submission error:", error);
   }
-}, 3000);
+});
 
 
 
