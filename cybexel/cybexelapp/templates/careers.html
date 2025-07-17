@@ -322,11 +322,18 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("jobApplicationForm");
 
-  if (form && !form.dataset.listenerAttached) {
-    form.dataset.listenerAttached = "true"; // Prevent double binding
+  if (!form) return;
+
+  let isSubmitting = false; // Prevent double submit
+
+  if (!form.dataset.listenerAttached) {
+    form.dataset.listenerAttached = "true";
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      if (isSubmitting) return; // Prevent double submission
+      isSubmitting = true;
 
       const formData = new FormData(form);
       const errorDiv = document.getElementById("formErrors");
@@ -334,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const modal = document.getElementById("successModal");
 
       errorDiv.innerHTML = "";
-      submitBtn.disabled = true; // 🚫 disable button
+      if (submitBtn) submitBtn.disabled = true;
 
       try {
         const response = await fetch(form.action, {
@@ -356,7 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           form.reset();
-          closeForm(); // Close the modal
+          if (typeof closeForm === "function") closeForm();
         } else {
           errorDiv.innerText = data.error || "Something went wrong.";
         }
@@ -364,12 +371,14 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Form submission failed:", err);
         errorDiv.innerText = "Something went wrong. Please try again.";
       } finally {
-        submitBtn.disabled = false; // ✅ re-enable button
+        if (submitBtn) submitBtn.disabled = false;
+        isSubmitting = false;
       }
     });
   }
 });
 </script>
+
 
 
 

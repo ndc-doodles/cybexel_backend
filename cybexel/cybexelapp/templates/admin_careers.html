@@ -92,7 +92,7 @@
         <tr class="bg-white hover:bg-gray-50">
           <td class="border border-gray-300 px-4 py-2">{{ dept.name }}</td>
           <td class="border border-gray-300 px-4 py-2">
-            <a href="?edit_type=department&id={{ dept.id }}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            <!-- <a href="?edit_type=department&id={{ dept.id }}" class="text-blue-600 hover:underline mr-2">Edit</a> -->
             <a href="{% url 'delete_department' dept.id %}" class="text-red-600 hover:underline">Delete</a>
           </td>
         </tr>
@@ -139,7 +139,7 @@
           <td class="border border-gray-300 px-4 py-2">{{ exp.name }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ exp.duration }}</td>
           <td class="border border-gray-300 px-4 py-2">
-            <a href="?edit_type=experience&id={{ exp.id }}" class="text-blue-600 hover:underline mr-2">Edit</a>
+            <!-- <a href="?edit_type=experience&id={{ exp.id }}" class="text-blue-600 hover:underline mr-2">Edit</a> -->
             <a href="{% url 'delete_experience' exp.id %}" class="text-red-600 hover:underline">Delete</a>
           </td>
         </tr>
