@@ -4,6 +4,7 @@ const navbar = document.getElementById('navbar');
 const enquireBtn = document.getElementById('enquire-btn');
 const navLinks = document.querySelectorAll('.nav-link');
 const menuIcon = document.getElementById('menu-icon');
+const logo = document.getElementById('logo');
 
 // Toggle mobile menu open/close
 toggleBtn.addEventListener('click', (e) => {
@@ -24,7 +25,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-
+// About dropdown toggle
 const aboutToggle = document.getElementById('about-toggle');
 const aboutDropdown = document.getElementById('about-dropdown');
 
@@ -34,7 +35,6 @@ aboutToggle.addEventListener('click', (e) => {
   aboutDropdown.classList.toggle('active');
 });
 
-// Close when clicking elsewhere
 document.addEventListener('click', (event) => {
   if (
     !aboutDropdown.contains(event.target) &&
@@ -44,12 +44,23 @@ document.addEventListener('click', (event) => {
   }
 });
 
+// ✅ Function to keep active purple link unchanged
+function setNavColors(scrolled) {
+  navLinks.forEach(link => {
+    const isActive = link.classList.contains('text-purple-500'); // keeps your purple active state
+    link.classList.remove('text-white', 'text-black'); // remove old colors
 
+    if (!isActive) {
+      link.classList.add(scrolled ? 'text-black' : 'text-white');
+    }
+  });
+}
 
-const logo = document.getElementById('logo');
-
+// Scroll behavior
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
+  const scrolled = window.scrollY > 50;
+
+  if (scrolled) {
     navbar.classList.add('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
     navbar.classList.remove('text-white');
 
@@ -58,15 +69,11 @@ window.addEventListener('scroll', () => {
       enquireBtn.classList.add('bg-[#151a37]', 'text-white');
     }
 
-    navLinks.forEach(link => {
-      link.classList.remove('text-white');
-      link.classList.add('text-black');
-    });
-
     menuIcon.classList.remove('text-white');
     menuIcon.classList.add('text-black');
 
-    // Swap logo image
+    setNavColors(true);
+
     logo.src = "./static/images/logo2.png";
   } else {
     navbar.classList.remove('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
@@ -77,18 +84,25 @@ window.addEventListener('scroll', () => {
       enquireBtn.classList.remove('bg-[#151a37]', 'text-white');
     }
 
-    navLinks.forEach(link => {
-      link.classList.add('text-white');
-      link.classList.remove('text-black');
-    });
-
     menuIcon.classList.add('text-white');
     menuIcon.classList.remove('text-black');
 
-    // Revert logo image
+    setNavColors(false);
+
     logo.src = "./static/images/logo1.png";
   }
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -167,7 +181,19 @@ window.toggleFab = function() {
 
 
 
+ function filterDepartment(value) {
+    const experience = document.getElementById("experienceDropdown").value;
+    window.location.href = `?department=${encodeURIComponent(value)}&experience=${encodeURIComponent(experience)}`;
+  }
 
+  function filterJobs(value) {
+    const department = document.getElementById("departmentDropdown").value;
+    window.location.href = `?department=${encodeURIComponent(department)}&experience=${encodeURIComponent(value)}`;
+  }
+
+  function resetFilters() {
+    window.location.href = `?department=all&experience=all`;
+  }
 
 function openDetailsModal(title, label, skills, description, department) {
     document.getElementById('modalTitle').innerText = title;

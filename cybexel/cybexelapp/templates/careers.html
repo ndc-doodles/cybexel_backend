@@ -45,7 +45,7 @@
       <div class="hidden md:flex items-center gap-8 text-base font-semibold nav-links text-white">
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
-        <a href="{% url 'careers' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Careers</a>
+        <a href="{% url 'careers' %}" class="nav-link active-link text-purple-500 font-bold hover:text-purple-300 transition">Careers</a>
 <div class="relative inline-block nav-link group">
   <button
     id="about-toggle"
@@ -165,7 +165,7 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
 </div>
 
 
-  <div class="max-w-7xl mx-auto flex flex-col gap-6 items-center">
+<div class="max-w-7xl mx-auto flex flex-col gap-6 items-center">
     <div class="relative w-full md:w-[80%]">
       <img src="{% static 'images/office.jpg' %}"
         alt="Office Team"
@@ -173,48 +173,63 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
     </div>
 
     <div class="w-full md:w-[70%]">
-      <div class="rounded-xl p-4 shadow">
+      <div class="rounded-xl p-4 shadow mt-16">
         <div class="grid sm:grid-cols-3 gap-4 items-center mb-6">
 
-          <div class="w-full">
-            <label class="block text-sm text-[#151a37] mb-1 ml-1">Show</label>
-            <button id="allJobsBtn" onclick="resetFilters()"
-              class="tab-button w-full h-[42px] bg-[#151a37] text-white border border-white rounded-lg font-semibold shadow-sm hover:bg-white hover:text-[#151a37] transition">
-              All Jobs
-            </button>
-          </div>
+  <!-- Show -->
+  <div class="w-full">
+    <label class="block text-sm text-[#151a37] mb-1 ml-1">Show</label>
+    <button
+      id="allJobsBtn"
+      onclick="resetFilters()"
+      class="tab-button w-full h-[42px] bg-white text-[#151a37] border border-[#151a37] rounded-lg font-semibold shadow-sm hover:bg-[#151a37] hover:text-white transition"
+    >
+      All Jobs
+    </button>
+  </div>
 
+  <!-- Department -->
+  <div class="w-full">
+    <label class="block text-sm text-[#151a37] mb-1 ml-1">Department</label>
+    <select
+      id="departmentDropdown"
+      onchange="filterDepartment(this.value)"
+      class="tab-dropdown w-full h-[42px] border border-[#151a37] px-4 rounded-lg bg-white text-[#151a37] shadow-sm focus:ring-2 focus:ring-[#151a37] focus:outline-none"
+    >
+      <option value="all" {% if selected_dept == 'all' %}selected{% endif %}>All</option>
+{% for dept in departments %}
+  <option value="{{ dept.name }}" {% if selected_dept == dept.name %}selected{% endif %}>{{ dept.name }}</option>
+{% endfor %}
 
-          <div class="w-full">
-            <label class="block text-sm text-[#151a37] mb-1 ml-1">Department</label>
-            <select id="departmentDropdown" onchange="filterDepartment(this.value)"
-              class="tab-dropdown w-full h-[42px] border border-white px-4 rounded-lg bg-[#151a37] text-white shadow-sm focus:ring-2 focus:ring-white focus:outline-none">
-              <option value="all">All</option>
-              {% for dept in departments %}
-                <option value="{{ dept.name }}">{{ dept.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
+ 
+    </select>
+  </div>
 
-    
-          <div class="w-full">
-            <label class="block text-sm text-[#151a37] mb-1 ml-1">Experience</label>
-            <select id="experienceDropdown" onchange="filterJobs(this.value)"
-              class="tab-dropdown w-full h-[42px] border border-white px-4 rounded-lg bg-[#151a37] text-white shadow-sm focus:ring-2 focus:ring-white focus:outline-none">
-              <option value="all">All</option>
-              {% for exp in experiences %}
-                <option value="{{ exp.name }}">{{ exp.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
+  <!-- Experience -->
+  <div class="w-full">
+    <label class="block text-sm text-[#151a37] mb-1 ml-1">Experience</label>
+    <select
+      id="experienceDropdown"
+      onchange="filterJobs(this.value)"
+      class="tab-dropdown w-full h-[42px] border border-[#151a37] px-4 rounded-lg bg-white text-[#151a37] shadow-sm focus:ring-2 focus:ring-[#151a37] focus:outline-none"
+    >
+      <option value="all" {% if selected_exp == 'all' %}selected{% endif %}>All</option>
+{% for exp in experiences %}
+  <option value="{{ exp.name }}" {% if selected_exp == exp.name %}selected{% endif %}>{{ exp.name }}</option>
+{% endfor %}
 
-        </div>
+     
+    </select>
+  </div>
+
+</div>
+
       </div>
     </div>
 
   </div>
 
-<div id="jobs" class="max-w-7xl mx-auto mt-20 px-2 sm:px-4 ">
+<div id="jobs" class="max-w-7xl mx-auto mt-10 px-2 sm:px-4 ">
   <div id="jobCards" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
     {% for job in jobs %}
       <div class="bg-white shadow-md rounded-xl p-6 border">
@@ -250,7 +265,7 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
 
 <div id="jobModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center" onclick="checkBackdropClose(event)">
   <div class="bg-white w-full max-w-xl rounded-xl p-6 relative" onclick="event.stopPropagation()">
-    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
+    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl">&times;</button>
     <h3 id="modalTitle" class="text-xl font-bold text-gray-800 mb-1"></h3>
     <p id="modalLabel" class="text-sm text-blue-600 mb-2"></p>
     <p id="modalDepartment" class="text-sm text-gray-700 mb-4"></p>
@@ -438,32 +453,34 @@ document.addEventListener("DOMContentLoaded", function () {
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
-        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
-        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
-        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
-        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
     </div>
 
     <div>
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
 
       </ul>
     </div>

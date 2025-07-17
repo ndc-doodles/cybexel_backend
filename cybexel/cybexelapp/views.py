@@ -57,8 +57,9 @@ def careers(request):
     if exp_filter != 'all':
         jobs = jobs.filter(experience__name=exp_filter)
 
-
-    show_success_modal = request.session.pop('show_success_modal', False)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        job_cards_html = render_to_string('partials/job_cards.html', {'jobs': jobs})
+        return JsonResponse({'html': job_cards_html})
 
     context = {
         'departments': departments,
@@ -66,7 +67,6 @@ def careers(request):
         'jobs': jobs,
         'selected_dept': dept_filter,
         'selected_exp': exp_filter,
-        'show_success_modal': show_success_modal,  
     }
     return render(request, 'careers.html', context)
 ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']

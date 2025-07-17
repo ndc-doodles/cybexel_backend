@@ -62,7 +62,7 @@
     <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
   </div>
-</div>        <a href="{% url 'blog' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Blog</a>
+</div>        <a href="{% url 'blog' %}" class="nav-link active-link text-purple-500 font-bold hover:text-purple-300 transition">Blog</a>
       </div>
 
       <div class="flex items-center gap-4">
@@ -240,32 +240,34 @@ Read about cutting-edge innovations, practical development guides and thought le
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
-        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
-        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
-        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
-        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
     </div>
 
     <div>
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
 
       </ul>
     </div>
@@ -319,7 +321,6 @@ Bengaluru
 
   </div>
 </footer>
-
 
 
 <script src="{% static 'js/other_script.js' %}"></script>

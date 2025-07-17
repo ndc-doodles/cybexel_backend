@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
  
  <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +48,7 @@
 <div class="relative inline-block nav-link group">
   <button
     id="about-toggle"
-    class="hover:text-purple-300 transition flex items-center gap-1  text-purple-500 :outline-none"
+    class="hover:text-purple-300 transition flex items-center gap-1 active-link text-purple-500 :outline-none"
   >
     About
   </button>
@@ -144,11 +144,12 @@ Explore our culture, milestones and the people who make it all possible. Discove
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
@@ -157,6 +158,7 @@ Explore our culture, milestones and the people who make it all possible. Discove
         <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
         <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
         <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
         <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
         <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
@@ -230,7 +232,3 @@ Bengaluru
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>
 </html>
-
-
-
-

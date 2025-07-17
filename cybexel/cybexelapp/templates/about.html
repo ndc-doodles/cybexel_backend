@@ -53,10 +53,10 @@
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
         <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
-<div class="relative inline-block nav-link group">
+<div class="relative inline-block nav-link active-link group">
   <button
     id="about-toggle"
-    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+    class="hover:text-purple-300 text-purple-500 transition flex items-center gap-1 focus:outline-none"
   >
     About
   </button>
@@ -172,7 +172,7 @@ We create impactful digital experiences that help businesses grow through innova
 
 
 
-<section class="bg-[#f9f9fc] py-20 px-6 sm:px-12 md:px-24 text-[#151a37]">
+<section class=" py-20 px-6 sm:px-12 md:px-24 text-[#151a37]">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-12">
       <h2 class="text-4xl font-bold mb-4">Our Purpose</h2>
@@ -182,7 +182,7 @@ We create impactful digital experiences that help businesses grow through innova
     </div>
 
     <div class="grid md:grid-cols-3 gap-8 px-4">
-      <div class="bg-white shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300">
+      <div class="bg-[#d53041]/5 shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300 ">
   <div class="text-[#151a37] text-4xl mb-4">
     <i class="fi fi-tr-rocket-launch text-[#151a37]"></i>
   </div>
@@ -193,7 +193,7 @@ We create impactful digital experiences that help businesses grow through innova
 </div>
 
 
-      <div class="bg-white shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300">
+      <div class="bg-[#9bca51]/30 shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300">
         <div class="text-pink-500 text-4xl mb-4">
             <i class="fi fi-tr-light-bulb"></i>       
 
@@ -204,7 +204,7 @@ We create impactful digital experiences that help businesses grow through innova
         </p>
       </div>
 
-      <div class="bg-white shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300">
+      <div class="bg-[#30bfe9]/20 shadow-md rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-xl duration-300">
         <div class="text-green-500 text-4xl mb-4">
             <i class="fi fi-tr-earth"></i>        
 
@@ -231,7 +231,7 @@ We create impactful digital experiences that help businesses grow through innova
         Why Choose Us?
       </h2>
 
-      <div class=" flex items-start gap-4 bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-300 ml-6">
+      <div class=" flex items-start gap-4 bg-white p-5 rounded-xl border border-[#151a37] transition duration-300 hover:shadow-lg hover:scale-[1.02] ml-6">
         <div class="text-[#151a37] text-3xl">
           <i class="fas fa-lightbulb"></i>
         </div>
@@ -243,7 +243,7 @@ We create impactful digital experiences that help businesses grow through innova
         </div>
       </div>
 
-      <div class="flex items-start gap-4 bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-300 ml-6">
+      <div class="flex items-start gap-4 bg-white p-5 rounded-xl border border-[#151a37] transition duration-300 hover:shadow-lg hover:scale-[1.02] ml-6">
         <div class="text-[#151a37] text-3xl">
           <i class="fas fa-cogs"></i>
         </div>
@@ -255,7 +255,7 @@ We create impactful digital experiences that help businesses grow through innova
         </div>
       </div>
 
-      <div class="flex items-start gap-4 bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-300 ml-6">
+      <div class="flex items-start gap-4 bg-white p-5 rounded-xl border border-[#151a37] transition duration-300 hover:shadow-lg hover:scale-[1.02] ml-6">
         <div class="text-[#151a37] text-3xl">
           <i class="fas fa-shield-alt"></i>
         </div>
@@ -267,7 +267,8 @@ We create impactful digital experiences that help businesses grow through innova
         </div>
       </div>
 
-      <div class="flex items-start gap-4 bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-300 ml-6">
+     <div class="flex items-start gap-4 bg-white p-5 rounded-xl border border-[#151a37] transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ml-6">
+  
         <div class="text-[#151a37] text-3xl">
           <i class="fas fa-handshake"></i>
         </div>
@@ -329,32 +330,34 @@ We create impactful digital experiences that help businesses grow through innova
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="index.html" class="hover:text-[#151a37] transition">Home</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Services</a></li>
-        <li><a href="careers.html" class="hover:text-[#151a37] transition">Careers</a></li>
-        <li><a href="about.html" class="hover:text-[#151a37] transition">About Us</a></li>
-        <li><a href="blog.html" class="hover:text-[#151a37] transition">Blog</a></li>
-        <li><a href="contact.html" class="hover:text-[#151a37] transition">Contact Us</a></li>
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
     </div>
 
     <div>
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
 
       </ul>
     </div>
@@ -408,7 +411,6 @@ Bengaluru
 
   </div>
 </footer>
-
 
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>

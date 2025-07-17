@@ -1,4 +1,4 @@
- {% load static %}
+{% load static %}
  
  <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cybexel</title>
 
-<link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+<link rel="icon" href="./static/images/favicon.png" type="image/png" sizes="32x32">
     <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +30,6 @@
  
 
  
- 
 <header class="relative z-[9999] w-full">
   <nav id="navbar"
        class="fixed top-0 left-0 w-full bg-transparent px-4 py-[0.6rem]  transition-all duration-300 z-[9999] backdrop-blur-sm">
@@ -38,7 +37,14 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center">
 
       <a href="{% url 'index' %}" class="flex items-center">
-  <img id="logo" src="{% static 'images/logo1.png' %}" alt="Wise Logo" class="w-44 h-auto transition duration-300" />
+<img
+  id="logo"
+  src="{% static 'images/logo1.png' %}"
+  data-logo1="{% static 'images/logo1.png' %}"
+  data-logo2="{% static 'images/logo2.png' %}"
+  alt="Wise Logo"
+  class="w-44 h-auto transition duration-300"
+/>
 </a>
 
 
@@ -49,7 +55,7 @@
 <div class="relative inline-block nav-link group">
   <button
     id="about-toggle"
-    class="hover:text-purple-300 transition flex items-center gap-1  text-purple-500 :outline-none"
+    class="hover:text-purple-300 transition flex items-center gap-1 active-link text-purple-500 :outline-none"
   >
     About
   </button>
@@ -146,16 +152,16 @@ Explore our culture, milestones and the people who make it all possible. Discove
 </div>
 
 
-
 <footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
@@ -164,6 +170,7 @@ Explore our culture, milestones and the people who make it all possible. Discove
         <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
         <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
         <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
         <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
         <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
@@ -230,13 +237,126 @@ Bengaluru
 
   </div>
 </footer>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navbar = document.getElementById('navbar');
+  const enquireBtn = document.getElementById('enquire-btn');
+  const menuIcon = document.getElementById('menu-icon');
+  const logo = document.getElementById('logo');
 
+  // Only target "real" nav links (anchors + About button)
+  const navLinks = document.querySelectorAll(
+    '#navbar a.nav-link, #navbar button#about-toggle'
+  );
+
+  // Toggle mobile menu open/close
+  if (toggleBtn && mobileMenu) {
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileMenu.classList.toggle('translate-x-full');
+      mobileMenu.classList.toggle('translate-x-0');
+    });
+
+    // Close mobile menu when clicking outside
+    window.addEventListener('click', (e) => {
+      if (
+        !mobileMenu.contains(e.target) &&
+        !toggleBtn.contains(e.target) &&
+        !e.target.closest('#menu-icon')
+      ) {
+        mobileMenu.classList.add('translate-x-full');
+        mobileMenu.classList.remove('translate-x-0');
+      }
+    });
+  }
+
+  // About dropdown toggle
+  const aboutToggle = document.getElementById('about-toggle');
+  const aboutDropdown = document.getElementById('about-dropdown');
+
+  if (aboutToggle && aboutDropdown) {
+    aboutToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      aboutDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (
+        !aboutDropdown.contains(event.target) &&
+        !aboutToggle.contains(event.target)
+      ) {
+        aboutDropdown.classList.remove('active');
+      }
+    });
+  }
+
+  // Preserve purple active links
+  function setNavColors(scrolled) {
+    navLinks.forEach(link => {
+      const isActive = link.classList.contains('text-purple-500');
+      link.classList.remove('text-white', 'text-black');
+      if (!isActive) {
+        link.classList.add(scrolled ? 'text-black' : 'text-white');
+      }
+    });
+  }
+
+  // Scroll behavior
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY > 50;
+
+    if (scrolled) {
+      navbar.classList.add('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.remove('text-white');
+
+      if (enquireBtn) {
+        enquireBtn.classList.remove('bg-white', 'text-[#151a37]');
+        enquireBtn.classList.add('bg-[#151a37]', 'text-white');
+      }
+
+      if (menuIcon) {
+        menuIcon.classList.remove('text-white');
+        menuIcon.classList.add('text-black');
+      }
+
+      setNavColors(true);
+
+      // Swap logo (Django-safe; logo2 path injected via data attribute)
+      if (logo && logo.dataset.logo2) {
+        logo.src = logo.dataset.logo2;
+      }
+    } else {
+      navbar.classList.remove('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.add('text-white');
+
+      if (enquireBtn) {
+        enquireBtn.classList.add('bg-white', 'text-[#151a37]');
+        enquireBtn.classList.remove('bg-[#151a37]', 'text-white');
+      }
+
+      if (menuIcon) {
+        menuIcon.classList.add('text-white');
+        menuIcon.classList.remove('text-black');
+      }
+
+      setNavColors(false);
+
+      // Revert logo
+      if (logo && logo.dataset.logo1) {
+        logo.src = logo.dataset.logo1;
+      }
+    }
+  });
+
+  // Initialize state on load (in case page loads scrolled)
+  window.dispatchEvent(new Event('scroll'));
+});
+</script>
 
 
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>
 </html>
-
-
-
-

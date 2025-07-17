@@ -48,7 +48,7 @@
 
       <div class="hidden md:flex items-center gap-8 text-base font-semibold nav-links text-white">
         <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
-        <a href="{% url 'services' %}" class="nav-link text-purple-500 font-bold hover:text-purple-300 transition">Services</a>
+        <a href="{% url 'services' %}" class="active-link nav-link text-purple-500 font-bold hover:text-purple-300 transition">Services</a>
         <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
 <div class="relative inline-block nav-link group">
   <button
@@ -123,110 +123,124 @@
 
 
 
+<section class="py-20 px-4 md:px-12 space-y-20">
 
-
-<section class=" py-20 px-4 md:px-12 space-y-20">
+ 
   <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
-    <div class="flex justify-start md:pl-6">
-      <div class="w-72 h-72 rounded-full overflow-hidden">
-       <img src="{% static 'images/app.jpg' %}" alt="App Development" class="w-full h-full object-cover" />
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
 
+    <div class="flex justify-center md:justify-start md:pl-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
+        <img src="{% static 'images/app.jpg' %}" alt="App Development" class="w-full h-full object-cover" />
       </div>
     </div>
-    <div class="max-md:px-[1rem]">
-      <h3 class="text-3xl font-semibold text-gray-800 mb-5">Custom App Development</h3>
-      <p class="text-gray-600 mb-6 text-base leading-relaxed">
-We build high-performance mobile and web applications tailored to your business needs. From intuitive user interfaces to robust backend systems, our custom app solutions are designed to scale, engage your audience and deliver reliable digital experiences across all devices.
 
+    <div class="max-md:px-[1rem]">
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">Custom App Development</h3>
+      <p class="text-gray-600 mb-6 text-base leading-relaxed">
+        We build high-performance mobile and web applications tailored to your business needs. From intuitive user interfaces to robust backend systems, our custom app solutions are designed to scale, engage your audience and deliver reliable digital experiences across all devices.
       </p>
     </div>
   </div>
 
+
   <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
- <div class="max-md:px-[1.4rem]">
-      <h3 class="text-3xl font-semibold text-gray-800 mb-5">Branding & Designing</h3>
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
+
+    <div class="max-md:px-[1.4rem] pl-10 ">
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">Branding & Designing</h3>
       <p class="text-gray-600 text-base leading-relaxed">
-We craft impactful brand identities, logos and visuals that connect with your audience. From posters and brochures to digital graphics and complete brand experiences, our design team blends creativity and strategy to bring your vision to life.      </p>
+        We craft impactful brand identities, logos and visuals that connect with your audience. From posters and brochures to digital graphics and complete brand experiences, our design team blends creativity and strategy to bring your vision to life.
+      </p>
     </div>
-    <div class="flex justify-end md:pr-6">
-      <div class="w-72 h-72 rounded-full overflow-hidden">
+
+    <div class="flex justify-center md:justify-end md:pr-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
         <img src="{% static 'images/branding.jpeg' %}" alt="Branding" class="w-full h-full object-cover" />
       </div>
     </div>
   </div>
 
+ 
   <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
-  
-  <div class="flex justify-start md:pl-6">
-    <div class="w-72 h-72 rounded-full overflow-hidden">
-      <img src="https://img.freepik.com/free-photo/programming-background-with-person-working-with-codes-computer_23-2150010125.jpg" 
-           alt="Web Development" class="w-full h-full object-cover" />
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
+
+    <div class="flex justify-center md:justify-start md:pl-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
+        <img src="https://img.freepik.com/free-photo/programming-background-with-person-working-with-codes-computer_23-2150010125.jpg" 
+             alt="Web Development" class="w-full h-full object-cover" />
+      </div>
     </div>
-  </div>
 
- <div class="max-md:px-[1.5rem]">
-    <h3 class="text-3xl font-semibold text-gray-800 mb-5">Web Development</h3>
-<p class="text-gray-600 text-base leading-relaxed">
-  We build fast, secure and scalable websites tailored to your goals. From 
-  <span class="font-semibold text-[#151a37]">static</span>,
-  <span class="font-semibold text-[#151a37]">dynamic</span>
-  and 
-  <span class="font-semibold text-[#151a37]">e-commerce</span> 
-  sites to complete full-stack platforms, we make sure your website looks great, performs flawlessly and drives results.
-</p>
-
-  </div>
-</div>
-
-
-    <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
- <div class="max-md:px-[1.5rem]">   
-      <h3 class="text-3xl font-semibold text-gray-800 mb-5">Digital Marketing</h3>
+    <div class="max-md:px-[1.5rem]">
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">Web Development</h3>
       <p class="text-gray-600 text-base leading-relaxed">
-Boost your visibility and connect with your audience through strategic SEO, social media, content marketing and targeted campaigns tailored to your business goals. We help you build brand awareness, attract the right customers and drive measurable results online.      </p>
+        We build fast, secure and scalable websites tailored to your goals. From 
+        <span class="font-semibold text-[#151a37]">static</span>,
+        <span class="font-semibold text-[#151a37]">dynamic</span> and 
+        <span class="font-semibold text-[#151a37]">e-commerce</span> 
+        sites to complete full-stack platforms, we make sure your website looks great, performs flawlessly and drives results.
+      </p>
     </div>
-    <div class="flex justify-end md:pr-6">
-      <div class="w-72 h-72 rounded-full overflow-hidden">
+  </div>
+
+ 
+  <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
+
+    <div class="max-md:px-[1.5rem] pl-10">   
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">Digital Marketing</h3>
+      <p class="text-gray-600 text-base leading-relaxed">
+        Boost your visibility and connect with your audience through strategic SEO, social media, content marketing and targeted campaigns tailored to your business goals. We help you build brand awareness, attract the right customers and drive measurable results online.
+      </p>
+    </div>
+
+    <div class="flex justify-center md:justify-end md:pr-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
         <img src="https://img.freepik.com/free-photo/marketing-ideas-share-research-planning-concept_53876-127431.jpg" 
              alt="Digital Marketing" class="w-full h-full object-cover" />
       </div>
     </div>
   </div>
 
- <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
-    <div class="flex justify-start md:pl-6">
-      <div class="w-72 h-72 rounded-full overflow-hidden">
+ 
+  <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
+
+    <div class="flex justify-center md:justify-start md:pl-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
         <img src="https://img.freepik.com/free-vector/smart-home-management_52683-43471.jpg" 
              alt="UI/UX" class="w-full h-full object-cover" />
       </div>
     </div>
- <div class="max-md:px-[1.5rem]">
-      <h3 class="text-3xl font-semibold text-gray-800 mb-5">UI/UX Design</h3>
+
+    <div class="max-md:px-[1.5rem]">
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">UI/UX Design</h3>
       <p class="text-gray-600 text-base leading-relaxed">
-We create intuitive interfaces and engaging user experiences that make navigating your digital products effortless and enjoyable. From research and wireframes to polished designs, our team ensures every interaction feels smooth, consistent and aligned with your brand.</p>
+        We create intuitive interfaces and engaging user experiences that make navigating your digital products effortless and enjoyable. From research and wireframes to polished designs, our team ensures every interaction feels smooth, consistent and aligned with your brand.
+      </p>
     </div>
   </div>
 
+
   <div class="fade-in-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 
-            bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
-            opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden ">
- <div class="max-md:px-[1.5rem]">
-      <h3 class="text-3xl font-semibold text-gray-800 mb-5">Custom Software Solutions</h3>
+              bg-gradient-to-r from-[#151a37]/20 to-white rounded-full px-6 py-16 
+              opacity-0 translate-y-8 transition duration-1000 min-h-fit overflow-hidden text-center md:text-left">
+
+    <div class="max-md:px-[1.5rem] pl-10">
+      <h3 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-5">Custom Software Solutions</h3>
       <p class="text-gray-600 text-base leading-relaxed">
-Automate workflows, improve efficiency and solve unique challenges with tailored desktop or cloud-based software built specifically for your business. From planning to deployment, we deliver secure, scalable solutions that fit seamlessly into your operations.      </p>
+        Automate workflows, improve efficiency and solve unique challenges with tailored desktop or cloud-based software built specifically for your business. From planning to deployment, we deliver secure, scalable solutions that fit seamlessly into your operations.
+      </p>
     </div>
-    <div class="flex justify-end md:pr-6">
-      <div class="w-72 h-72 rounded-full overflow-hidden">
+
+    <div class="flex justify-center md:justify-end md:pr-6">
+      <div class="w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden">
         <img src="https://img.freepik.com/free-vector/programming-concept-illustration_114360-1351.jpg" 
              alt="Software" class="w-full h-full object-cover" />
       </div>
@@ -234,6 +248,7 @@ Automate workflows, improve efficiency and solve unique challenges with tailored
   </div>
 
 </section>
+
 
 
 
@@ -310,11 +325,12 @@ Automate workflows, improve efficiency and solve unique challenges with tailored
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
 
     <div>
-      <h2 class="text-2xl font-bold text-gray-500 mb-4">CYBEXEL</h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Empowering enterprises with smart, scalable and secure digital solutions across the globe.
-      </p>
-    </div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
 
     <div class="ml-16 max-md:ml-0">
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
@@ -323,8 +339,7 @@ Automate workflows, improve efficiency and solve unique challenges with tailored
         <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
         <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
         <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
-        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">About Us</a></li>
-
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
         <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
         <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
       </ul>
@@ -333,11 +348,11 @@ Automate workflows, improve efficiency and solve unique challenges with tailored
     <div>
       <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
       <ul class="space-y-8 text-sm mt-6 text-gray-500">
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom App Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Web Development</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
-        <li><a href="services.html" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
 
       </ul>
     </div>
