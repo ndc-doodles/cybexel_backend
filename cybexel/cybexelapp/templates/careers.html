@@ -1,7 +1,6 @@
 {% load static %}
  
- 
- 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,7 +152,8 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
   <p class="text-gray-400 text-md sm:ml-10 md:ml-28 mb-10 text-center md:text-left max-w-4xl">
     Discover opportunities designed for students, freshers and experienced professionals. Apply now and take your next step with us!
   </p>
-<!-- Always rendered but initially hidden -->
+
+<!-- Success Modal -->
 <div id="successModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center">
   <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-sm">
     <svg class="mx-auto mb-4 text-[#151a37] w-16 h-16 animate-ping-once" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -163,7 +163,6 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
     <p class="text-gray-600 mt-2">Thank you for applying. We'll get back to you soon.</p>
   </div>
 </div>
-
 
 <div class="max-w-7xl mx-auto flex flex-col gap-6 items-center">
     <div class="relative w-full md:w-[80%]">
@@ -282,7 +281,7 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
   <div class="bg-white w-full max-w-xl rounded-xl p-6 relative">
     <button onclick="closeForm()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
     <h3 class="text-xl font-bold text-gray-800 mb-4">Job Application</h3>
-    <form id="jobApplicationForm" method="POST" action="{% url 'submit_application' %}" enctype="multipart/form-data" class="space-y-4">
+<form action="{% url 'submit_application' %}" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
   <div id="formErrors" class="text-red-600 text-sm my-2"></div>
 
@@ -319,65 +318,25 @@ Be part of a team that values your ideas. Grow with us through innovation, colla
   </div>
 </div>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("jobApplicationForm");
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      document.getElementById('successModal')?.classList.remove('hidden');
 
-  if (!form) return;
-
-  let isSubmitting = false; // Prevent double submit
-
-  if (!form.dataset.listenerAttached) {
-    form.dataset.listenerAttached = "true";
-
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      if (isSubmitting) return; // Prevent double submission
-      isSubmitting = true;
-
-      const formData = new FormData(form);
-      const errorDiv = document.getElementById("formErrors");
-      const submitBtn = form.querySelector("button[type='submit']");
-      const modal = document.getElementById("successModal");
-
-      errorDiv.innerHTML = "";
-      if (submitBtn) submitBtn.disabled = true;
-
-      try {
-        const response = await fetch(form.action, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-          },
-          body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          if (modal) {
-            modal.classList.remove("hidden");
-            setTimeout(() => {
-              modal.classList.add("hidden");
-            }, 3000);
-          }
-
-          form.reset();
-          if (typeof closeForm === "function") closeForm();
-        } else {
-          errorDiv.innerText = data.error || "Something went wrong.";
-        }
-      } catch (err) {
-        console.error("Form submission failed:", err);
-        errorDiv.innerText = "Something went wrong. Please try again.";
-      } finally {
-        if (submitBtn) submitBtn.disabled = false;
-        isSubmitting = false;
-      }
-    });
-  }
-});
+      // Optional: Remove query param after 2 seconds
+      setTimeout(() => {
+        const url = new URL(window.location);
+        url.searchParams.delete('success');
+        window.history.replaceState({}, document.title, url);
+      }, 2000);
+    }
+  });
 </script>
+
+
+
+
+
 
 
 

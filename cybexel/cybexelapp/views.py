@@ -20,7 +20,7 @@ import re
 from django.utils.timezone import now
 from datetime import timedelta
 from dateutil.parser import parse as parse_datetime 
-
+import logging
 
 
 
@@ -69,6 +69,9 @@ def careers(request):
         'selected_exp': exp_filter,
     }
     return render(request, 'careers.html', context)
+
+
+
 ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
 def contact(request):
     context = {
@@ -186,113 +189,108 @@ def detail(request, pk):
 
 
 
-
 ALLOWED_EXTENSIONS = ['pdf']
 MAX_RESUME_SIZE = 5 * 1024 * 1024
 ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
 
 def contains_url(text):
     return bool(re.search(r'(http[s]?://|www\.|\.\w{2,})', text))
+logger = logging.getLogger(__name__)
 
 def submit_job_application(request):
-    if request.method == 'POST':
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+    try:
+        department_name = request.POST.get('department', '').strip()
+        position = request.POST.get('position', '').strip()
+        label = request.POST.get('label', '').strip()
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        cover_letter = request.POST.get('cover_letter', '').strip()
+        resume = request.FILES.get('resume')
+
+        if not all([department_name, position, label, name, email]):
+            return JsonResponse({'success': False, 'error': 'Please fill in all required fields.'})
+
         try:
-            department_name = request.POST.get('department', '').strip()
-            position = request.POST.get('position', '').strip()
-            label = request.POST.get('label', '').strip()
-            name = request.POST.get('name', '').strip()
-            email = request.POST.get('email', '').strip()
-            cover_letter = request.POST.get('cover_letter', '').strip()
-            resume = request.FILES.get('resume')
+            department = Department.objects.get(name=department_name)
+        except Department.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Selected department is invalid.'})
 
-            if not all([department_name, position, label, name, email]):
-                return JsonResponse({'success': False, 'error': 'Please fill in all required fields.'})
+        if not re.fullmatch(r'^[A-Za-z ]+$', name):
+            return JsonResponse({'success': False, 'error': 'Name must contain only letters and spaces.'})
 
-            try:
-                department = Department.objects.get(name=department_name)
-            except Department.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Selected department is invalid.'})
+        for field_value in [name, label, position]:
+            if contains_url(field_value):
+                return JsonResponse({'success': False, 'error': 'No links or URLs allowed in name, label, or position.'})
 
-            NAME_PATTERN = re.compile(r'^[A-Za-z ]+$')
-            if not NAME_PATTERN.match(name):
-                return JsonResponse({'success': False, 'error': 'Name must contain only letters and spaces.'})
+        try:
+            validate_email(email)
+            domain = email.split('@')[-1].lower()
+            if domain not in ALLOWED_DOMAINS:
+                raise ValidationError("Invalid domain.")
+        except ValidationError:
+            return JsonResponse({'success': False, 'error': 'Enter a valid email address from allowed domains.'})
 
-            for field_value in [name, label, position]:
-                if contains_url(field_value):
-                    return JsonResponse({'success': False, 'error': 'No links or URLs allowed in name, label, or position.'})
+        if resume:
+            if not resume.name.lower().endswith('.pdf') or resume.content_type != 'application/pdf':
+                return JsonResponse({'success': False, 'error': 'Only PDF files are allowed.'})
+            if resume.size > MAX_RESUME_SIZE:
+                return JsonResponse({'success': False, 'error': 'Resume size must not exceed 5MB.'})
 
-            try:
-                validate_email(email)
-                domain = email.split('@')[-1].lower()
-                if domain not in ALLOWED_DOMAINS:
-                    raise ValidationError("Invalid domain.")
-            except ValidationError:
-                return JsonResponse({'success': False, 'error': 'Enter a valid email address from allowed domains.'})
+        if cover_letter:
+            if len(cover_letter) > 3000:
+                return JsonResponse({'success': False, 'error': 'Cover letter too long (max 3000 characters).'})
+            if contains_url(cover_letter):
+                return JsonResponse({'success': False, 'error': 'Cover letter must not contain any URLs.'})
+            if not re.fullmatch(r"[A-Za-z0-9\s.,]+", cover_letter):
+                return JsonResponse({'success': False, 'error': 'Cover letter contains invalid characters.'})
 
-            if resume:
-                if not resume.name.lower().endswith('.pdf'):
-                    return JsonResponse({'success': False, 'error': 'Only PDF files are allowed.'})
-                if resume.content_type != 'application/pdf':
-                    return JsonResponse({'success': False, 'error': 'Invalid file type. Upload a PDF.'})
-                if resume.size > MAX_RESUME_SIZE:
-                    return JsonResponse({'success': False, 'error': 'Resume size must not exceed 5MB.'})
+        application = JobApplication.objects.create(
+            department=department,
+            position=position,
+            label=label,
+            name=name,
+            email=email,
+            cover_letter=cover_letter,
+            resume=resume
+        )
 
-            if cover_letter:
-                if len(cover_letter) > 3000:
-                    return JsonResponse({'success': False, 'error': 'Cover letter too long (max 3000 characters).'})
-                if contains_url(cover_letter):
-                    return JsonResponse({'success': False, 'error': 'Cover letter must not contain any URLs.'})
-                if not re.fullmatch(r"[A-Za-z0-9\s.,]+", cover_letter):
-                    return JsonResponse({'success': False, 'error': 'Cover letter contains invalid characters.'})
+        admin_subject = f"New Job Application: {position} - {label}"
+        admin_body = f"""A new job application was submitted.\n\nName: {name}\nEmail: {email}\nDepartment: {department.name}\nPosition: {position}\nLabel: {label}\nCover Letter: {cover_letter}"""
 
-            # Save to database
-            JobApplication.objects.create(
-                department=department,
-                position=position,
-                label=label,
-                name=name,
-                email=email,
-                cover_letter=cover_letter,
-                resume=resume
-            )
+        admin_email = EmailMessage(
+            subject=admin_subject,
+            body=admin_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['info@cybexel.com'],
+            reply_to=[email]
+        )
+        if resume:
+            resume.seek(0)
+            admin_email.attach(resume.name, resume.read(), resume.content_type)
+        admin_email.send(fail_silently=False)
 
-            # Send admin email
-            admin_subject = f"New Job Application: {position} - {label}"
-            admin_body = f"""A new job application was submitted.\n\nName: {name}\nEmail: {email}\nDepartment: {department.name}\nPosition: {position}\nLabel: {label}\nCover Letter: {cover_letter}"""
+        html_message = render_to_string("job_confirmation.html", {
+            "name": name,
+            "position": position
+        })
+        confirmation_email = EmailMessage(
+            subject="Thank You for Your Application",
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email]
+        )
+        confirmation_email.content_subtype = "html"
+        confirmation_email.send(fail_silently=False)
 
-            admin_email = EmailMessage(
-                subject=admin_subject,
-                body=admin_body,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=['info@cybexel.com'],
-                reply_to=[email]
-            )
-            if resume:
-                resume.seek(0)
-                admin_email.attach(resume.name, resume.read(), resume.content_type)
-            admin_email.send(fail_silently=False)
+        return redirect(f"{request.META.get('HTTP_REFERER', '/')}?success=true")
 
-            # Send confirmation to user
-            html_message = render_to_string("job_confirmation.html", {
-                "name": name,
-                "position": position
-            })
 
-            confirmation_email = EmailMessage(
-                subject="Thank You for Your Application",
-                body=html_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[email]
-            )
-            confirmation_email.content_subtype = "html"
-            confirmation_email.send(fail_silently=False)
-
-            return JsonResponse({'success': True})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    except Exception as e:
+        logger.exception("Error processing job application")  
+        return JsonResponse({'success': False, 'error': 'Internal server error'})
 # def admin_register(request):
 #     if request.method == 'POST':
 #         username = request.POST.get('username', '').strip()
@@ -694,7 +692,7 @@ def edit_job(request, pk):
     })
 
 def admin_job_applications(request):
-    applications = JobApplication.objects.all().order_by('-submitted_at')  # or .created_at if you're using that field
+    applications = JobApplication.objects.all().order_by('-submitted_at') 
     return render(request, 'admin_job_applications.html', {'applications': applications})
 
 
