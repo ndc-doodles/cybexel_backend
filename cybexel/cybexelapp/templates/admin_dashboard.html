@@ -11,9 +11,9 @@
 
   <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen"">
+    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
       <div class="flex items-center justify-center mb-8">
-        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-32 h-32 object-contain rounded-full">
       </div>
       <nav>
         <ul class="space-y-4 text-sm">
@@ -117,19 +117,18 @@
 
 
   <div class="flex justify-between items-center mb-6">
-  <h2 class="text-2xl font-semibold">Our Trusted Clients</h2>
+  <h2 class="text-2xl font-semibold text-[#151a37] ">Our Trusted Clients</h2>
   <button onclick="showAddLogoForm()" class="bg-[#151a37] text-white px-4 py-2 rounded hover:bg-[#2d2a58]">
     + Add Logo
   </button>
 </div>
 
-<!-- Logo Form -->
-<!-- Logo Upload Form -->
+
 <form id="logoForm" method="POST" enctype="multipart/form-data"
       class="hidden mb-10 bg-gray-50 p-6 rounded-lg shadow w-full max-w-xl">
   {% csrf_token %}
 
-  <!-- Remove hidden logo_id since we're not editing in bulk -->
+  
   <div class="mb-4">
     <label class="block font-medium mb-1">Upload Logos</label>
     <input type="file" name="images" id="images" multiple required class="w-full border rounded p-2" />

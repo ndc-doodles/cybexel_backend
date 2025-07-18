@@ -12,7 +12,7 @@
   <div class="flex min-h-screen">
     <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
       <div class="flex items-center justify-center mb-8">
-        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-32 h-32 object-contain rounded-full">
       </div>
       <nav>
         <ul class="space-y-4 text-sm">
@@ -63,7 +63,7 @@
   </div>
 
   <!-- Add Blog Form -->
-  <h2 class="text-2xl font-semibold mb-6">Add New Blog</h2>
+  <h2 class="text-2xl font-semibold mb-6 text-[#151a37]">Add New Blog</h2>
   <form method="POST" enctype="multipart/form-data"
         class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg shadow">
     {% csrf_token %}

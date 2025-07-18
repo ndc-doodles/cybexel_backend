@@ -10,9 +10,9 @@
 <body class="bg-gray-100">
     <div class="flex h-screen">
        
-           <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen"">
+           <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
       <div class="flex items-center justify-center mb-8">
-        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-20 h-20 rounded-full">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-32 h-32 object-contain rounded-full">
       </div>
       <nav>
         <ul class="space-y-4 text-sm">
@@ -59,7 +59,7 @@
             <div class="w-full bg-[#151a37] text-white py-4 px-6 r shadow mb-6">
     <h2 class="text-xl font-semibold">Admin Job Applications Management</h2>
   </div>
-  <h1 class="text-2xl font-bold mb-6">Job Applications</h1>
+  <h1 class="text-2xl font-semibold text-[#151a37] mb-6">Job Applications</h1>
 
  <form method="POST" action="{% url 'bulk_delete_job_applications' %}">
   {% csrf_token %}
