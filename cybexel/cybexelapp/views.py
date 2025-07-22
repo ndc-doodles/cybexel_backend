@@ -21,6 +21,7 @@ from django.utils.timezone import now
 from datetime import timedelta
 from dateutil.parser import parse as parse_datetime 
 import logging
+from django.views.decorators.cache import never_cache
 
 
 
@@ -404,8 +405,8 @@ def admin_logout(request):
     logout(request)
     return redirect('admin_login')
 
-
-@login_required(login_url='admin_login')  
+@never_cache
+@login_required(login_url='admin_login')
 def admin_dashboard(request):
 
     if not request.user.is_staff:
@@ -450,7 +451,9 @@ def add_stat(request):
         count = request.POST.get('count')
         Statistic.objects.create(title=title, count=count)
         return redirect('admin_dashboard')
-    
+
+@never_cache
+@login_required(login_url='admin_login')   
 def admin_contact(request):
     contacts = ContactSubmission.objects.all().order_by('-submitted_at')
     return render(request, 'admin_contact.html', {'contacts': contacts})
@@ -464,7 +467,8 @@ def bulk_delete_contacts(request):
     return redirect('admin_contact')
 
 
-
+@never_cache
+@login_required(login_url='admin_login')
 def admin_blog(request):
     if request.method == "POST":
         blog_id = request.POST.get("edit_id")
@@ -531,6 +535,8 @@ def update_blog(request):
         blog.save()
         return redirect('admin_blog')
 
+@never_cache
+@login_required(login_url='admin_login')
 def admin_careers(request):
     edit_department = None
     edit_experience = None
@@ -691,6 +697,8 @@ def edit_job(request, pk):
         "experiences": experiences
     })
 
+@never_cache
+@login_required(login_url='admin_login')
 def admin_job_applications(request):
     applications = JobApplication.objects.all().order_by('-submitted_at') 
     return render(request, 'admin_job_applications.html', {'applications': applications})
@@ -715,7 +723,8 @@ def delete_job_application(request, id):
     return redirect('admin_job_applications')
 
 
-
+@never_cache
+@login_required(login_url='admin_login')
 def admin_cybexelife(request):
     if request.method == 'POST':
         event_id = request.POST.get('edit_id')
