@@ -363,6 +363,49 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const closeModal = document.getElementById('closeModal');
+  const prevButton = document.getElementById('prevImage');
+  const nextButton = document.getElementById('nextImage');
+
+  const images = Array.from(document.querySelectorAll('.event-image'));
+  let currentIndex = 0;
+
+  images.forEach((img, index) => {
+    img.dataset.index = index;
+    img.addEventListener('click', () => {
+      currentIndex = index;
+      modalImage.src = img.src;
+      modal.classList.remove('hidden');
+    });
+  });
+
+  closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+
+  prevButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    modalImage.src = images[currentIndex].src;
+  });
+
+  nextButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % images.length;
+    modalImage.src = images[currentIndex].src;
+  });
+});
+</script>
 
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>

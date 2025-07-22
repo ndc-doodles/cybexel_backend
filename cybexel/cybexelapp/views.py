@@ -285,7 +285,7 @@ def submit_job_application(request):
         confirmation_email.content_subtype = "html"
         confirmation_email.send(fail_silently=False)
 
-        return redirect(f"{request.META.get('HTTP_REFERER', '/')}?success=true")
+        return JsonResponse({'success': True})
 
 
     except Exception as e:

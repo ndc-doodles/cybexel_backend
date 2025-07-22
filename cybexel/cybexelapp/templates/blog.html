@@ -327,7 +327,34 @@ Bengaluru
   </div>
 </footer>
 
+<script>
+  
+const blogData = document.getElementById("blogData");
 
+if (blogData) {
+  const blogs = JSON.parse(blogData.dataset.blogs);
+
+  document.querySelectorAll(".open-modal-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const index = this.dataset.index;
+      openBlogModal(parseInt(index));
+    });
+  });
+
+  function openBlogModal(index) {
+    const blog = blogs[index];
+    document.getElementById("modalTitle").innerText = blog.title;
+    document.getElementById("modalDate").innerText = blog.date;
+    document.getElementById("modalImage").src = blog.image;
+    document.getElementById("modalContent").innerHTML = blog.content;
+    document.getElementById("blogModal").classList.remove("hidden");
+  }
+
+  function closeBlogModal() {
+    document.getElementById("blogModal").classList.add("hidden");
+  }
+}
+</script>
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 const toggleBtn = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 const navbar = document.getElementById('navbar');
@@ -292,31 +294,6 @@ document.getElementById("jobApplicationForm").addEventListener("submit", async f
 
 //  blog
 
-const blogData = document.getElementById("blogData");
-
-if (blogData) {
-  const blogs = JSON.parse(blogData.dataset.blogs);
-
-  document.querySelectorAll(".open-modal-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const index = this.dataset.index;
-      openBlogModal(parseInt(index));
-    });
-  });
-
-  function openBlogModal(index) {
-    const blog = blogs[index];
-    document.getElementById("modalTitle").innerText = blog.title;
-    document.getElementById("modalDate").innerText = blog.date;
-    document.getElementById("modalImage").src = blog.image;
-    document.getElementById("modalContent").innerHTML = blog.content;
-    document.getElementById("blogModal").classList.remove("hidden");
-  }
-
-  function closeBlogModal() {
-    document.getElementById("blogModal").classList.add("hidden");
-  }
-}
 
 
 
@@ -324,11 +301,7 @@ if (blogData) {
 
 
 
-
-
-  
-  
- document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   const modal = document.getElementById('imageModal');
   const modalImage = document.getElementById('modalImage');
   const closeModal = document.getElementById('closeModal');
@@ -338,7 +311,6 @@ if (blogData) {
   const images = Array.from(document.querySelectorAll('.event-image'));
   let currentIndex = 0;
 
-  // Click on image to open modal
   images.forEach((img, index) => {
     img.dataset.index = index;
     img.addEventListener('click', () => {
@@ -348,26 +320,22 @@ if (blogData) {
     });
   });
 
-  // Close modal
   closeModal.addEventListener('click', () => {
     modal.classList.add('hidden');
   });
 
-  // Click outside image to close
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.classList.add('hidden');
     }
   });
 
-  // Navigate to previous image
   prevButton.addEventListener('click', (e) => {
     e.stopPropagation();
     currentIndex = (currentIndex - 1 + images.length) % images.length;
     modalImage.src = images[currentIndex].src;
   });
 
-  // Navigate to next image
   nextButton.addEventListener('click', (e) => {
     e.stopPropagation();
     currentIndex = (currentIndex + 1) % images.length;
