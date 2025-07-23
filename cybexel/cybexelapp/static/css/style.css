@@ -290,10 +290,18 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
 }
 
 .logo {
-  height: 5rem; /* Adjust size if needed */
+  height: 5rem; /* Default logo size */
   width: auto;
-  margin: 0 2rem;
+  margin: 0 2rem; /* Default gap between logos */
   flex-shrink: 0;
+}
+
+/* Responsive adjustments for mobile screens */
+@media (max-width: 768px) {
+  .logo {
+    height: 3.1rem; /* Smaller logo on mobile to fit 3 logos */
+    margin: 0 0.5rem; /* Reduced gap between logos */
+  }
 }
 
 @keyframes marquee {
@@ -304,6 +312,8 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
     transform: translateX(-50%);
   }
 }
+
+
 
 @keyframes vibrate {
   0% { transform: translate(0); }
