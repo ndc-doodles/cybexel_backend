@@ -472,26 +472,22 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
         closeAndShowSuccess();
       } else if (data.errors) {
         renderErrors(data.errors);
-        unlockSubmit();
       } else {
         showGeneralError('Something went wrong. Please try again.');
-        unlockSubmit();
       }
     })
     .catch(err => {
       console.error('Error:', err);
       showGeneralError('Something went wrong. Please try again.');
-      unlockSubmit();
+    })
+    .finally(() => {
+      isSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
+      }
     });
   });
-
-  function unlockSubmit() {
-    isSubmitting = false;
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
-    }
-  }
 
   function clearAllErrors() {
     Object.keys(els).forEach(k => {
@@ -588,11 +584,9 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     }, 2000);
     form.reset();
     clearAllErrors();
-    unlockSubmit();
   }
 })();
 </script>
-
 
 
 
@@ -733,15 +727,14 @@ We aim to create an equitable workplace for all, offering some of the best IT jo
 
 
     <li class="flex items-start">
-  <span class="min-w-[70px] font-medium">Address:</span>
-  <span>
-    Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
-    No.76, East Power House Road, Tatabad,<br>
-    Coimbatore - 641012<br><br>
-    Bengaluru
-  </span>
-</li>
+      <span class="min-w-[70px] font-medium">Address:</span>
+      <span>
+        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
 
+Coimbatore<br><br>
+Bengaluru 
+      </span>
+    </li>
 
   </ul>
 </div>
