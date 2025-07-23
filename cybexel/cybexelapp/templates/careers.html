@@ -363,12 +363,12 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
   const form = document.getElementById('jobApplicationForm');
   if (!form) return;
 
-  // Prevent duplicate event listener
+  // Prevent duplicate listener
   if (form.dataset.listenerAttached === 'true') return;
   form.dataset.listenerAttached = 'true';
 
   const submitBtn = document.getElementById('jobSubmitBtn');
-  let isSubmitting = false; // Prevent multiple submissions
+  let isSubmitting = false;
 
   const els = {
     formErrors:       document.getElementById('formErrors'),
@@ -385,109 +385,15 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     resumeInput:      document.getElementById('resumeInput'),
   };
 
-  // Block Enter key auto-submit except in textarea
-  form.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-    }
-  });
+  const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com'];
+  const letterSpaceRe = /^[A-Za-z ]+$/;
+const coverRe = /^[A-Za-z0-9\s.,!?'":;()\-&\n\r]+$/;
 
-  // Resume validation
-  els.resumeInput.addEventListener('change', () => {
-    const file = els.resumeInput.files[0];
-    if (!file) return;
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      showFieldError('resume', 'Only PDF files are allowed.');
-    } else if (file.size > (5 * 1024 * 1024)) {
-      showFieldError('resume', 'Resume size must not exceed 5MB.');
-    } else {
-      clearFieldError('resume');
-    }
-  });
+  // Strong URL detection
+  function containsURL(text) {
+  return /(https?:\/\/[^\s]+|www\.[^\s]+)/i.test(text);
+}
 
-  // Live validation for name
-  const letterSpaceRe = /^[A-Za-z\s]*$/;
-  els.nameField.addEventListener('input', () => {
-    if (!letterSpaceRe.test(els.nameField.value)) {
-      showFieldError('name', 'Only letters and spaces are allowed.');
-    } else {
-      clearFieldError('name');
-    }
-  });
-
-  // Live validation for cover letter
-  els.coverField.addEventListener('input', () => {
-    if (!letterSpaceRe.test(els.coverField.value)) {
-      showFieldError('coverLetter', 'Only letters and spaces allowed. No links.');
-    } else {
-      clearFieldError('coverLetter');
-    }
-  });
-
-  // Email domain validation
-  const allowedDomains = ['gmail.com','yahoo.com','outlook.com','hotmail.com','protonmail.com'];
-  els.emailField.addEventListener('input', () => {
-    const v = els.emailField.value.trim();
-    const at = v.lastIndexOf('@');
-    if (at > -1) {
-      const d = v.slice(at + 1).toLowerCase();
-      if (d && !allowedDomains.includes(d)) {
-        showFieldError('email', 'Please use gmail, yahoo, outlook, hotmail, or protonmail.');
-      } else {
-        clearFieldError('email');
-      }
-    } else {
-      clearFieldError('email');
-    }
-  });
-
-  // Submit handler
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    if (isSubmitting) return; // Prevent multiple submissions
-    isSubmitting = true;
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.dataset.originalText = submitBtn.textContent;
-      submitBtn.textContent = 'Submitting...';
-    }
-
-    clearAllErrors();
-
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
-      },
-      body: formData,
-      credentials: 'same-origin'
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        closeAndShowSuccess();
-      } else if (data.errors) {
-        renderErrors(data.errors);
-      } else {
-        showGeneralError('Something went wrong. Please try again.');
-      }
-    })
-    .catch(err => {
-      console.error('Error:', err);
-      showGeneralError('Something went wrong. Please try again.');
-    })
-    .finally(() => {
-      isSubmitting = false;
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
-      }
-    });
-  });
 
   function clearAllErrors() {
     Object.keys(els).forEach(k => {
@@ -501,11 +407,6 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
       const el = document.getElementById(id);
       if (el) el.classList.remove('border-red-500');
     });
-  }
-
-  function showGeneralError(msg) {
-    els.formErrors.innerText = msg;
-    els.formErrors.classList.remove('hidden');
   }
 
   function showFieldError(field, msg) {
@@ -536,56 +437,120 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     if (inputEl) inputEl.classList.add('border-red-500');
   }
 
-  function clearFieldError(field) {
-    const map = {
-      position:    'positionError',
-      label:       'labelError',
-      department:  'departmentError',
-      name:        'nameError',
-      email:       'emailError',
-      coverLetter: 'coverLetterError',
-      resume:      'resumeError'
-    };
-    const fieldIdMap = {
-      position:    'formPosition',
-      label:       'formLabel',
-      department:  'formDepartment',
-      name:        'nameField',
-      email:       'emailField',
-      coverLetter: 'coverLetterField',
-      resume:      'resumeInput'
-    };
-    const errEl = els[map[field]];
-    if (errEl) {
-      errEl.innerText = '';
-      errEl.classList.add('hidden');
-    }
-    const inputEl = document.getElementById(fieldIdMap[field]);
-    if (inputEl) inputEl.classList.remove('border-red-500');
-  }
-
-  function renderErrors(errors) {
-    if (errors.__all__) showGeneralError(errors.__all__);
-    if (errors.position)   showFieldError('position', errors.position);
-    if (errors.label)      showFieldError('label', errors.label);
-    if (errors.department) showFieldError('department', errors.department);
-    if (errors.name)       showFieldError('name', errors.name);
-    if (errors.email)      showFieldError('email', errors.email);
-    if (errors.cover_letter) showFieldError('coverLetter', errors.cover_letter);
-    if (errors.resume)     showFieldError('resume', errors.resume);
-  }
-
-  function closeAndShowSuccess() {
-    document.getElementById('formModal').classList.add('hidden');
-    const successModal = document.getElementById('successModal');
-    successModal.classList.remove('hidden');
-    setTimeout(() => {
-      successModal.classList.add('hidden');
-    }, 2000);
-    form.reset();
+  function validateForm() {
     clearAllErrors();
+    let isValid = true;
+
+    const nameValue = els.nameField.value.trim();
+    const emailValue = els.emailField.value.trim();
+    const coverValue = els.coverField.value.trim();
+    const file = els.resumeInput.files[0];
+
+    // --- Name ---
+    if (!nameValue) {
+      showFieldError('name', 'Name is required.');
+      isValid = false;
+    } else if (!letterSpaceRe.test(nameValue)) {
+      showFieldError('name', 'Only letters and spaces are allowed.');
+      isValid = false;
+    }
+
+    // --- Email ---
+    if (!emailValue) {
+      showFieldError('email', 'Email is required.');
+      isValid = false;
+    } else {
+      const domain = emailValue.split('@').pop().toLowerCase();
+      if (!allowedDomains.includes(domain)) {
+        showFieldError('email', 'Allowed domains: gmail, yahoo, outlook, hotmail, protonmail.');
+        isValid = false;
+      }
+    }
+
+    // --- Cover Letter ---
+    console.log("Cover Letter:", coverValue);
+    console.log("Contains URL?", containsURL(coverValue));
+
+    // --- Cover Letter ---
+if (coverValue.length > 3000) {
+  showFieldError('coverLetter', 'Cover letter too long (max 3000 chars).');
+  isValid = false;
+} else if (containsURL(coverValue)) {
+  showFieldError('coverLetter', 'Cover letter must not contain links or URLs.');
+  isValid = false;
+} else if (coverValue && !coverRe.test(coverValue)) {
+  showFieldError('coverLetter', 'Cover letter contains invalid characters.');
+  isValid = false;
+}
+
+
+    // --- Resume ---
+    if (file) {
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showFieldError('resume', 'Only PDF files are allowed.');
+        isValid = false;
+      } else if (file.size > 5 * 1024 * 1024) {
+        showFieldError('resume', 'Resume size must not exceed 5MB.');
+        isValid = false;
+      }
+    }
+
+    return isValid;
   }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (isSubmitting) return;
+
+    const isValid = validateForm();
+    console.log("Form valid?", isValid);
+
+    if (!isValid) {
+      console.warn("Form blocked due to validation errors.");
+      return;  // Stop here if validation fails
+    }
+
+    // Only reach here if form is valid
+    isSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtn.dataset.originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting...';
+
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        closeAndShowSuccess();
+      } else if (data.errors) {
+        renderErrors(data.errors);
+      } else {
+        els.formErrors.innerText = 'Something went wrong. Please try again.';
+        els.formErrors.classList.remove('hidden');
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      els.formErrors.innerText = 'Something went wrong. Please try again.';
+      els.formErrors.classList.remove('hidden');
+    })
+    .finally(() => {
+      isSubmitting = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
+    });
+  });
 })();
+
 </script>
 
 

@@ -197,25 +197,77 @@
 </form>
 
 <script>
-  function addLiveValidation(fieldId, errorId, regex) {
-    const field = document.getElementById(fieldId);
-    const error = document.getElementById(errorId);
+ (function () {
+  const form = document.getElementById('contactForm');
+  const nameField = document.getElementById('nameField');
+  const emailField = document.getElementById('emailField');
+  const subjectField = document.getElementById('subjectField');
+  const messageField = document.getElementById('messageField');
 
-    field.addEventListener('input', function () {
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const subjectError = document.getElementById('subjectError');
+  const messageError = document.getElementById('messageError');
+
+  const nameRe = /^[A-Za-z\s]+$/;
+  const subjectRe = /^[A-Za-z\s]+$/;
+  const messageRe = /^[A-Za-z\s\n\r]+$/;
+
+  function addLiveValidation(field, errorElement, regex, customMsg) {
+    field.addEventListener('input', () => {
       if (!regex.test(field.value)) {
-        error.classList.remove('hidden');
+        errorElement.classList.remove('hidden');
+        errorElement.textContent = customMsg;
         field.classList.add('border-red-500');
       } else {
-        error.classList.add('hidden');
+        errorElement.classList.add('hidden');
         field.classList.remove('border-red-500');
       }
     });
   }
 
-  // Validation rules
-  addLiveValidation('nameField', 'nameError', /^[A-Za-z\s]*$/);
-  addLiveValidation('subjectField', 'subjectError', /^[A-Za-z\s]*$/);
-  addLiveValidation('messageField', 'messageError', /^[A-Za-z\s]*$/);
+  addLiveValidation(nameField, nameError, nameRe, 'Only letters and spaces allowed.');
+  addLiveValidation(subjectField, subjectError, subjectRe, 'Only letters and spaces allowed.');
+  addLiveValidation(messageField, messageError, messageRe, 'Only letters and spaces allowed.');
+
+  // Final form submit validation
+  form.addEventListener('submit', function (e) {
+    let valid = true;
+
+    // Name
+    if (!nameRe.test(nameField.value.trim())) {
+      nameError.classList.remove('hidden');
+      nameField.classList.add('border-red-500');
+      valid = false;
+    }
+
+    // Subject
+    if (!subjectRe.test(subjectField.value.trim())) {
+      subjectError.classList.remove('hidden');
+      subjectField.classList.add('border-red-500');
+      valid = false;
+    }
+
+    // Message
+    const msg = messageField.value.trim();
+    if (!messageRe.test(msg)) {
+      messageError.classList.remove('hidden');
+      messageError.textContent = 'Message can only include letters, spaces, and newlines.';
+      messageField.classList.add('border-red-500');
+      valid = false;
+    } else if (msg.length > 2000) {
+      messageError.classList.remove('hidden');
+      messageError.textContent = 'Message is too long (max 2000 characters).';
+      messageField.classList.add('border-red-500');
+      valid = false;
+    }
+
+    if (!valid) {
+      e.preventDefault(); // Block form submission to backend
+    }
+  });
+})();
+
 </script>
 
 
