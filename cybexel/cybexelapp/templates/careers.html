@@ -336,12 +336,12 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
       </div>
 
       <!-- Cover Letter -->
-      <div>
+      {% comment %} <div>
         <textarea id="coverLetterField" name="cover_letter"
                   class="w-full border px-3 py-2 rounded"
                   placeholder="Cover Letter (letters & spaces only; no links)">{{ form_data.cover_letter|default:'' }}</textarea>
         <p id="coverLetterError" class="text-red-600 text-sm mt-1 hidden"></p>
-      </div>
+      </div> {% endcomment %}
 
       <!-- Resume -->
       <div>
