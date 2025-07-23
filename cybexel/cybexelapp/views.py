@@ -74,10 +74,9 @@ def careers(request):
 
 
 ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
+
 def contact(request):
-    context = {
-        'form_errors': {}
-    }
+    context = {'form_errors': {}, 'form_data': {}}
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -87,76 +86,55 @@ def contact(request):
 
         form_errors = {}
 
+        # --- Name Validation ---
         if not name:
             form_errors['name'] = "Name is required."
         elif not re.match(r'^[A-Za-z ]+$', name):
-            form_errors['name'] = "Name must not contain numbers or special characters."
+            form_errors['name'] = "Name must contain only letters and spaces."
         elif len(name) > 100:
             form_errors['name'] = "Name is too long (max 100 characters)."
 
-
-
+        # --- Email Validation ---
         if not email:
-          form_errors['email'] = "Email is required."
+            form_errors['email'] = "Email is required."
         else:
             try:
-              validate_email(email)
+                validate_email(email)
+                domain = email.split('@')[-1].lower()
+                if domain not in ALLOWED_DOMAINS:
+                    form_errors['email'] = "Please use a valid common email provider like Gmail or Outlook."
             except ValidationError:
-              form_errors['email'] = "Please enter a valid email address."
-    
-   
-        domain = email.split('@')[-1].lower()
-        if domain not in ALLOWED_DOMAINS:
-           form_errors['email'] = "Please use a valid common email provider like Gmail or Outlook."
+                form_errors['email'] = "Please enter a valid email address."
+            if len(email) > 100:
+                form_errors['email'] = "Email is too long (max 100 characters)."
 
-        if len(email) > 100:
-            form_errors['email'] = "Email is too long (max 100 characters)."
+        # --- Subject Validation ---
+        if not subject:
+            form_errors['subject'] = "Subject is required."
+        elif not re.match(r'^[A-Za-z ]+$', subject):
+            form_errors['subject'] = "Subject must contain only letters and spaces."
+        elif len(subject) > 100:
+            form_errors['subject'] = "Subject is too long (max 100 characters)."
 
- 
-            if not subject:
-               form_errors['subject'] = "Subject is required."
-            elif not re.match(r'^[A-Za-z ]+$', subject):
-               form_errors['subject'] = "Subject must contain only letters and spaces."
-            elif len(subject) > 100:
-               form_errors['subject'] = "Subject is too long (max 100 characters)."
-            elif contains_url(subject):  
-               form_errors['subject'] = "Subject cannot contain URLs or links."
-
-
+        # --- Message Validation (only letters & spaces) ---
         if not message:
             form_errors['message'] = "Message is required."
-        elif not re.match(r'^[A-Za-z0-9\s.,\n\r]+$', message):
-            form_errors['message'] = "Message can only include letters, numbers, spaces, commas, and periods."
- 
-
+        elif not re.match(r'^[A-Za-z ]+$', message.replace('\n', '').replace('\r', '').replace(' ', ' ')):
+            form_errors['message'] = "Message can only include letters and spaces."
         elif len(message) > 2000:
             form_errors['message'] = "Message is too long (max 2000 characters)."
 
+        # --- If errors, re-render with data ---
         if form_errors:
             context['form_errors'] = form_errors
-            context['form_data'] = {
-                'name': name,
-                'email': email,
-                'subject': subject,
-                'message': message,
-            }
+            context['form_data'] = {'name': name, 'email': email, 'subject': subject, 'message': message}
             return render(request, 'contact.html', context)
 
-
-        ContactSubmission.objects.create(
-            name=name,
-            email=email,
-            subject=subject,
-            message=message
-        )
+        # --- Save and send email ---
+        ContactSubmission.objects.create(name=name, email=email, subject=subject, message=message)
 
         email_subject = f"New Contact Form Submission: {subject}"
-        email_message = f"""
-        Name: {name}
-        Email: {email}
-        Subject: {subject}
-        Message: {message}
-        """
+        email_message = f"Name: {name}\nEmail: {email}\nSubject: {subject}\nMessage: {message}"
 
         email_obj = EmailMessage(
             subject=email_subject,
@@ -189,65 +167,92 @@ def detail(request, pk):
 
 
 
+logger = logging.getLogger(__name__)
 
 ALLOWED_EXTENSIONS = ['pdf']
 MAX_RESUME_SIZE = 5 * 1024 * 1024
 ALLOWED_DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com']
 
+
 def contains_url(text):
     return bool(re.search(r'(http[s]?://|www\.|\.\w{2,})', text))
-logger = logging.getLogger(__name__)
+
 
 def submit_job_application(request):
     if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+        return JsonResponse({'success': False, 'errors': {'__all__': 'Invalid request method'}})
 
+    errors = {}
+
+    # --- Get Form Data ---
+    department_name = request.POST.get('department', '').strip()
+    position = request.POST.get('position', '').strip()
+    label = request.POST.get('label', '').strip()
+    name = request.POST.get('name', '').strip()
+    email = request.POST.get('email', '').strip()
+    cover_letter = request.POST.get('cover_letter', '').strip()
+    resume = request.FILES.get('resume')
+
+    # --- Required fields ---
+    if not department_name:
+        errors['department'] = 'Department required.'
+    if not position:
+        errors['position'] = 'Position required.'
+    if not label:
+        errors['label'] = 'Label required.'
+    if not name:
+        errors['name'] = 'Name required.'
+    if not email:
+        errors['email'] = 'Email required.'
+
+    if errors:
+        return JsonResponse({'success': False, 'errors': errors})
+
+    # --- Department lookup ---
     try:
-        department_name = request.POST.get('department', '').strip()
-        position = request.POST.get('position', '').strip()
-        label = request.POST.get('label', '').strip()
-        name = request.POST.get('name', '').strip()
-        email = request.POST.get('email', '').strip()
-        cover_letter = request.POST.get('cover_letter', '').strip()
-        resume = request.FILES.get('resume')
+        department = Department.objects.get(name=department_name)
+    except Department.DoesNotExist:
+        errors['department'] = 'Selected department is invalid.'
 
-        if not all([department_name, position, label, name, email]):
-            return JsonResponse({'success': False, 'error': 'Please fill in all required fields.'})
+    # --- Name validation ---
+    if not re.fullmatch(r'^[A-Za-z ]+$', name):
+        errors['name'] = 'Name must contain only letters and spaces.'
 
-        try:
-            department = Department.objects.get(name=department_name)
-        except Department.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Selected department is invalid.'})
+    # --- URL guard ---
+    for field_name, field_value in [('name', name), ('label', label), ('position', position)]:
+        if contains_url(field_value):
+            errors[field_name] = 'No links or URLs allowed.'
 
-        if not re.fullmatch(r'^[A-Za-z ]+$', name):
-            return JsonResponse({'success': False, 'error': 'Name must contain only letters and spaces.'})
+    # --- Email validation ---
+    try:
+        validate_email(email)
+        domain = email.split('@')[-1].lower()
+        if domain not in ALLOWED_DOMAINS:
+            raise ValidationError("Invalid domain.")
+    except ValidationError:
+        errors['email'] = 'Enter a valid email address from allowed domains.'
 
-        for field_value in [name, label, position]:
-            if contains_url(field_value):
-                return JsonResponse({'success': False, 'error': 'No links or URLs allowed in name, label, or position.'})
+    # --- Resume validation ---
+    if resume:
+        if not resume.name.lower().endswith('.pdf') or resume.content_type != 'application/pdf':
+            errors['resume'] = 'Only PDF files are allowed.'
+        elif resume.size > MAX_RESUME_SIZE:
+            errors['resume'] = 'Resume size must not exceed 5MB.'
 
-        try:
-            validate_email(email)
-            domain = email.split('@')[-1].lower()
-            if domain not in ALLOWED_DOMAINS:
-                raise ValidationError("Invalid domain.")
-        except ValidationError:
-            return JsonResponse({'success': False, 'error': 'Enter a valid email address from allowed domains.'})
+    # --- Cover letter validation ---
+    if cover_letter:
+        if len(cover_letter) > 3000:
+            errors['cover_letter'] = 'Cover letter too long (max 3000 characters).'
+        elif contains_url(cover_letter):
+            errors['cover_letter'] = 'Cover letter must not contain any URLs.'
+        elif not re.fullmatch(r"[A-Za-z0-9,.!?'\"()\- \n\r]+", cover_letter):
+            errors['cover_letter'] = 'Cover letter contains invalid characters.'
 
-        if resume:
-            if not resume.name.lower().endswith('.pdf') or resume.content_type != 'application/pdf':
-                return JsonResponse({'success': False, 'error': 'Only PDF files are allowed.'})
-            if resume.size > MAX_RESUME_SIZE:
-                return JsonResponse({'success': False, 'error': 'Resume size must not exceed 5MB.'})
+    if errors:
+        return JsonResponse({'success': False, 'errors': errors})
 
-        if cover_letter:
-            if len(cover_letter) > 3000:
-                return JsonResponse({'success': False, 'error': 'Cover letter too long (max 3000 characters).'})
-            if contains_url(cover_letter):
-                return JsonResponse({'success': False, 'error': 'Cover letter must not contain any URLs.'})
-            if not re.fullmatch(r"[A-Za-z0-9\s.,]+", cover_letter):
-                return JsonResponse({'success': False, 'error': 'Cover letter contains invalid characters.'})
-
+    # --- Save & Email ---
+    try:
         application = JobApplication.objects.create(
             department=department,
             position=position,
@@ -258,8 +263,13 @@ def submit_job_application(request):
             resume=resume
         )
 
+        # --- Notify Admin ---
         admin_subject = f"New Job Application: {position} - {label}"
-        admin_body = f"""A new job application was submitted.\n\nName: {name}\nEmail: {email}\nDepartment: {department.name}\nPosition: {position}\nLabel: {label}\nCover Letter: {cover_letter}"""
+        admin_body = (
+            f"A new job application was submitted.\n\n"
+            f"Name: {name}\nEmail: {email}\nDepartment: {department.name}\n"
+            f"Position: {position}\nLabel: {label}\nCover Letter: {cover_letter}"
+        )
 
         admin_email = EmailMessage(
             subject=admin_subject,
@@ -273,6 +283,7 @@ def submit_job_application(request):
             admin_email.attach(resume.name, resume.read(), resume.content_type)
         admin_email.send(fail_silently=False)
 
+        # --- Send Confirmation Email ---
         html_message = render_to_string("job_confirmation.html", {
             "name": name,
             "position": position
@@ -287,11 +298,11 @@ def submit_job_application(request):
         confirmation_email.send(fail_silently=False)
 
         return JsonResponse({'success': True})
-
-
     except Exception as e:
-        logger.exception("Error processing job application")  
-        return JsonResponse({'success': False, 'error': 'Internal server error'})
+        logger.exception("Error processing job application: %s", str(e))
+        return JsonResponse({'success': False, 'errors': {'__all__': f'Internal server error: {str(e)}'}})
+
+
 # def admin_register(request):
 #     if request.method == 'POST':
 #         username = request.POST.get('username', '').strip()

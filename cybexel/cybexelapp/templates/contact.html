@@ -139,53 +139,85 @@
   {% endfor %}
 {% endif %}
 
-      <form method="POST" class="space-y-4">
+  <form method="POST" class="space-y-4" id="contactForm">
   {% csrf_token %}
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <input type="text" name="name" required placeholder="Your Name"
-       pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
-       value="{{ form_data.name|default:'' }}"
-       class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
-{% if form_errors.name %}
-  <p class="text-red-600 text-sm mt-1">{{ form_errors.name }}</p>
-{% endif %}
+    <!-- Name -->
+    <div>
+      <input type="text" name="name" id="nameField" required placeholder="Your Name"
+             pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
+             value="{{ form_data.name|default:'' }}"
+             class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
+      {% if form_errors.name %}
+        <p class="text-red-600 text-sm mt-1">{{ form_errors.name }}</p>
+      {% endif %}
+      <p id="nameError" class="text-red-600 text-sm mt-1 hidden">Only letters and spaces allowed.</p>
+    </div>
 
-
-    <input type="email" name="email" required placeholder="Email Address"
-       value="{{ form_data.email|default:'' }}"
-       class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
-{% if form_errors.email %}
-  <p class="text-red-600 text-sm mt-1">{{ form_errors.email }}</p>
-{% endif %}
-
+    <!-- Email -->
+    <div>
+      <input type="email" name="email" id="emailField" required placeholder="Email Address"
+             value="{{ form_data.email|default:'' }}"
+             class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
+      {% if form_errors.email %}
+        <p class="text-red-600 text-sm mt-1">{{ form_errors.email }}</p>
+      {% endif %}
+      <p id="emailError" class="text-red-600 text-sm mt-1 hidden">Please enter a valid email (gmail, yahoo, etc.).</p>
+    </div>
   </div>
 
-<input type="text" name="subject" required placeholder="Subject"
-       pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
-       value="{{ form_data.subject|default:'' }}"
-       class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
-{% if form_errors.subject %}
-  <p class="text-red-600 text-sm mt-1">{{ form_errors.subject }}</p>
-{% endif %}
+  <!-- Subject -->
+  <div>
+    <input type="text" name="subject" id="subjectField" required placeholder="Subject"
+           pattern="[A-Za-z ]+" title="Only letters and spaces allowed"
+           value="{{ form_data.subject|default:'' }}"
+           class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]" />
+    {% if form_errors.subject %}
+      <p class="text-red-600 text-sm mt-1">{{ form_errors.subject }}</p>
+    {% endif %}
+    <p id="subjectError" class="text-red-600 text-sm mt-1 hidden">Only letters and spaces allowed.</p>
+  </div>
 
+  <!-- Message -->
+  <div>
+    <textarea name="message" id="messageField" required placeholder="Message"
+              class="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]">{{ form_data.message|default:'' }}</textarea>
+    {% if form_errors.message %}
+      <p class="text-red-600 text-sm mt-1">{{ form_errors.message }}</p>
+    {% endif %}
+    <p id="messageError" class="text-red-600 text-sm mt-1 hidden">Only letters and spaces allowed.</p>
+  </div>
 
-
-  <textarea name="message" required placeholder="Message"
-          pattern="[A-Za-z0-9\s.,]+"
-          title="Only letters, numbers, spaces, commas, and periods allowed."
-          class="w-full border px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#151a37]">{{ form_data.message|default:'' }}</textarea>
-
-{% if form_errors.message %}
-  <p class="text-red-600 text-sm mt-1">{{ form_errors.message }}</p>
-{% endif %}
-
-
+  <!-- Submit Button -->
   <button type="submit"
           class="bg-[#151a37] text-white px-6 py-3 rounded-md hover:bg-[#1f254f] transition">
     Send Message
   </button>
 </form>
+
+<script>
+  function addLiveValidation(fieldId, errorId, regex) {
+    const field = document.getElementById(fieldId);
+    const error = document.getElementById(errorId);
+
+    field.addEventListener('input', function () {
+      if (!regex.test(field.value)) {
+        error.classList.remove('hidden');
+        field.classList.add('border-red-500');
+      } else {
+        error.classList.add('hidden');
+        field.classList.remove('border-red-500');
+      }
+    });
+  }
+
+  // Validation rules
+  addLiveValidation('nameField', 'nameError', /^[A-Za-z\s]*$/);
+  addLiveValidation('subjectField', 'subjectError', /^[A-Za-z\s]*$/);
+  addLiveValidation('messageField', 'messageError', /^[A-Za-z\s]*$/);
+</script>
+
 
 
     </div>
@@ -321,14 +353,15 @@
 
 
     <li class="flex items-start">
-      <span class="min-w-[70px] font-medium">Address:</span>
-      <span>
-        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+  <span class="min-w-[70px] font-medium">Address:</span>
+  <span>
+    Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+    No.76, East Power House Road, Tatabad,<br>
+    Coimbatore - 641012<br><br>
+    Bengaluru
+  </span>
+</li>
 
-Coimbatore<br><br>
-Bengaluru 
-      </span>
-    </li>
 
   </ul>
 </div>

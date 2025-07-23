@@ -159,16 +159,8 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     Discover the best jobs and opportunities designed for students, freshers and experienced professionals.Apply now and take your next step with us!
   </p>
 
-<!-- Success Modal -->
-<div id="successModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center">
-  <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-sm">
-    <svg class="mx-auto mb-4 text-[#151a37] w-16 h-16 animate-ping-once" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-    <h2 class="text-xl font-semibold text-[#151a37]">Application Submitted!</h2>
-    <p class="text-gray-600 mt-2">Thank you for applying. We'll get back to you soon.</p>
-  </div>
-</div>
+
+
 
 <div class="max-w-7xl mx-auto flex flex-col gap-6 items-center">
     <div class="relative w-full md:w-[80%]">
@@ -282,88 +274,325 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     </div>
   </div>
 </div>
-
-<div id="formModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center">
-  <div class="bg-white w-full max-w-xl rounded-xl p-6 relative">
-    <button onclick="closeForm()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
-    <h3 class="text-xl font-bold text-gray-800 mb-4">Job Application</h3>
-<form action="{% url 'submit_application' %}" method="POST" enctype="multipart/form-data " class="space-y-4">
-  {% csrf_token %}
-  <div id="formErrors" class="text-red-600 text-sm my-2"></div>
-
-  <input id="formPosition" name="position" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
-  <input id="formLabel" name="label" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
-  <input id="formDepartment" name="department" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
-  
- <input required name="name" placeholder="Your Name"
-       pattern="[A-Za-z ]+"
-       title="Only letters and spaces are allowed"
-       class="w-full border px-3 py-2 rounded" />
-
-<input required name="email" type="email"
-       pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|protonmail\.com)$"
-       title="Only allowed domains: gmail.com, yahoo.com, etc."
-       placeholder="Your Email"
-       class="w-full border px-3 py-2 rounded" />
-
-<textarea name="cover_letter"
-          class="w-full border px-3 py-2 rounded {% if form_errors.cover_letter %}border-red-500{% endif %}"
-          placeholder="Cover Letter">{{ form_data.cover_letter|default:'' }}</textarea>
-
-{% if form_errors.cover_letter %}
-  <p class="text-red-600 text-sm mt-1">{{ form_errors.cover_letter }}</p>
-{% endif %}
-<input name="resume" type="file" id="resumeInput" accept=".pdf" class="w-full border px-3 py-2 rounded" />
-<p id="fileError" class="text-red-600 text-sm mt-1 hidden">Only PDF files are allowed.</p>
-
-  <button type="submit" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Submit Application</button>
-</form>
-
-
-
+<div id="successModal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center">
+  <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-sm">
+    <svg class="mx-auto mb-4 text-[#151a37] w-16 h-16 animate-ping-once" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+    <h2 class="text-xl font-semibold text-[#151a37]">Application Submitted!</h2>
+    <p class="text-gray-600 mt-2">Thank you for applying. We'll get back to you soon.</p>
   </div>
 </div>
+<div id="formModal" class="fixed inset-0 z-[999] bg-black/60 hidden overflow-y-auto flex items-center justify-center">
+  <div class="bg-white w-full max-w-xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto">
+    <button type="button" onclick="closeForm()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Job Application</h3>
+
+    <form id="jobApplicationForm"
+          action="{% url 'submit_application' %}"
+          method="POST"
+          enctype="multipart/form-data"
+          class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="submission_id" id="submissionIdField">
+
+
+      <!-- General errors -->
+      <div id="formErrors" class="text-red-600 text-sm my-2"></div>
+
+      <!-- Readonly auto-filled fields -->
+      <div>
+        <input id="formPosition" name="position" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+        <p id="positionError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <div>
+        <input id="formLabel" name="label" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+        <p id="labelError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <div>
+        <input id="formDepartment" name="department" readonly class="w-full border px-3 py-2 rounded bg-gray-100" />
+        <p id="departmentError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <!-- Name -->
+      <div>
+        <input required name="name" id="nameField" placeholder="Your Name"
+               pattern="[A-Za-z ]+"
+               title="Only letters and spaces are allowed"
+               class="w-full border px-3 py-2 rounded" />
+        <p id="nameError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <input required name="email" id="emailField" type="email"
+               pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|protonmail\.com)$"
+               title="Only allowed domains: gmail.com, yahoo.com, outlook.com, hotmail.com, protonmail.com"
+               placeholder="Your Email"
+               class="w-full border px-3 py-2 rounded" />
+        <p id="emailError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <!-- Cover Letter -->
+      <div>
+        <textarea id="coverLetterField" name="cover_letter"
+                  class="w-full border px-3 py-2 rounded"
+                  placeholder="Cover Letter (letters & spaces only; no links)">{{ form_data.cover_letter|default:'' }}</textarea>
+        <p id="coverLetterError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <!-- Resume -->
+      <div>
+        <input name="resume" type="file" id="resumeInput" accept=".pdf" class="w-full border px-3 py-2 rounded" />
+        <p id="resumeError" class="text-red-600 text-sm mt-1 hidden"></p>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" id="jobSubmitBtn"
+              class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">
+        Submit Application
+      </button>
+    </form>
+  </div>
+</div>
+
 <script>
-document.querySelector('form').addEventListener('submit', function (e) {
-  e.preventDefault();  // Prevent the default form submission
+(function () {
+  const form = document.getElementById('jobApplicationForm');
+  if (!form) return;
 
-  const form = e.target;
-  const formData = new FormData(form);
+  // Prevent duplicate event listener
+  if (form.dataset.listenerAttached === 'true') return;
+  form.dataset.listenerAttached = 'true';
 
-  fetch(form.action, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
-    },
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      // Hide the form modal
-      document.getElementById('formModal').classList.add('hidden');
+  const submitBtn = document.getElementById('jobSubmitBtn');
+  let isSubmitting = false; // Prevent multiple submissions
 
-      // Show the success modal
-      document.getElementById('successModal').classList.remove('hidden');
+  const els = {
+    formErrors:       document.getElementById('formErrors'),
+    positionError:    document.getElementById('positionError'),
+    labelError:       document.getElementById('labelError'),
+    departmentError:  document.getElementById('departmentError'),
+    nameError:        document.getElementById('nameError'),
+    emailError:       document.getElementById('emailError'),
+    coverLetterError: document.getElementById('coverLetterError'),
+    resumeError:      document.getElementById('resumeError'),
+    nameField:        document.getElementById('nameField'),
+    emailField:       document.getElementById('emailField'),
+    coverField:       document.getElementById('coverLetterField'),
+    resumeInput:      document.getElementById('resumeInput'),
+  };
 
-      // Auto-hide success modal after 2 seconds (optional)
-      setTimeout(() => {
-        document.getElementById('successModal').classList.add('hidden');
-      }, 2000);
-
-      // Optionally reset the form
-      form.reset();
-    } else if (data.errors) {
-      // Show errors in the form
-      document.getElementById('formErrors').innerText = data.errors.join(', ');
+  // Block Enter key auto-submit except in textarea
+  form.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('formErrors').innerText = 'Something went wrong. Please try again.';
   });
-});
+
+  // Resume validation
+  els.resumeInput.addEventListener('change', () => {
+    const file = els.resumeInput.files[0];
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      showFieldError('resume', 'Only PDF files are allowed.');
+    } else if (file.size > (5 * 1024 * 1024)) {
+      showFieldError('resume', 'Resume size must not exceed 5MB.');
+    } else {
+      clearFieldError('resume');
+    }
+  });
+
+  // Live validation for name
+  const letterSpaceRe = /^[A-Za-z\s]*$/;
+  els.nameField.addEventListener('input', () => {
+    if (!letterSpaceRe.test(els.nameField.value)) {
+      showFieldError('name', 'Only letters and spaces are allowed.');
+    } else {
+      clearFieldError('name');
+    }
+  });
+
+  // Live validation for cover letter
+  els.coverField.addEventListener('input', () => {
+    if (!letterSpaceRe.test(els.coverField.value)) {
+      showFieldError('coverLetter', 'Only letters and spaces allowed. No links.');
+    } else {
+      clearFieldError('coverLetter');
+    }
+  });
+
+  // Email domain validation
+  const allowedDomains = ['gmail.com','yahoo.com','outlook.com','hotmail.com','protonmail.com'];
+  els.emailField.addEventListener('input', () => {
+    const v = els.emailField.value.trim();
+    const at = v.lastIndexOf('@');
+    if (at > -1) {
+      const d = v.slice(at + 1).toLowerCase();
+      if (d && !allowedDomains.includes(d)) {
+        showFieldError('email', 'Please use gmail, yahoo, outlook, hotmail, or protonmail.');
+      } else {
+        clearFieldError('email');
+      }
+    } else {
+      clearFieldError('email');
+    }
+  });
+
+  // Submit handler
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (isSubmitting) return; // Prevent multiple submissions
+    isSubmitting = true;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.dataset.originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+    }
+
+    clearAllErrors();
+
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        closeAndShowSuccess();
+      } else if (data.errors) {
+        renderErrors(data.errors);
+        unlockSubmit();
+      } else {
+        showGeneralError('Something went wrong. Please try again.');
+        unlockSubmit();
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      showGeneralError('Something went wrong. Please try again.');
+      unlockSubmit();
+    });
+  });
+
+  function unlockSubmit() {
+    isSubmitting = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
+    }
+  }
+
+  function clearAllErrors() {
+    Object.keys(els).forEach(k => {
+      if (k.endsWith('Error')) {
+        els[k].innerText = '';
+        els[k].classList.add('hidden');
+      }
+    });
+    ['nameField','emailField','coverField','resumeInput',
+     'formPosition','formLabel','formDepartment'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('border-red-500');
+    });
+  }
+
+  function showGeneralError(msg) {
+    els.formErrors.innerText = msg;
+    els.formErrors.classList.remove('hidden');
+  }
+
+  function showFieldError(field, msg) {
+    const map = {
+      position:    'positionError',
+      label:       'labelError',
+      department:  'departmentError',
+      name:        'nameError',
+      email:       'emailError',
+      coverLetter: 'coverLetterError',
+      resume:      'resumeError'
+    };
+    const fieldIdMap = {
+      position:    'formPosition',
+      label:       'formLabel',
+      department:  'formDepartment',
+      name:        'nameField',
+      email:       'emailField',
+      coverLetter: 'coverLetterField',
+      resume:      'resumeInput'
+    };
+    const errEl = els[map[field]];
+    if (errEl) {
+      errEl.innerText = msg;
+      errEl.classList.remove('hidden');
+    }
+    const inputEl = document.getElementById(fieldIdMap[field]);
+    if (inputEl) inputEl.classList.add('border-red-500');
+  }
+
+  function clearFieldError(field) {
+    const map = {
+      position:    'positionError',
+      label:       'labelError',
+      department:  'departmentError',
+      name:        'nameError',
+      email:       'emailError',
+      coverLetter: 'coverLetterError',
+      resume:      'resumeError'
+    };
+    const fieldIdMap = {
+      position:    'formPosition',
+      label:       'formLabel',
+      department:  'formDepartment',
+      name:        'nameField',
+      email:       'emailField',
+      coverLetter: 'coverLetterField',
+      resume:      'resumeInput'
+    };
+    const errEl = els[map[field]];
+    if (errEl) {
+      errEl.innerText = '';
+      errEl.classList.add('hidden');
+    }
+    const inputEl = document.getElementById(fieldIdMap[field]);
+    if (inputEl) inputEl.classList.remove('border-red-500');
+  }
+
+  function renderErrors(errors) {
+    if (errors.__all__) showGeneralError(errors.__all__);
+    if (errors.position)   showFieldError('position', errors.position);
+    if (errors.label)      showFieldError('label', errors.label);
+    if (errors.department) showFieldError('department', errors.department);
+    if (errors.name)       showFieldError('name', errors.name);
+    if (errors.email)      showFieldError('email', errors.email);
+    if (errors.cover_letter) showFieldError('coverLetter', errors.cover_letter);
+    if (errors.resume)     showFieldError('resume', errors.resume);
+  }
+
+  function closeAndShowSuccess() {
+    document.getElementById('formModal').classList.add('hidden');
+    const successModal = document.getElementById('successModal');
+    successModal.classList.remove('hidden');
+    setTimeout(() => {
+      successModal.classList.add('hidden');
+    }, 2000);
+    form.reset();
+    clearAllErrors();
+    unlockSubmit();
+  }
+})();
 </script>
+
 
 
 
@@ -504,14 +733,15 @@ We aim to create an equitable workplace for all, offering some of the best IT jo
 
 
     <li class="flex items-start">
-      <span class="min-w-[70px] font-medium">Address:</span>
-      <span>
-        Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+  <span class="min-w-[70px] font-medium">Address:</span>
+  <span>
+    Alfa Horizon, C Tower, 4th Floor, Vallarpadam, Kochi<br><br>
+    No.76, East Power House Road, Tatabad,<br>
+    Coimbatore - 641012<br><br>
+    Bengaluru
+  </span>
+</li>
 
-Coimbatore<br><br>
-Bengaluru 
-      </span>
-    </li>
 
   </ul>
 </div>
