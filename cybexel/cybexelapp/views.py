@@ -190,7 +190,6 @@ def submit_job_application(request):
     label = request.POST.get('label', '').strip()
     name = request.POST.get('name', '').strip()
     email = request.POST.get('email', '').strip()
-    cover_letter = request.POST.get('cover_letter', '').strip()
     resume = request.FILES.get('resume')
 
     # --- Required fields ---
@@ -239,15 +238,6 @@ def submit_job_application(request):
         elif resume.size > MAX_RESUME_SIZE:
             errors['resume'] = 'Resume size must not exceed 5MB.'
 
-    # --- Cover letter validation ---
-    if cover_letter:
-        if len(cover_letter) > 3000:
-            errors['cover_letter'] = 'Cover letter too long (max 3000 characters).'
-        elif contains_url(cover_letter):
-            errors['cover_letter'] = 'Cover letter must not contain any URLs.'
-        elif not re.fullmatch(r"[A-Za-z0-9,.!?'\"()\- \n\r]+", cover_letter):
-            errors['cover_letter'] = 'Cover letter contains invalid characters.'
-
     if errors:
         return JsonResponse({'success': False, 'errors': errors})
 
@@ -259,7 +249,6 @@ def submit_job_application(request):
             label=label,
             name=name,
             email=email,
-            cover_letter=cover_letter,
             resume=resume
         )
 
@@ -268,7 +257,7 @@ def submit_job_application(request):
         admin_body = (
             f"A new job application was submitted.\n\n"
             f"Name: {name}\nEmail: {email}\nDepartment: {department.name}\n"
-            f"Position: {position}\nLabel: {label}\nCover Letter: {cover_letter}"
+            f"Position: {position}\nLabel: {label}"
         )
 
         admin_email = EmailMessage(
