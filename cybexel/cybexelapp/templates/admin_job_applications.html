@@ -83,7 +83,7 @@
           <th class="border border-gray-300 px-4 py-2">Mail ID</th>
           <th class="border border-gray-300 px-4 py-2">Post</th>
           <th class="border border-gray-300 px-4 py-2">Experience</th>
-          <th class="border border-gray-300 px-4 py-2">Cover Letter</th>
+          {% comment %} <th class="border border-gray-300 px-4 py-2">Cover Letter</th> {% endcomment %}
           <th class="border border-gray-300 px-4 py-2">Resume</th>
           <!-- <th class="border border-gray-300 px-4 py-2">Action</th> -->
         </tr>
@@ -99,7 +99,7 @@
           <td class="border border-gray-300 px-4 py-2">{{ application.email }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ application.position }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ application.department.name }}</td>
-          <td class="border border-gray-300 px-4 py-2">
+          {% comment %} <td class="border border-gray-300 px-4 py-2">
 <button 
   type="button"
   class="text-blue-600 hover:underline text-sm"
@@ -108,7 +108,7 @@
   View
 </button>
 
-          </td>
+          </td> {% endcomment %}
           <td class="border border-gray-300 px-4 py-2">
             {% if application.resume %}
               <a href="{{ application.resume.url }}" target="_blank" class="text-blue-600 hover:underline">Download</a>
