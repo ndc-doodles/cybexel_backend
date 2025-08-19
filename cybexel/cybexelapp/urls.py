@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -49,4 +49,8 @@ urlpatterns = [
     path('get-event-images/<int:event_id>/', views.get_event_images, name='get_event_images'),
     path('delete-event-image/<int:id>/', views.delete_event_image, name='delete_event_image'),
     
+
+
+    re_path(r'^.*$', views.index, name="redirect_to_index"),
+
 ]
