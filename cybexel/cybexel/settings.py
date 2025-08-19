@@ -92,7 +92,7 @@ DATABASES = {
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://cybexel.com/",
+    "https://cybexel.com",
     "https://www.cybexel.com",
 ]
   
