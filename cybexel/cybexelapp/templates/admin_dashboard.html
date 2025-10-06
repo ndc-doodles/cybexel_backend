@@ -148,7 +148,7 @@
 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
   {% for logo in logos %}
     <div class="relative group">
-      <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }}" class="w-24 h-auto mx-auto ">
+      <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }}" class="w-24 h-auto mx-auto">
       <div class="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition">
         <button onclick="editLogo(this)" data-id="{{ logo.id }}" data-alt="{{ logo.alt_text }}"
                 class="text-xs bg-yellow-400 text-black px-2 py-1 rounded">Edit</button>

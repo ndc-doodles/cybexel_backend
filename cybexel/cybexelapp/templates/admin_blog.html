@@ -128,13 +128,9 @@
           <td class="px-6 py-4">{{ blog.keyword }}</td>
           <td class="px-6 py-4">{{ blog.short_heading }}</td>
           <td class="px-6 py-4">
-{% if blog.image %}
-  <img src="{{ blog.image.url }}" class="w-20 h-12 object-cover rounded" />
-{% else %}
-  <div class="w-20 h-12 bg-gray-300 rounded flex items-center justify-center text-xs text-gray-600">
-    No Image
-  </div>
-{% endif %}
+
+<img src="{{ blog.image.url }}" style="width:200px; border:2px solid red;">
+
           </td>
           <td class="px-6 py-4 text-center space-x-2">
             <button type="button" onclick="openEditModal('{{ blog.id }}')"

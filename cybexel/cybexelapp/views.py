@@ -44,6 +44,7 @@ def blog(request):
 
     return render(request, 'blog.html', {'page_obj': page_obj})
 
+
 def careers(request):
     dept_filter = request.GET.get('department', 'all')
     exp_filter = request.GET.get('experience', 'all')

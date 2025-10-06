@@ -51,6 +51,6 @@ urlpatterns = [
     
 
 
-    re_path(r'^.*$', views.index, name="redirect_to_index"),
+    
 
 ]
