@@ -326,6 +326,40 @@ Read about cutting-edge innovations, practical development guides and thought le
 </footer>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const modal = document.getElementById("blogModal");
+  const modalImage = document.getElementById("modalImage");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalDate = document.getElementById("modalDate");
+  const modalContent = document.getElementById("modalContent");
+
+  const blogDataElement = document.getElementById("blogData");
+  const blogs = JSON.parse(blogDataElement.dataset.blogs);
+
+  // Attach click event to all "Read More" buttons
+  document.querySelectorAll(".open-modal-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      const index = button.dataset.index;
+      const blog = blogs[index];
+
+      // Fill modal with blog data
+      modalImage.src = blog.image;
+      modalTitle.textContent = blog.title;
+      modalDate.textContent = blog.date;
+      modalContent.innerHTML = blog.content;
+
+      // Show modal
+      modal.classList.remove("hidden");
+    });
+  });
+});
+
+// Function to close modal
+function closeBlogModal() {
+  document.getElementById("blogModal").classList.add("hidden");
+}
+</script>
 
 <script src="{% static 'js/other_script.js' %}"></script>
 </body>
