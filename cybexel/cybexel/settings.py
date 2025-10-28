@@ -24,6 +24,9 @@ ALLOWED_HOSTS = [
     'www.cybexel.com',
 ]
 
+
+
+# ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = [
     "https://cybexel.com",
     "https://www.cybexel.com",
