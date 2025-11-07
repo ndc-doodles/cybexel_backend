@@ -1,0 +1,478 @@
+{% load static %}
+ 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Cybexel</title>
+
+ 
+  <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://cdn-uicons.flaticon.com">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400;1,700&family=Comfortaa:wght@300..700&family=Michroma&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+
+
+</head>
+<body class="relative min-h-screen">
+
+  <div class="absolute inset-0 bg-cover bg-center opacity-20 -z-10" style="background-image: url('./static/images/bg2.jpg');"></div>
+ 
+ 
+
+ 
+<div id="navbar-container" class="w-full flex justify-center fixed top-0 z-[9999] transition-all duration-300">
+   <nav class="w-full max-w-7xl mx-auto px-4 py-[0.8rem] flex justify-between items-center">
+    
+
+
+<a href="{% url 'index' %}" class="flex items-center">
+  <img src="{% static 'images/logo2.png' %}" alt="Wise Logo" class="w-44 h-auto" />
+</a>
+
+
+    <div class="hidden md:flex items-center gap-8 text-base text-black font-semibold drop-shadow-sm">
+      <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 transition">Home</a>
+      <a href="{% url 'services' %}" class="hover:text-purple-300 transition">Services</a>
+      <a href="{% url 'careers' %}" class="hover:text-purple-300 transition">Careers</a>
+      <div class="relative inline-block nav-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+  <a href="{% url 'founder' %}" class="block px-4 py-2 hover:bg-purple-50">About Founder</a>
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+  </div>
+</div>
+      <a href="{% url 'blog' %}" class="hover:text-purple-300 transition">Blog</a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="{% url 'contact' %}" class="hidden md:inline-block">
+        <button class="bg-[#151a37] text-white text-sm px-5 py-2 rounded-full font-medium transition">
+          Contact Us
+        </button>
+      </a>
+      <button id="menu-toggle" class="md:hidden text-black focus:outline-none pr-2">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<div id="mobile-menu"
+     class="md:hidden fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg px-6 py-10 space-y-6 transform translate-x-full transition-transform duration-300 ease-in-out z-[9999] overflow-y-auto">
+  <a href="{% url 'index' %}" class="text-purple-500 font-bold hover:text-purple-300 block">Home</a>
+  <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
+  <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
+<a href="{% url 'about' %}" class="block text-black font-bold hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+      <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
+  <a href="{% url 'contact' %}" class="block">
+    <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 rounded-full font-medium transition">
+      Contact Us
+    </button>
+  </a>
+</div>
+
+
+
+
+
+
+
+<section class="relative w-full bg-white py-20 px-6 sm:px-12 lg:px-24 xl:px-36 flex flex-col lg:flex-row items-center justify-between mt-20 overflow-hidden">
+
+  <!-- Faded Background Name -->
+  <h1 class="absolute top-10 left-1/2 -translate-x-1/2 text-[3rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] font-bold text-gray-200 opacity-40 whitespace-nowrap pointer-events-none select-none z-0">
+    Said Muhammed
+  </h1>
+
+  <!-- Left Content -->
+  <div class="w-full lg:w-1/3 mb-10 lg:mb-0 z-10 text-center lg:text-left">
+    <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+      Meet Our Founder, <span class="text-[#151a37]">Said Muhammed</span>
+    </h2>
+    <p class="text-gray-600 mb-4 text-sm sm:text-base">
+      Said Muhammed founded <span class="font-semibold text-gray-800">Cybexel Technologies Pvt.Ltd</span> with a vision to revolutionize the industry. With over 15 years of experience, he leads the company to deliver innovative solutions and exceptional results.
+    </p>
+    <a href="#founder"
+    <button class="bg-[#151a37] text-white font-medium py-2 px-4 rounded transition text-sm sm:text-base">
+      Learn More About Said Muhammed →
+    </button>
+</a>
+  </div>
+
+  <!-- Center Image -->
+  <div class="w-full lg:w-1/3 flex justify-center z-10 mb-10 lg:mb-0">
+    <img src="./static/images/ceo.png" alt="Said Muhammed Doe, Founder & CEO" class="rounded-lg max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full">
+  </div>
+
+  <!-- Right Content -->
+  <div class="w-full lg:w-1/3 mt-10 lg:mt-0 z-10 text-center lg:text-left">
+    <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-4">
+      Leading with Vision and Impact
+    </h3>
+    <p class="text-gray-600 mb-4 text-sm sm:text-base">
+      Under Said Muhammed's leadership, <span class="font-semibold text-[#151a37]">Cybexel Technologies Pvt.Ltd</span> has grown into a trusted name in the industry, delivering measurable results for clients worldwide. He focuses on innovation, strategy, and sustainable growth.
+    </p>
+    <div class="text-xl sm:text-2xl font-bold text-[#151a37] flex flex-col sm:flex-row items-center justify-center lg:justify-start">
+      <span class="mr-2">↑ 250%</span>
+      <span class="text-gray-500 text-xs sm:text-base mt-1 sm:mt-0">Average client growth under his guidance</span>
+    </div>
+  </div>
+
+</section>
+
+
+
+
+<section class="w-full bg-white py-20 px-6 sm:px-12 md:px-36 text-gray-800">
+  <div class="max-w-6xl mx-auto text-center md:text-left">
+
+    <!-- Top Content -->
+    <div class="md:flex md:items-start md:justify-between mb-16 flex-col md:flex-row">
+      <div class="md:w-1/3 mb-6 md:mb-0">
+        <p class="text-sm sm:text-md text-gray-500">
+          Growth begins with visionary leadership.
+        </p>
+      </div>
+      <div class="md:w-2/3">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold leading-snug">
+          <span class="text-[#151a37]">Said Muhammed</span> has led 
+          <span class="font-semibold">Cybexel Technologies Pvt. Ltd.</span> 
+          for over a decade, driving digital innovation and measurable impact.
+        </h2>
+      </div>
+    </div>
+
+    <!-- Bottom Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center md:text-left">
+      <div>
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#151a37] mb-2">+250%</h3>
+        <p class="text-xs sm:text-sm text-gray-500">Average client growth under his leadership</p>
+      </div>
+      <div>
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#151a37] mb-2">15+ Years</h3>
+        <p class="text-xs sm:text-sm text-gray-500">Experience in technology & strategy</p>
+      </div>
+      <div>
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#151a37] mb-2">30+</h3>
+        <p class="text-xs sm:text-sm text-gray-500">Industries digitally transformed</p>
+      </div>
+      <div>
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#151a37] mb-2">98%</h3>
+        <p class="text-xs sm:text-sm text-gray-500">Client satisfaction & retention rate</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<div id="founder"></div>
+
+<section id="founder-section" class="relative w-full max-md:pb-10 flex flex-col md:flex-row bg-gray-900 text-white overflow-visible mt-56 h-auto md:h-[50vh]">
+
+  <!-- Left Side (Vertical Position) -->
+  <div class="relative w-full md:w-1/2 flex items-center justify-center overflow-visible mb-10 md:mb-0">
+
+    <!-- Vertical Text -->
+    <div id="vertical-position" class="absolute left-10 sm:left-20 md:left-28 rotate-180 origin-center text-xs sm:text-sm md:text-base tracking-[0.2em] md:tracking-[0.3em] text-gray-400 uppercase [writing-mode:vertical-rl]">
+      Intern
+    </div>
+
+    <!-- Founder Image -->
+    <img src="./static/images/ceo2.png" alt="Founder Image"
+      class="h-64 sm:h-80 md:h-[70vh] w-auto object-cover relative z-10 mb-0 md:mb-[25rem] translate-y-0 md:translate-y-1/4">
+  </div>
+
+  <!-- Right Side (Text Section) -->
+  <div class="relative w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-10 md:px-20 text-left overflow-hidden">
+    <div id="text-wrapper" class="transition-all duration-700 ease-in-out">
+      <h1 id="bg-year" class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-700 opacity-60 mb-3">2005</h1>
+      <h2 id="stage-heading" class="text-2xl sm:text-3xl md:text-3xl font-semibold mb-3">Intern</h2>
+      <p id="stage-story" class="text-gray-300 leading-relaxed max-w-full sm:max-w-lg text-sm sm:text-base md:text-base">
+        Said Muhammed started his journey as a software engineer, learning the ropes of the tech industry.
+      </p>
+    </div>
+
+    <!-- Down Arrow -->
+    <div class="absolute bottom-20 md:bottom-5 right-5 md:left-1/2 md:-translate-x-1/2 cursor-pointer animate-bounce" onclick="nextStory()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 sm:w-8 h-6 sm:h-8 text-white opacity-80 hover:opacity-100" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="py-24 px-6 sm:px-12 md:px-24 overflow-hidden max-md:pb-0">
+
+  <!-- Top Section: Headline -->
+  <div class="space-y-6 text-center md:text-left mb-12 max-w-5xl mx-auto">
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-300 uppercase select-none leading-snug">
+      <span class="text-[#151a37] underline decoration-[#151a37] decoration-4 underline-offset-4">Cybexel</span> 
+      delivering <br> 
+      <span class="text-[#151a37] underline decoration-[#151a37] decoration-4 underline-offset-4">digital solutions</span>
+    </h1>
+  </div>
+
+  <!-- Full-width Image Section -->
+  <div class="w-full py-16 hidden md:flex">
+    <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+      <img src="https://i.pinimg.com/1200x/04/72/bb/0472bbf118d91e3660bbbf905089a124.jpg" 
+           class="w-40 sm:w-48 md:w-56 h-64 sm:h-80 md:h-96 object-cover transform translate-y-2 sm:translate-y-4 md:translate-y-8 hover:scale-105 transition duration-500 ease-in-out" alt="Team Member">
+      <img src="https://i.pinimg.com/1200x/86/91/29/869129cb6e5fb1b19b3c19cb694ef1af.jpg" 
+           class="w-44 sm:w-52 md:w-60 h-64 sm:h-72 md:h-88 object-cover transform hover:scale-105 transition duration-500 ease-in-out" alt="Team Member">
+      <img src="https://i.pinimg.com/736x/2c/56/d0/2c56d0ba5fea5d1e22ef96c18fcd5eb0.jpg" 
+           class="w-40 sm:w-48 md:w-56 h-64 sm:h-80 md:h-96 object-cover transform -translate-y-2 sm:-translate-y-4 md:-translate-y-6 hover:scale-105 transition duration-500 ease-in-out" alt="Team Member">
+      <img src="https://i.pinimg.com/736x/1a/b1/56/1ab1565e6fb427e514f13c3a96b96869.jpg" 
+           class="w-44 sm:w-52 md:w-60 h-64 sm:h-80 md:h-96 object-cover transform translate-y-1 sm:translate-y-2 md:translate-y-4 hover:scale-105 transition duration-500 ease-in-out" alt="Team Member">
+      <img src="https://i.pinimg.com/736x/08/f7/69/08f769d842ed3c0e8c1fa7f93718fc87.jpg" 
+           class="w-40 sm:w-48 md:w-56 h-56 sm:h-64 md:h-88 object-cover transform -translate-y-1 sm:-translate-y-2 md:-translate-y-4 hover:scale-105 transition duration-500 ease-in-out" alt="Team Member">
+    </div>
+  </div>
+
+  <!-- Storytelling Section -->
+  <div class="text-center md:text-left mb-12 px-4 sm:px-12 md:px-12 max-w-5xl mx-auto">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 hidden md:flex ">About Cybexel Technologies</h2>
+    <p class="text-gray-400 leading-relaxed text-sm sm:text-base md:text-lg">
+      Cybexel Technologies Pvt. Ltd. is a leading digital solutions company dedicated to helping businesses thrive in the digital era. 
+      Since 2010, we have partnered with global brands to deliver innovative technologies, seamless digital experiences, and creative solutions 
+      that drive measurable impact. Our expertise spans software development, digital transformation, and design thinking — 
+      combining strategy, creativity, and technology to turn ideas into reality and empower growth.
+    </p>
+  </div>
+
+</section>
+
+
+<div class="fixed bottom-6 right-6 z-[9999]">
+  <div id="fabOptions" class="relative w-16 h-[2rem] max-md:w-12 max-md:h-0">
+
+    <a href="https://wa.me/+919072919991" target="_blank"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-16 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
+   id="whatsappBtn">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+       alt="WhatsApp"
+       class="w-5 h-5 max-md:w-4 max-md:h-4" />
+</a>
+
+<a href="tel:+919072919991"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-28 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
+   id="callBtn">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
+       stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
+  </svg>
+</a>
+
+  </div>
+
+  <button onclick="toggleFab()" id="fabBtn"
+    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
+         fill="none" stroke="#ffffff" stroke-width="2"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
+    </svg>
+  </button>
+</div>
+
+
+
+
+<footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
+
+    <div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
+
+    <div class="ml-16 max-md:ml-0">
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+
+      </ul>
+    </div>
+
+    <div>
+  <h3 class="text-lg font-semibold text-gray-500 mb-3">Get in Touch</h3>
+  <ul class="space-y-6 text-sm text-gray-500 mt-6">
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Email:</span>
+      <div>
+      <a href="mailto:info@cybexel.com" class="hover:text-[#151a37]">info@cybexel.com</a>
+      <a href="mailto:cybexeltechnologies@gmail.com" class="hover:text-[#151a37]">cybexeltechnologies@gmail.com</a>
+      </div>
+
+    </li>
+
+   <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Phone:</span>
+  <div>
+    <a href="tel:+919072919991" class="hover:text-[#151a37] block">+91 9072919991</a>
+    <a href="tel:+919745109190" class="hover:text-[#151a37] block">+91 9745109190</a>
+  </div>
+</li>
+
+
+  <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Locations:</span>
+  <span>
+    Kochi<br>
+    Coimbatore<br>
+    Bangalore<br>
+    UAE
+  </span>
+</li>
+
+
+  </ul>
+</div>
+
+  </div>
+
+  <div class="border-t border-gray-600 mt-32 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500">&copy; 2025 Cybexel. All rights reserved.</p>
+    <div class="mt-4 md:mt-0 flex space-x-4">
+  <a href="https://www.linkedin.com/company/cybexel/" aria-label="LinkedIn" class="hover:text-[#151a37] transition">
+    <i class="fab fa-linkedin text-xl"></i>
+  </a>
+  <a href="https://www.facebook.com/Cybexel.pvt.ltd" aria-label="Facebook" class="hover:text-[#151a37] transition">
+    <i class="fab fa-facebook-f text-xl"></i>
+  </a>
+  <a href="https://www.instagram.com/cybexel_pvtltd/?hl=en" aria-label="Instagram" class="hover:text-[#151a37] transition">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
+</div>
+
+  </div>
+</footer>
+
+
+<script>
+const journey = [
+  {
+    position: "Intern",
+    year: "2005",
+    heading: "Intern",
+    story: "Said Muhammed started his journey as a software engineer, learning the ropes of the tech industry."
+  },
+  {
+    position: "Team Lead",
+    year: "2008",
+    heading: "Team Lead",
+    story: "He progressed to team lead, managing small projects and mentoring junior developers."
+  },
+  {
+    position: "Founder",
+    year: "2010",
+    heading: "Founder",
+    story: "Said Muhammed founded Cybexel Technologies Pvt. Ltd., turning his ideas into a real company."
+  },
+  {
+    position: "CEO",
+    year: "2015",
+    heading: "CEO",
+    story: "Under his leadership, Cybexel expanded globally, delivering innovative digital solutions."
+  },
+  {
+    position: "Visionary Leader",
+    year: "2025",
+    heading: "Visionary Leader",
+    story: "Today, he continues to drive innovation and inspire the next generation of tech leaders."
+  }
+];
+
+let current = 0;
+
+function nextStory() {
+  const textWrapper = document.getElementById("text-wrapper");
+  const position = document.getElementById("vertical-position");
+  const year = document.getElementById("bg-year");
+  const heading = document.getElementById("stage-heading");
+  const story = document.getElementById("stage-story");
+
+  // Animate out
+  textWrapper.classList.add("translate-y-10", "opacity-0");
+
+  setTimeout(() => {
+    current = (current + 1) % journey.length;
+
+    // Update content
+    position.textContent = journey[current].position;
+    year.textContent = journey[current].year;
+    heading.textContent = journey[current].heading;
+    story.textContent = journey[current].story;
+
+    // Animate in
+    textWrapper.classList.remove("translate-y-10");
+    textWrapper.classList.add("-translate-y-10");
+
+    setTimeout(() => {
+      textWrapper.classList.remove("-translate-y-10", "opacity-0");
+    }, 100);
+  }, 400);
+}
+
+</script>
+
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

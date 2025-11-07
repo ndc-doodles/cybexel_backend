@@ -779,3 +779,8 @@ def delete_event_image(request, id):
     image = get_object_or_404(LifeEventImage, id=id)
     image.delete()
     return redirect('admin_cybexelife') 
+
+
+
+def founder(request):
+    return render(request,'founder.html')

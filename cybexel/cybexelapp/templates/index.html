@@ -26,7 +26,24 @@
  <style>
   
 </style>
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Saied K Muhammed",
+  "jobTitle": "Founder & CEO",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Cybexel Technologies Pvt.Ltd",
+    "url": "https://cybexel.com/"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/saied-k-muhammed/",
+    
+  ],
+  "image": "https://cybexel.com/images/ceo4.png"
+}
+</script>
 </head>
 <body class="relative min-h-screen">
 
@@ -61,6 +78,7 @@
     id="about-dropdown"
     class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
   >
+  {% comment %} <a href="{% url 'founder' %}" class="block px-4 py-2 hover:bg-purple-50">About Founder</a> {% endcomment %}
     <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
   </div>
@@ -226,7 +244,7 @@
     <div class="relative md:absolute md:bottom-10 md:left-44 bg-white/20 text-white p-4 md:p-10 mx-4 mt-6 md:mt-10 max-w-full md:max-w-lg text-sm md:text-base z-30 max-md:text-[#151a37]">
       <h1 class="text-5xl font-medium">N-ME APP</h1>
       <p class="mb-2 mt-6">
-Looking for local services or businesses? Our app makes it easy to discover and connect with trusted options nearby in just a few taps—saving you time and effort every day      </p>
+Looking for local services or businesses? Our app makes it easy to discover and connect with trusted options nearby in just a few taps - saving you time and effort every day      </p>
       <p>
         No matter where you are, our smart listing system connects you instantly to the essentials around you. From errands to urgent needs, discover local fast and stress-free.
       </p>
@@ -380,7 +398,7 @@ Looking for local services or businesses? Our app makes it easy to discover and 
     </div>
     <h1 class="text-3xl md:text-5xl font-bold mb-4 text-gray-300 uppercase">No Middlemen. Direct Access</h1>
     <p class="text-gray-300 text-base md:text-lg leading-relaxed mb-6">
-      N-ME empowers you to connect directly with service providers without any third parties or hidden layers. Enjoy transparent communication, faster responses and complete trust—everything you need, right at your fingertips.
+      N-ME empowers you to connect directly with service providers without any third parties or hidden layers. Enjoy transparent communication, faster responses and complete trust - everything you need, right at your fingertips.
     </p>
     <a
       href="https://nmeapp.in/"
@@ -535,7 +553,7 @@ Fuel sustainable growth and drive your business forward with confidence.     </p
     <div class="relative z-10 mt-8">
       <p class="text-xs sm:text-sm font-medium bg-white inline-block px-3 py-1 rounded-full mb-3 text-gray-600">Custom-Fit</p>
       <h3 class="text-lg sm:text-xl font-semibold mb-2 leading-snug">Custom-Fit Solutions, Built Around You</h3>
-      <p class="text-gray-600 text-sm sm:text-base">Get exactly what you need with solutions tailored to your goals, workflows and challenges—no one-size-fits-all approach here.</p>
+      <p class="text-gray-600 text-sm sm:text-base">Get exactly what you need with solutions tailored to your goals, workflows and challenges - no one-size-fits-all approach here.</p>
     </div>
   </div>
 
@@ -664,7 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
   shareBtn.addEventListener("click", () => popup.classList.toggle("hidden"));
 
   // Set social share links
-  document.getElementById("whatsapp-share").href = `https://wa.me/?text=${encodeURIComponent(title + " — " + shareUrl)}`;
+  document.getElementById("whatsapp-share").href = `https://wa.me/?text=${encodeURIComponent(title + "  -  " + shareUrl)}`;
   document.getElementById("facebook-share").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
   document.getElementById("twitter-share").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`;
 
@@ -1078,7 +1096,7 @@ We also provide complete solutions for digital classroom setups, network configu
   </h1>
   <p class="text-sm sm:text-base text-gray-400 mt-4 leading-relaxed max-w-4xl mx-auto ">
 Let’s connect to discuss how our technology solutions can accelerate your business.
-Reach out today—our team is ready to support your goals every step of the way.  </p>
+Reach out today - our team is ready to support your goals every step of the way.  </p>
   <a href="{% url 'contact' %}" class="inline-block mt-6 px-6 py-3 text-white rounded-lg shadow border border-white transition duration-300 hover:bg-white hover:text-[#151a37]">
     Contact Us
   </a>

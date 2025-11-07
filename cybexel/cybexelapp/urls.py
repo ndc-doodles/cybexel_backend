@@ -10,6 +10,7 @@ urlpatterns = [
     path('services', views.services, name='services'),
     path('cybexel_life', views.cybexel_life, name='cybexel_life'),
     path('life-event/<int:pk>/', views.detail, name='life_event_detail'),
+    path('founder', views.founder, name='founder'),
 
 
 

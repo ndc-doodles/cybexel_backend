@@ -1,5 +1,8 @@
  body {
  font-family: "Space Grotesk", sans-serif;    }
+html {
+  scroll-behavior: smooth;
+}
 
     .floating-bg {
       position: absolute;
