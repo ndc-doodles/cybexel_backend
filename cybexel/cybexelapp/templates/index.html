@@ -687,6 +687,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const shareUrl = `${window.location.origin}${window.location.pathname}?section=analysis`;
   const shareTitle = "Political Research & Campaign Support - Cybexel";
+  const shareText = "Focused voter research and data-driven strategies for winning campaigns.";
 
   // Toggle share popup
   shareBtn.addEventListener("click", () => popup.classList.toggle("hidden"));
@@ -699,7 +700,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("facebook-share").href =
     `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareTitle + " - " + shareText)}`;
 
-  // Twitter share
+  // Twitter (X) share
   document.getElementById("twitter-share").href =
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle + " - " + shareText)}&url=${encodeURIComponent(shareUrl)}`;
 
