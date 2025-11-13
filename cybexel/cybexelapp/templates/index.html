@@ -47,20 +47,17 @@
 
 
 
-<!-- Open Graph (Facebook, LinkedIn) -->
+<!-- Open Graph -->
 <meta property="og:title" content="Political Research & Campaign Support">
 <meta property="og:description" content="Focused voter research and data-driven strategies for winning campaigns.">
-<meta property="og:image" content="https://www.cybexel.com/static/images/logo2.png">
 <meta property="og:url" content="https://www.cybexel.com/?section=analysis">
 <meta property="og:type" content="website">
 
-<!-- Twitter Cards -->
-<meta name="twitter:card" content="summary_large_image">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Political Research & Campaign Support">
 <meta name="twitter:description" content="Focused voter research and data-driven strategies for winning campaigns.">
-<meta name="twitter:image" content="https://www.cybexel.com/static/images/logo2.png">
 <meta name="twitter:url" content="https://www.cybexel.com/?section=analysis">
-
 
 
 
@@ -705,21 +702,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const shareTitle = "Political Research & Campaign Support";
   const shareText = "Focused voter research and data-driven strategies for winning campaigns.";
 
-  // Toggle popup
+  // Toggle share popup
   shareBtn.addEventListener("click", () => popup.classList.toggle("hidden"));
 
-  // Set social share links
+  // WhatsApp share
   document.getElementById("whatsapp-share").href =
-    `https://wa.me/?text=${encodeURIComponent(shareTitle + " - " + shareText + " " + shareUrl)}`;
+    `https://wa.me/?text=${encodeURIComponent(`${shareTitle} - ${shareText} ${shareUrl}`)}`;
+
+  // Facebook share
   document.getElementById("facebook-share").href =
-    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareTitle + " - " + shareText)}`;
+
+  // Twitter share
   document.getElementById("twitter-share").href =
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle + " - " + shareText)}&url=${encodeURIComponent(shareUrl)}`;
 
-  // Copy link
+  // Copy link to clipboard
   copyBtn.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(shareUrl);
-    alert("Link copied: " + shareUrl);
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert("Link copied: " + shareUrl);
+    } catch (err) {
+      alert("Failed to copy link. Please copy manually.");
+    }
   });
 
   // Auto-scroll if shared link
@@ -730,7 +735,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   }
 });
-
 </script>
 
 <!-- Font Awesome -->
