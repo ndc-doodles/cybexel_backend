@@ -16,17 +16,17 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-emohm$#-n%0%ade0@a6xe_tj&+yc+gxgqh*d$p)wt$vormu%t3')
 DEBUG = True
 
-# ALLOWED_HOSTS = [
-#     '0.0.0.0',
-#     '127.0.0.1',
-#     'localhost',
-#     'cybexel.com',
-#     'www.cybexel.com',
-# ]
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1',
+    'localhost',
+    'cybexel.com',
+    'www.cybexel.com',
+]
 
 
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = [
     "https://cybexel.com",
     "https://www.cybexel.com",
@@ -76,24 +76,24 @@ WSGI_APPLICATION = 'cybexel.wsgi.application'
 
 
 # Database (using SQLite by default)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# If you want PostgreSQL, uncomment and configure:
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME"),
-#         "USER": os.getenv("DB_USER"),
-#         "PASSWORD": os.getenv("DB_PASSWORD"),
-#         "HOST": os.getenv("DB_HOST", "localhost"),
-#         "PORT": os.getenv("DB_PORT", "5432"),
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+# If you want PostgreSQL, uncomment and configure:
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+    }
+}
 
 
 # Database
@@ -105,16 +105,16 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load .env file
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME"),
-#         "USER": os.getenv("DB_USER"),
-#         "PASSWORD": os.getenv("DB_PASSWORD"),
-#         "HOST": os.getenv("DB_HOST"),
-#         "PORT": os.getenv("DB_PORT"),
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    }
+}
 
 
 CSRF_TRUSTED_ORIGINS = [

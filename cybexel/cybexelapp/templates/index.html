@@ -44,6 +44,31 @@
   "image": "https://cybexel.com/images/ceo4.png"
 }
 </script>
+
+
+
+<!-- Open Graph (Facebook, LinkedIn) -->
+<meta property="og:title" content="Political Research & Campaign Support">
+<meta property="og:description" content="Focused voter research and data-driven strategies for winning campaigns.">
+<meta property="og:image" content="https://www.cybexel.com/static/images/custom-share-image.png">
+<meta property="og:url" content="https://www.cybexel.com/?section=analysis">
+<meta property="og:type" content="website">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Political Research & Campaign Support">
+<meta name="twitter:description" content="Focused voter research and data-driven strategies for winning campaigns.">
+<meta name="twitter:image" content="https://www.cybexel.com/static/images/custom-share-image.png">
+<meta name="twitter:url" content="https://www.cybexel.com/?section=analysis">
+
+
+
+
+
+
+
+
+
 </head>
 <body class="relative min-h-screen">
 
@@ -675,16 +700,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const shareBtn = document.getElementById("share-btn");
   const popup = document.getElementById("share-popup");
   const copyBtn = document.getElementById("copy-link");
+
   const shareUrl = `${window.location.origin}${window.location.pathname}?section=analysis`;
-  const title = "Political Analysis - TN Polls 2026";
+  const shareTitle = "Political Research & Campaign Support";
+  const shareText = "Focused voter research and data-driven strategies for winning campaigns.";
 
   // Toggle popup
   shareBtn.addEventListener("click", () => popup.classList.toggle("hidden"));
 
   // Set social share links
-  document.getElementById("whatsapp-share").href = `https://wa.me/?text=${encodeURIComponent(title + "  -  " + shareUrl)}`;
-  document.getElementById("facebook-share").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-  document.getElementById("twitter-share").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`;
+  document.getElementById("whatsapp-share").href =
+    `https://wa.me/?text=${encodeURIComponent(shareTitle + " - " + shareText + " " + shareUrl)}`;
+  document.getElementById("facebook-share").href =
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+  document.getElementById("twitter-share").href =
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle + " - " + shareText)}&url=${encodeURIComponent(shareUrl)}`;
 
   // Copy link
   copyBtn.addEventListener("click", async () => {
@@ -700,6 +730,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   }
 });
+
 </script>
 
 <!-- Font Awesome -->
