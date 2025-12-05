@@ -345,7 +345,78 @@
   </div>
 </footer>
 
-<script src="{% static 'js/other_script.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navbar = document.getElementById('navbar');
+  const enquireBtn = document.getElementById('enquire-btn');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const menuIcon = document.getElementById('menu-icon');
+  const logo = document.getElementById('logo');
+
+  const defaultLogo = logo.getAttribute('data-logo-default');
+  const scrolledLogo = logo.getAttribute('data-logo-scrolled');
+
+  toggleBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileMenu.classList.toggle('translate-x-full');
+    mobileMenu.classList.toggle('translate-x-0');
+  });
+
+  window.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) &&
+        !toggleBtn.contains(e.target) &&
+        !e.target.closest('#menu-icon')) {
+      mobileMenu.classList.add('translate-x-full');
+      mobileMenu.classList.remove('translate-x-0');
+    }
+  });
+
+  function setNavColors(scrolled) {
+    navLinks.forEach(link => {
+      const isActive = link.classList.contains('text-purple-500');
+      link.classList.remove('text-white', 'text-black');
+      if (!isActive) {
+        link.classList.add(scrolled ? 'text-black' : 'text-white');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY > 50;
+
+    if (scrolled) {
+      navbar.classList.add('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.remove('text-white');
+
+      enquireBtn?.classList.remove('bg-white', 'text-[#151a37]');
+      enquireBtn?.classList.add('bg-[#151a37]', 'text-white');
+
+      menuIcon.classList.remove('text-white');
+      menuIcon.classList.add('text-black');
+
+      setNavColors(true);
+
+      logo.src = scrolledLogo;
+    } else {
+      navbar.classList.remove('bg-white/30', 'backdrop-blur-md', 'shadow-md', 'text-black');
+      navbar.classList.add('text-white');
+
+      enquireBtn?.classList.add('bg-white', 'text-[#151a37]');
+      enquireBtn?.classList.remove('bg-[#151a37]', 'text-white');
+
+      menuIcon.classList.add('text-white');
+      menuIcon.classList.remove('text-black');
+
+      setNavColors(false);
+
+      logo.src = defaultLogo;
+    }
+  });
+});
+
+</script>
 
 </body>
 </html>
