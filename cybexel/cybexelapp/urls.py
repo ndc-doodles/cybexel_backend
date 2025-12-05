@@ -11,16 +11,32 @@ urlpatterns = [
     path('cybexel_life', views.cybexel_life, name='cybexel_life'),
     path('life-event/<int:pk>/', views.detail, name='life_event_detail'),
     path('founder', views.founder, name='founder'),
+    path('works', views.works, name='works'),
 
 
 
-    
+    # urls.py
+path('work/<slug:slug>/', views.work_detail, name='work_detail'),
+
+
+
 
 
     # path('admin_register/', views.admin_register, name='admin_register'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('admin_logout/', views.admin_logout, name='admin_logout'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-portfolio/', views.admin_portfolio, name='admin_portfolio'),
+
+    # path("admin/portfolio/category/edit/<int:pk>/", views.edit_category, name="edit_category"),
+    # path("admin/portfolio/category/delete/<int:pk>/", views.delete_category, name="delete_category"),
+# path("admin-portfolio/delete/<int:work_id>/", views.delete_work),
+
+
+# urls.py
+
+
+
     path('logout/', views.admin_logout, name='logout'),
     # path('edit-client-logo/<int:id>/', views.edit_client_logo, name='edit_client_logo'),
     path('delete-client-logo/<int:id>/', views.delete_client_logo, name='delete_client_logo'),

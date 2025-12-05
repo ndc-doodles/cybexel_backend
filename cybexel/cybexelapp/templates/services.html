@@ -11,7 +11,7 @@
   <title>Cybexel</title>
 
   
-  <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+<link rel="icon" href="{% static 'images/logo2.png' %}" sizes="32x32">
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,12 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
       <a href="{% url 'index' %}" class="flex items-center">
-  <img id="logo" src="{% static 'images/logo1.png' %}" alt="Wise Logo" class="w-44 h-auto transition duration-300" />
+<img id="logo" 
+     src="{% static 'images/logo1.png' %}"
+     data-logo-default="{% static 'images/logo1.png' %}"
+     data-logo-scrolled="{% static 'images/logo2.png' %}"
+     alt="Wise Logo"
+     class="w-44 h-auto transition duration-300" />
 </a>
 
 
@@ -68,6 +73,8 @@
   >
     <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+    <a href="{% url 'works' %}" class="block px-4 py-2 hover:bg-purple-50">Our works</a>
+
   </div>
 </div>        
 <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
@@ -100,7 +107,7 @@
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
     <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block text-black font-medium hover:text-purple-300">Cybexel Life</a>
-
+<a href="{% url 'works' %}" class="block text-black font-medium hover:text-purple-300">Our works</a>
     <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] text-white text-sm px-5 py-2 mt-4 rounded-full font-medium transition">
@@ -255,10 +262,12 @@ Automate workflows, improve efficiency and solve unique challenges with customiz
 
 
 <div class="fixed bottom-6 right-6 z-[9999]">
+
   <div id="fabOptions" class="relative w-16 h-16 max-md:w-12 max-md:h-12">
 
     <a href="https://wa.me/+919072919991" target="_blank"
-       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-20 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-20 scale-0 opacity-0 transition-all duration-300 
+       bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
        id="whatsappBtn">
       <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
            alt="WhatsApp"
@@ -266,53 +275,22 @@ Automate workflows, improve efficiency and solve unique challenges with customiz
     </a>
 
     <a href="tel:+919072919991"
-       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-36 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg"
+       class="absolute left-1/2 transform -translate-x-1/2 -translate-y-36 scale-0 opacity-0 transition-all duration-300 
+       bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
        id="callBtn">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
-           stroke="currentColor" stroke-width="2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
+              d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 
+                 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 
+                 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z" />
       </svg>
     </a>
   </div>
 
   <button onclick="toggleFab()" id="fabBtn"
-    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
-    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
-         fill="none" stroke="#ffffff" stroke-width="2"
-         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
-    </svg>
-  </button>
-</div>
-
-
-
-<div class="fixed bottom-6 right-6 z-[9999]">
-  <div id="fabOptions" class="relative w-16 h-[2rem] max-md:w-12 max-md:h-0">
-
-    <a href="https://wa.me/+919072919991" target="_blank"
-   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-16 scale-0 opacity-0 transition-all duration-300 bg-green-500 text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
-   id="whatsappBtn">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-       alt="WhatsApp"
-       class="w-5 h-5 max-md:w-4 max-md:h-4" />
-</a>
-
-<a href="tel:+919072919991"
-   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-28 scale-0 opacity-0 transition-all duration-300 bg-emerald-500 text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
-   id="callBtn">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 max-md:w-4 max-md:h-4" fill="none" viewBox="0 0 24 24"
-       stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round"
-          d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.286 3.857a1 1 0 01-.21.994l-1.516 1.516a11.042 11.042 0 005.292 5.292l1.516-1.516a1 1 0 01.994-.21l3.857 1.286A1 1 0 0119 18.72V21a2 2 0 01-2 2h-1C9.373 23 3 16.627 3 9V8a2 2 0 012-2z"/>
-  </svg>
-</a>
-
-  </div>
-
-  <button onclick="toggleFab()" id="fabBtn"
-    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+          class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl 
+                 transition relative z-10 border border-gray-300">
     <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
          fill="none" stroke="#ffffff" stroke-width="2"
          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

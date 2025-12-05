@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
+
 
 
 class ContactSubmission(models.Model):
@@ -127,3 +129,57 @@ class AdminProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+# -------------------
+# CATEGORY
+# -------------------
+class PortfolioCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    icon = models.ImageField(upload_to="portfolio/category/icons/", blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+# -------------------
+# BULLET POINTS
+# -------------------
+class PortfolioPoint(models.Model):
+    title = models.CharField(max_length=200)
+    category_detail = models.ForeignKey('PortfolioDetail', on_delete=models.CASCADE, related_name="points")
+
+
+# -------------------
+# PROCESS STEPS
+# -------------------
+class PortfolioProcessStep(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    category_detail = models.ForeignKey('PortfolioDetail', on_delete=models.CASCADE, related_name="steps")
+
+# -------------------
+# PORTFOLIO DETAIL
+# -------------------
+class PortfolioDetail(models.Model):
+    category = models.OneToOneField(PortfolioCategory, on_delete=models.CASCADE, related_name="portfoliodetail")
+    heading = models.CharField(max_length=200)
+    intro_paragraph = models.TextField()
+    main_image = models.ImageField(upload_to="portfolio/detail/main/")
+    process_heading = models.CharField(max_length=200)
+    process_description = models.TextField()
+
+# -------------------
+# RECENT WORK
+# -------------------
+class WorkMedia(models.Model):
+    image = models.ImageField(upload_to="portfolio/works/images/")
+
+class PortfolioWork(models.Model):
+    category_detail = models.ForeignKey(PortfolioDetail, on_delete=models.CASCADE, related_name="works")
+    name = models.CharField(max_length=200)
+    thumbnail = models.ImageField(upload_to="portfolio/works/thumbnails/")
+    video = models.FileField(upload_to="portfolio/works/videos/", blank=True, null=True)
+    images = models.ManyToManyField(WorkMedia, blank=True)
+
+    def __str__(self):
+        return self.name

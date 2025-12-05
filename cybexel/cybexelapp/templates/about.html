@@ -10,7 +10,7 @@
 <title>Cybexel</title>
 
   
-  <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}">
+<link rel="icon" href="{% static 'images/logo2.png' %}" sizes="32x32">
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -53,7 +53,12 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       
       <a href="{% url 'index' %}" class="flex items-center">
-  <img id="logo" src="{% static 'images/logo1.png' %}" alt="Wise Logo" class="w-44 h-auto transition duration-300" />
+<img id="logo" 
+     src="{% static 'images/logo1.png' %}"
+     data-logo-default="{% static 'images/logo1.png' %}"
+     data-logo-scrolled="{% static 'images/logo2.png' %}"
+     alt="Wise Logo"
+     class="w-44 h-auto transition duration-300" />
 </a>
 
 
@@ -74,6 +79,8 @@
   >
     <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+        <a href="{% url 'works' %}" class="block px-4 py-2 hover:bg-purple-50">Our works</a>
+
   </div>
 </div>        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
       </div>
@@ -110,7 +117,8 @@
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
     <a href="{% url 'about' %}" class="block text-purple-500 font-bold hover:text-purple-300">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
-    
+    <a href="{% url 'works' %}" class="block text-black font-medium hover:text-purple-300">Our works</a>
+
     <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
 
     <a href="{% url 'contact' %}">
@@ -181,7 +189,7 @@ At Cybexel, we are committed to revolutionizing the tech industry with innovativ
 
 
 
-{% comment %} <section class=" py-20 px-6 sm:px-12 md:px-24 text-[#151a37]">
+ <section class=" py-20 px-6 sm:px-12 md:px-24 text-[#151a37]">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-12">
       <h2 class="text-4xl font-bold mb-4">Our Purpose</h2>
@@ -227,10 +235,10 @@ We deliver end-to-end digital solutions that transform, scale and inspire.
       </div>
     </div>
   </div>
-</section> {% endcomment %}
+</section>
 
 
-{% comment %} <!-- Section Heading -->
+
 <div class="w-full text-left mb-2 px-6  md:px-28">
   <h2 class="text-4xl md:text-6xl font-bold mb-4 text-[#151a37] uppercase leading-tight break-words">
     Meet Our Founder
@@ -241,7 +249,7 @@ We deliver end-to-end digital solutions that transform, scale and inspire.
 </div>
 
 
-<!-- Founder Section -->
+
 <section class="relative w-full bg-white py-20 px-6 sm:px-12 lg:px-24 xl:px-36 flex flex-col lg:flex-row items-center justify-between overflow-hidden">
 
   <!-- Faded Background Name -->
@@ -286,7 +294,7 @@ We deliver end-to-end digital solutions that transform, scale and inspire.
 
   <!-- Center Image -->
   <div class="w-full lg:w-1/3 flex justify-center z-10 mb-10 lg:mb-0">
-    <img src="{% static 'images/ceo.png' %}" alt="Saied K Muhammed, Founder & CEO" class=" max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full ">
+    <img src="{% static 'images/founder.png' %}" alt="Saied K Muhammed, Founder & CEO" class=" max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full ">
   </div>
 
   <!-- Right Content -->
@@ -308,7 +316,7 @@ We deliver end-to-end digital solutions that transform, scale and inspire.
 <!-- Font Awesome (Include this in your <head> section if not added already) -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-<div id="founder"></div>
+{% comment %} <div id="founder"></div>
 <section id="founder-section" class="relative w-full max-md:pb-10 flex flex-col md:flex-row bg-gray-900 text-white overflow-visible md:mt-56 h-auto md:h-[50vh]">
 
   <!-- Left Side (Fixed Vertical Text + Image) -->
@@ -338,7 +346,7 @@ We deliver end-to-end digital solutions that transform, scale and inspire.
       </svg>
     </div>
   </div>
-</section> {% endcomment %}
+</section>  {% endcomment %}
 
 {% comment %} <script>
 const journey = [

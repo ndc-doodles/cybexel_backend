@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cybexel</title>
 
-<link rel="icon" href="./static/images/favicon.png" type="image/png" sizes="32x32">
+<link rel="icon" href="{% static 'images/logo2.png' %}" sizes="32x32">
     <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,14 +44,12 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center">
 
       <a href="{% url 'index' %}" class="flex items-center">
-<img
-  id="logo"
-  src="{% static 'images/logo1.png' %}"
-  data-logo1="{% static 'images/logo1.png' %}"
-  data-logo2="{% static 'images/logo2.png' %}"
-  alt="Wise Logo"
-  class="w-44 h-auto transition duration-300"
-/>
+<img id="logo" 
+     src="{% static 'images/logo1.png' %}"
+     data-logo-default="{% static 'images/logo1.png' %}"
+     data-logo-scrolled="{% static 'images/logo2.png' %}"
+     alt="Wise Logo"
+     class="w-44 h-auto transition duration-300" />
 </a>
 
 
@@ -72,6 +70,8 @@
   >
     <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
     <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+        <a href="{% url 'works' %}" class="block px-4 py-2 hover:bg-purple-50">Our works</a>
+
   </div>
 </div>
 
@@ -108,6 +108,8 @@
     <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
 <a href="{% url 'about' %}" class="block text-black font-medium hover:text-purple-300">About Company</a>
 <a href="{% url 'cybexel_life' %}" class="block text-purple-500 font-medium hover:text-purple-300">Cybexel Life</a>
+<a href="{% url 'works' %}" class="block text-black font-medium hover:text-purple-300">Our works</a>
+
     <a href="{% url 'blog' %}" class="block text-black font-bold hover:text-purple-300">Blog</a>
     <a href="{% url 'contact' %}">
       <button class="w-full bg-[#151a37] mt-4 text-white text-sm px-5 py-2 rounded-full font-medium transition">

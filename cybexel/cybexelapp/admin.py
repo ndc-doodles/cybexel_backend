@@ -21,3 +21,8 @@ class LifeEventAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AdminProfile)
+admin.site.register(PortfolioCategory)
+admin.site.register(PortfolioDetail)
+admin.site.register(PortfolioPoint)
+admin.site.register(PortfolioWork)
+admin.site.register(PortfolioProcessStep)

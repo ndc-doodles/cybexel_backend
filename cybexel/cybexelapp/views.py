@@ -22,13 +22,18 @@ from datetime import timedelta
 from dateutil.parser import parse as parse_datetime 
 import logging
 from django.views.decorators.cache import never_cache
+from django.utils.text import slugify
 
 
 
 
 def index(request):
     logos = ClientLogo.objects.all()
-    return render(request, 'index.html', {'logos': logos})
+    categories = PortfolioCategory.objects.all()
+    return render(request, 'index.html', {
+        'logos': logos,
+        'categories': categories,
+    })
 
 def about(request):
     stats = Statistic.objects.all()
@@ -784,3 +789,163 @@ def delete_event_image(request, id):
 
 def founder(request):
     return render(request,'founder.html')
+
+def works(request):
+    return render(request,'works.html')
+
+def work_detail(request, slug):
+    category = get_object_or_404(PortfolioCategory, slug=slug)
+    detail = getattr(category, 'portfoliodetail', None)  # safer than filter().first()
+
+    points = detail.points.all() if detail else []
+    steps = detail.steps.all() if detail else []
+    works = detail.works.prefetch_related('images').all() if detail else []
+
+    return render(request, "works-detail.html", {
+        "category": category,
+        "detail": detail,
+        "points": points,
+        "steps": steps,
+        "works": works,
+    })
+def admin_portfolio(request):
+    # -----------------------------
+    # ADD CATEGORY
+    # -----------------------------
+    if request.method == "POST" and request.POST.get("form_type") == "category":
+        name = request.POST.get("name", "").strip()
+        slug = request.POST.get("slug", "").strip()
+        icon = request.FILES.get("icon")
+        if not slug:
+            slug = slugify(name)
+        PortfolioCategory.objects.create(name=name, slug=slug, icon=icon)
+        return redirect("admin_portfolio")
+
+    # -----------------------------
+    # EDIT CATEGORY
+    # -----------------------------
+    if request.method == "POST" and request.POST.get("edit_id"):
+        cat_id = request.POST.get("edit_id")
+        name = request.POST.get("edit_name")
+        slug = request.POST.get("edit_slug")
+        icon = request.FILES.get("edit_icon")
+        cat = get_object_or_404(PortfolioCategory, id=cat_id)
+        cat.name = name
+        cat.slug = slugify(slug) if slug else slugify(name)
+        if icon:
+            cat.icon = icon
+        cat.save()
+        return redirect("admin_portfolio")
+
+    # -----------------------------
+    # DELETE CATEGORY
+    # -----------------------------
+    if request.method == "POST" and request.POST.get("form_type") == "delete_category":
+        cat_id = request.POST.get("delete_id")
+
+        if cat_id:  # extra protection
+           cat = get_object_or_404(PortfolioCategory, id=cat_id)
+           cat.delete()
+
+        return redirect("admin_portfolio")
+
+
+    # -----------------------------
+    # ADD / EDIT WORK
+    # -----------------------------
+    if request.method == "POST" and request.POST.get("form_type") in ["work", "edit_work"]:
+        category_id = request.POST.get("category")
+        main_title = request.POST.get("main_title")
+        main_description = request.POST.get("main_description")
+        main_image = request.FILES.get("main_image")
+        process_title = request.POST.get("process_section_title")
+        process_desc = request.POST.get("process_section_desc")
+
+        category = get_object_or_404(PortfolioCategory, id=category_id)
+
+        # Get or create PortfolioDetail
+        detail, created = PortfolioDetail.objects.get_or_create(
+            category=category,
+            defaults={
+                "heading": main_title,
+                "intro_paragraph": main_description,
+                "main_image": main_image,
+                "process_heading": process_title,
+                "process_description": process_desc,
+            }
+        )
+        if not created:
+            detail.heading = main_title
+            detail.intro_paragraph = main_description
+            detail.process_heading = process_title
+            detail.process_description = process_desc
+            if main_image:
+                detail.main_image = main_image
+            detail.save()
+
+        # BULLET POINTS
+        PortfolioPoint.objects.filter(category_detail=detail).delete()
+        for title in request.POST.getlist("bullet_titles[]"):
+            title = title.strip()
+            if title:
+                PortfolioPoint.objects.create(title=title, category_detail=detail)
+
+        # PROCESS STEPS
+        PortfolioProcessStep.objects.filter(category_detail=detail).delete()
+        titles = request.POST.getlist("process_titles[]")
+        descs = request.POST.getlist("process_descs[]")
+        for t, d in zip(titles, descs):
+            t = t.strip()
+            d = d.strip()
+            if t:
+                PortfolioProcessStep.objects.create(
+                    title=t, description=d, category_detail=detail
+                )
+
+        # MULTIPLE WORKS
+        for index in range(0, 100):
+            name = request.POST.get(f"works[{index}][name]")
+            if not name:
+                continue
+
+            work_id = request.POST.get(f"works[{index}][id]")
+            thumbnail = request.FILES.get(f"works[{index}][thumbnail]")
+            video = request.FILES.get(f"works[{index}][video]")
+            images = request.FILES.getlist(f"works[{index}][images]")
+
+            if work_id:
+                work = get_object_or_404(PortfolioWork, id=work_id)
+                work.name = name.strip()
+                if thumbnail:
+                    work.thumbnail = thumbnail
+                if video:
+                    work.video = video
+                work.save()
+                if images:
+                    work.images.clear()
+                    for img in images:
+                        wm = WorkMedia.objects.create(image=img)
+                        work.images.add(wm)
+            else:
+                work = PortfolioWork.objects.create(
+                    category_detail=detail,
+                    name=name.strip(),
+                    thumbnail=thumbnail,
+                    video=video
+                )
+                for img in images:
+                    wm = WorkMedia.objects.create(image=img)
+                    work.images.add(wm)
+
+        return redirect("admin_portfolio")
+
+    # -----------------------------
+    # RENDER PAGE
+    # -----------------------------
+    categories = PortfolioCategory.objects.prefetch_related(
+        "portfoliodetail__works",
+        "portfoliodetail__points",
+        "portfoliodetail__steps",
+    ).all()
+    return render(request, "admin_portfolio.html", {"categories": categories})
+
