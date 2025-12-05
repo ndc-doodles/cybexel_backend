@@ -161,7 +161,7 @@
 <ul class="list-disc list-outside ml-6 space-y-3 leading-normal">
     {% for point in points %}
         <li class="whitespace-normal">
-            {{ point.title|trim|replace:'\n',' ' }}
+            {{ point.title|strip|replace:"\n"," " }}
         </li>
     {% endfor %}
 </ul>
