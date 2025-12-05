@@ -158,9 +158,11 @@
 
       <!-- Bullet Points -->
 {% if points %}
-<ul class="list-disc list-inside ml-4 space-y-2 leading-relaxed">
+<ul class="list-disc list-outside ml-6 space-y-3 leading-normal">
     {% for point in points %}
-        <li>{{ point.title }}</li>
+        <li class="whitespace-normal">
+            {{ point.title|trim|replace:'\n',' ' }}
+        </li>
     {% endfor %}
 </ul>
 {% else %}
