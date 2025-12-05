@@ -158,14 +158,15 @@
 
       <!-- Bullet Points -->
 {% if points %}
-<ul>
-{% for point in points %}
-    <li>{{ point.title }}</li>
-{% endfor %}
+<ul class="list-disc list-inside ml-4">
+    {% for point in points %}
+        <li>{{ point.title }}</li>
+    {% endfor %}
 </ul>
 {% else %}
 <p>No bullet points available.</p>
 {% endif %}
+
 
 
     </div>
