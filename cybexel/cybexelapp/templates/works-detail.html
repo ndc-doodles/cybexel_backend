@@ -216,40 +216,34 @@
       Our Recent Works
     </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-      {% for work in works %}
-      <div class="work-media flex flex-col items-center w-full max-w-[600px] mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for work in works %}
+    <div class="flex flex-col items-center">
+        <!-- Media container -->
+        <div class="w-full aspect-[16/9] rounded-xl overflow-hidden shadow-lg bg-black relative">
+            {% if work.images.all %}
+            <img src="{{ work.images.all.0.image.url }}" 
+                 alt="{{ work.name }}" 
+                 class="absolute inset-0 w-full h-full object-cover" />
+            {% endif %}
 
-       <div class="relative w-full h-[260px] sm:h-[300px] lg:h-[230px] rounded-xl overflow-hidden shadow-lg bg-black">
+            {% if work.video %}
+            <video muted 
+                   class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                   onmouseover="this.play();" 
+                   onmouseout="this.pause(); this.currentTime=0;">
+                <source src="{{ work.video.url }}" type="video/mp4">
+            </video>
+            {% endif %}
+        </div>
 
-  <!-- Display first image if exists -->
-  {% if work.images.all %}
-    <img src="{{ work.images.all.0.image.url }}"
-         alt="{{ work.name }}"
-         class="absolute inset-0 w-full h-full object-cover" />
-  {% endif %}
-
-  <!-- Display video if exists -->
-  {% if work.video %}
-    <video 
-      muted 
-      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-100"
-      onmouseover="this.play();" 
-      onmouseout="this.pause(); this.currentTime=0;">
-      <source src="{{ work.video.url }}" type="video/mp4">
-    </video>
-  {% endif %}
-
-</div>
-
-
-
-        <h3 class="mt-3 text-center text-lg font-semibold">
-          {{ work.name }}
+        <!-- Title -->
+        <h3 class="mt-3 text-center text-lg font-semibold text-[#151a37]">
+            {{ work.name }}
         </h3>
-      </div>
-      {% endfor %}
     </div>
+    {% endfor %}
+</div>
 
   </div>
 </section>

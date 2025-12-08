@@ -134,7 +134,7 @@ class AdminProfile(models.Model):
 # CATEGORY
 # -------------------
 class PortfolioCategory(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=500)
     slug = models.SlugField(unique=True)
     icon = models.ImageField(upload_to="portfolio/category/icons/", blank=True, null=True)
 
@@ -145,7 +145,7 @@ class PortfolioCategory(models.Model):
 # BULLET POINTS
 # -------------------
 class PortfolioPoint(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
     category_detail = models.ForeignKey('PortfolioDetail', on_delete=models.CASCADE, related_name="points")
 
 
@@ -153,7 +153,7 @@ class PortfolioPoint(models.Model):
 # PROCESS STEPS
 # -------------------
 class PortfolioProcessStep(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
     description = models.TextField()
     category_detail = models.ForeignKey('PortfolioDetail', on_delete=models.CASCADE, related_name="steps")
 
@@ -162,7 +162,7 @@ class PortfolioProcessStep(models.Model):
 # -------------------
 class PortfolioDetail(models.Model):
     category = models.OneToOneField(PortfolioCategory, on_delete=models.CASCADE, related_name="portfoliodetail")
-    heading = models.CharField(max_length=200)
+    heading = models.CharField(max_length=500)
     intro_paragraph = models.TextField()
     main_image = models.ImageField(upload_to="portfolio/detail/main/")
     process_heading = models.CharField(max_length=200)
@@ -176,7 +176,7 @@ class WorkMedia(models.Model):
 
 class PortfolioWork(models.Model):
     category_detail = models.ForeignKey(PortfolioDetail, on_delete=models.CASCADE, related_name="works")
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=500)
     thumbnail = models.ImageField(upload_to="portfolio/works/thumbnails/")
     video = models.FileField(upload_to="portfolio/works/videos/", blank=True, null=True)
     images = models.ManyToManyField(WorkMedia, blank=True)
