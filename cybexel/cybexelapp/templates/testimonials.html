@@ -53,22 +53,24 @@
 
       </div>
 
-      <!-- Profile -->
-      <div class="flex items-center gap-4 mt-8">
-        {% if t.image %}
-          <img src="{{ t.image.url }}" class="w-12 h-12 rounded-full object-cover border border-white/20">
-        {% else %}
-          <div class="w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-xs text-white">
-            N/A
-          </div>
-        {% endif %}
+           <!-- Profile -->
+<div class="flex items-center gap-4 mt-8">
+  {% if t.image %}
+    <img src="{{ t.image.url }}" 
+         class="w-12 h-12 rounded-full object-cover border border-white/20">
+  {% else %}
+    <div class="w-12 h-12 rounded-full bg-purple-300
+                flex items-center justify-center 
+                text-lg font-bold text-[#151a37] uppercase">
+      {{ t.name|slice:":1" }}
+    </div>
+  {% endif %}
 
-        <div>
-          <p class="text-sm font-semibold">{{ t.name }}</p>
-          <p class="text-xs opacity-70">{{ t.designation }}</p>
-        </div>
-      </div>
-
+  <div>
+    <p class="text-sm font-semibold">{{ t.name }}</p>
+    <p class="text-xs opacity-70">{{ t.designation }}</p>
+  </div>
+</div>
     </div>
     {% empty %}
       <p class="col-span-full text-center text-gray-500">
