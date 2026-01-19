@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Cybexel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-[#151a37] font-sans">
+
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#151a37] text-white p-6 fixed h-screen">
+      <div class="flex items-center justify-center mb-8">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo" class="w-32 h-32 object-contain rounded-full">
+      </div>
+      <nav>
+        <ul class="space-y-4 text-sm">
+          <li>
+            <a href="{% url 'admin_dashboard' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_portfolio' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Portfolio
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_blog' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37] ">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_contact' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Contact Form
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_careers' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Careers
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_job_applications' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Job Applications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_testimonials' %}" class="block py-2 px-4 rounded bg-white text-[#151a37]">
+              Testimonials
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_cybexelife' %}" class="block py-2 px-4 rounded hover:bg-white hover:text-[#151a37]">
+              Cybexel Life
+            </a>
+          </li>
+          <li>
+  <a href="{% url 'logout' %}" class="block py-2 px-4 rounded bg-[red]/30 text-white">
+    Logout
+  </a>
+</li>
+        </ul>
+      </nav>
+    </aside>
+
+
+    
+<section class="mt-16 w-[85%] px-6 ml-64">
+
+  <!-- Title -->
+  <div class="w-full bg-[#151a37] text-white py-4 px-6 shadow mb-6">
+    <h2 class="text-xl font-semibold">Admin Testimonial Management</h2>
+  </div>
+
+  <!-- ADD TESTIMONIAL SECTION -->
+  <div class="bg-white shadow-md p-6 rounded-lg border mb-10">
+    <h3 class="text-lg font-semibold mb-4 text-[#151a37]">Add New Testimonial</h3>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="testimonial">
+
+      <!-- Name -->
+      <div>
+        <label class="block text-sm font-medium">Client Name</label>
+        <input type="text" name="name" required
+               class="w-full p-2 border rounded-md">
+      </div>
+
+      <!-- Designation -->
+      <div>
+        <label class="block text-sm font-medium">Designation</label>
+        <input type="text" name="designation" required
+               class="w-full p-2 border rounded-md">
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label class="block text-sm font-medium">Message</label>
+        <textarea name="message" rows="4" required
+                  class="w-full p-2 border rounded-md resize-none"></textarea>
+      </div>
+
+      <!-- Image -->
+      <div>
+        <label class="block text-sm font-medium">Profile Image</label>
+        <input type="file" name="image" accept="image/*"
+               class="w-full p-2 border rounded-md bg-gray-50">
+      </div>
+
+      <button type="submit"
+        class="bg-[#151a37] text-white px-6 py-2 rounded-lg font-semibold">
+        Add Testimonial
+      </button>
+    </form>
+  </div>
+
+  <!-- TESTIMONIAL LIST SECTION -->
+  <div class="bg-white shadow-md p-6 rounded-lg border mt-6">
+    <h3 class="text-lg font-semibold mb-4 text-[#151a37]">Existing Testimonials</h3>
+
+    {% if testimonials %}
+    <table class="w-full border table-fixed">
+      <thead>
+        <tr class="bg-gray-100 text-left text-sm">
+          <th class="p-2 border w-16">Image</th>
+          <th class="p-2 border w-40">Name</th>
+          <th class="p-2 border w-40">Designation</th>
+          <th class="p-2 border">Message</th>
+          <th class="p-2 border w-28 text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for t in testimonials %}
+        <tr class="text-sm align-top">
+
+          <!-- Image -->
+<td class="border p-2 text-center">
+  {% if t.image %}
+    <img src="{{ t.image.url }}" 
+         class="w-10 h-10 rounded-full object-cover mx-auto">
+  {% else %}
+    <div class="w-10 h-10 rounded-full bg-[#d6a537]
+                flex items-center justify-center
+                text-sm font-bold text-[#151a37] uppercase mx-auto">
+      {{ t.name|slice:":1" }}
+    </div>
+  {% endif %}
+</td>
+
+          <!-- Name -->
+          <td class="border p-2 break-words">
+            {{ t.name }}
+          </td>
+
+          <!-- Designation -->
+          <td class="border p-2 break-words">
+            {{ t.designation }}
+          </td>
+
+          <!-- Message -->
+          <td class="border p-2 break-words whitespace-normal leading-relaxed max-w-[400px]">
+            {{ t.message|linebreaksbr }}
+          </td>
+
+          <!-- Actions -->
+          <td class="border p-2 text-center">
+
+            <button 
+  onclick="openTestimonialEditModal('{{ t.id }}', '{{ t.name|escapejs }}', '{{ t.designation|escapejs }}', '{{ t.message|escapejs }}')"
+  class="text-blue-600 hover:underline">
+  Edit
+</button>
+
+            |
+
+            <form method="POST" class="inline" 
+                  onsubmit="return confirm('Delete this testimonial?');">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="delete_testimonial">
+              <input type="hidden" name="delete_id" value="{{ t.id }}">
+              <button type="submit" class="text-red-600 hover:underline bg-transparent border-0 p-0">
+                Delete
+              </button>
+            </form>
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+      <p class="text-gray-500 text-sm">No testimonials added yet.</p>
+    {% endif %}
+  </div>
+
+</section>
+
+<div id="TestimonialEditModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+  <div class="bg-white w-full max-w-lg rounded-lg p-6">
+
+    <h3 class="text-lg font-semibold mb-4">Edit Testimonial</h3>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="edit_testimonial">
+      <input type="hidden" name="testimonial_id" id="edit_id">
+
+      <input id="edit_name" name="name" class="w-full border p-2 rounded mb-3" placeholder="Name">
+      <input id="edit_designation" name="designation" class="w-full border p-2 rounded mb-3" placeholder="Designation">
+      <textarea id="edit_message" name="message" class="w-full border p-2 rounded mb-3" rows="4"></textarea>
+
+      <input type="file" name="image" class="mb-4">
+
+      <div class="flex justify-end gap-3">
+        <button type="button" onclick="closeEditModal()" class="px-4 py-2 border rounded">
+          Cancel
+        </button>
+        <button type="submit" class="bg-[#151a37] text-white px-4 py-2 rounded">
+          Update
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+function openTestimonialEditModal(id, name, designation, message) {
+  document.getElementById("edit_id").value = id;
+  document.getElementById("edit_name").value = name;
+  document.getElementById("edit_designation").value = designation;
+  document.getElementById("edit_message").value = message;
+
+  // Show modal
+  const modal = document.getElementById("TestimonialEditModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeEditModal() {
+  const modal = document.getElementById("TestimonialEditModal");
+  modal.classList.remove("flex");
+  modal.classList.add("hidden");
+}
+</script>
+
+
+</body>
+</html>

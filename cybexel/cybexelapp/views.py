@@ -26,15 +26,16 @@ from django.utils.text import slugify
 
 
 
-
 def index(request):
     logos = ClientLogo.objects.all()
     categories = PortfolioCategory.objects.all()
+    testimonials = Testimonial.objects.order_by("-created_at")[:3]   # latest 3
+
     return render(request, 'index.html', {
         'logos': logos,
         'categories': categories,
+        'testimonials': testimonials,
     })
-
 def about(request):
     stats = Statistic.objects.all()
     return render(request, 'about.html', {'stats': stats})
@@ -949,3 +950,55 @@ def admin_portfolio(request):
     ).all()
     return render(request, "admin_portfolio.html", {"categories": categories})
 
+def testimonials(request):
+    testimonials_qs = Testimonial.objects.all().order_by("-created_at")
+
+    paginator = Paginator(testimonials_qs, 9)   # 9 per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "testimonials.html", {
+        "page_obj": page_obj
+    })
+
+def admin_testimonials(request):
+
+    # ADD TESTIMONIAL
+    if request.method == "POST" and request.POST.get("form_type") == "testimonial":
+        Testimonial.objects.create(
+            name=request.POST.get("name"),
+            designation=request.POST.get("designation"),
+            message=request.POST.get("message"),
+            image=request.FILES.get("image")
+        )
+        return redirect("admin_testimonials")
+
+
+    # UPDATE TESTIMONIAL ✅
+    if request.method == "POST" and request.POST.get("form_type") == "edit_testimonial":
+        testimonial_id = request.POST.get("testimonial_id")
+        testimonial = get_object_or_404(Testimonial, id=testimonial_id)
+
+        testimonial.name = request.POST.get("name")
+        testimonial.designation = request.POST.get("designation")
+        testimonial.message = request.POST.get("message")
+
+        # Only replace image if new image uploaded
+        if request.FILES.get("image"):
+            testimonial.image = request.FILES.get("image")
+
+        testimonial.save()
+        return redirect("admin_testimonials")
+
+
+    # DELETE TESTIMONIAL
+    if request.method == "POST" and request.POST.get("form_type") == "delete_testimonial":
+        Testimonial.objects.filter(id=request.POST.get("delete_id")).delete()
+        return redirect("admin_testimonials")
+
+
+    testimonials = Testimonial.objects.all().order_by("-id")
+
+    return render(request, "admin_testimonial.html", {
+        "testimonials": testimonials
+    })

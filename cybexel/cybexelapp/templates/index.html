@@ -1263,6 +1263,107 @@ We also provide complete solutions for digital classroom setups, network configu
 
 
 
+
+
+
+<section class="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+
+  <!-- HEADER -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-14">
+
+    <div class="flex items-start gap-5">
+      <!-- Arrow Icon -->
+      <div class="text-[#d6a537] text-5xl leading-none rotate-45">
+        ↗
+      </div>
+
+      <!-- Title -->
+      <div>
+        <h2 class="text-[28px] md:text-[36px] font-semibold text-black">
+          Client Success Stories:
+        </h2>
+        <p class="text-[26px] md:text-[34px] font-medium text-gray-500 mt-1">
+          How We Helped Businesses Thrive
+        </p>
+      </div>
+    </div>
+
+    <!-- View All Button -->
+    <div>
+      <a href="{% url 'testimonials' %}"
+         class="inline-flex items-center gap-2 bg-[#151a37] text-white text-sm font-medium px-5 py-2 rounded-md hover:opacity-90 transition">
+        View all →
+      </a>
+    </div>
+
+  </div>
+
+  <!-- CARDS WRAPPER -->
+<div class="relative">
+
+  <!-- Scroll Container -->
+  <div class="flex gap-6 overflow-x-auto snap-x snap-mandatory
+              md:grid md:grid-cols-2 lg:grid-cols-3
+              scrollbar-hide pb-4">
+
+    {% for t in testimonials %}
+    <div class="bg-[#151a37] rounded-2xl p-10 text-white 
+                min-h-[320px] min-w-[85%] sm:min-w-[70%] md:min-w-0
+                flex flex-col justify-between
+                snap-center
+                hover:-translate-y-1 transition">
+
+      <!-- Message -->
+      <div>
+        <div class="text-[#d6a537] text-6xl leading-none mb-6">“</div>
+
+        <p class="text-[15px] leading-7 text-gray-100 text-left break-words whitespace-normal">
+          {{ t.message|linebreaksbr }}
+        </p>
+      </div>
+
+      <!-- Profile -->
+<div class="flex items-center gap-4 mt-8">
+  {% if t.image %}
+    <img src="{{ t.image.url }}" 
+         class="w-12 h-12 rounded-full object-cover border border-white/20">
+  {% else %}
+    <div class="w-12 h-12 rounded-full bg-[#d6a537] 
+                flex items-center justify-center 
+                text-lg font-bold text-[#151a37] uppercase">
+      {{ t.name|slice:":1" }}
+    </div>
+  {% endif %}
+
+  <div>
+    <p class="text-sm font-semibold">{{ t.name }}</p>
+    <p class="text-xs opacity-70">{{ t.designation }}</p>
+  </div>
+</div>
+
+
+    </div>
+    {% empty %}
+      <p class="text-gray-500">No testimonials added yet.</p>
+    {% endfor %}
+
+  </div>
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="relative z-10 w-full text-center px-4 sm:px-10 md:px-20 lg:px-32 bg-[#151a37] py-16 sm:py-20 mt-10">
   <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-200 uppercase">
     Reach Out

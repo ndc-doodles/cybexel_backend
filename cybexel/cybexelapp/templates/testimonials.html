@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Client Success Stories</title>
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="bg-gray-50">
+
+<div class="max-w-[1400px] mx-auto px-6 pt-6">
+  <a href="javascript:history.back()"
+     class="inline-flex items-center gap-2 text-[#151a37] hover:text-[#d6a537] transition font-medium">
+
+    <!-- Back Icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 19l-7-7 7-7" />
+    </svg>
+
+    Back
+  </a>
+</div>
+
+
+<!-- CONTENT -->
+<section class="max-w-[1400px] mx-auto px-6 lg:px-10 py-16">
+
+  <div class="mb-10">
+    <h2 class="text-[30px] md:text-[38px] font-semibold text-[#151a37]">
+      All Testimonials
+    </h2>
+    <p class="text-gray-600 mt-2">
+      Discover what our clients say about us.
+    </p>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+    {% for t in page_obj %}
+    <div class="bg-[#151a37] rounded-2xl p-10 text-white min-h-[320px] flex flex-col justify-between hover:-translate-y-1 transition">
+
+      <!-- Message -->
+      <div>
+        <div class="text-[#d6a537] text-6xl mb-6">“</div>
+       <p class="text-[15px] leading-relaxed opacity-90 break-words break-all whitespace-normal">
+  {{ t.message|linebreaksbr }}
+</p>
+
+      </div>
+
+      <!-- Profile -->
+      <div class="flex items-center gap-4 mt-8">
+        {% if t.image %}
+          <img src="{{ t.image.url }}" class="w-12 h-12 rounded-full object-cover border border-white/20">
+        {% else %}
+          <div class="w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-xs text-white">
+            N/A
+          </div>
+        {% endif %}
+
+        <div>
+          <p class="text-sm font-semibold">{{ t.name }}</p>
+          <p class="text-xs opacity-70">{{ t.designation }}</p>
+        </div>
+      </div>
+
+    </div>
+    {% empty %}
+      <p class="col-span-full text-center text-gray-500">
+        No testimonials available.
+      </p>
+    {% endfor %}
+
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="flex justify-center items-center gap-2 mt-14 flex-wrap">
+
+    <!-- PREVIOUS -->
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}"
+         class="px-4 py-2 border rounded-md hover:bg-gray-100">
+        Prev
+      </a>
+    {% endif %}
+
+    <!-- PAGE NUMBERS -->
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <span class="px-4 py-2 bg-[#151a37] text-white rounded-md">
+          {{ num }}
+        </span>
+      {% else %}
+        <a href="?page={{ num }}"
+           class="px-4 py-2 border rounded-md hover:bg-gray-100">
+          {{ num }}
+        </a>
+      {% endif %}
+    {% endfor %}
+
+    <!-- NEXT -->
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}"
+         class="px-4 py-2 border rounded-md hover:bg-gray-100">
+        Next
+      </a>
+    {% endif %}
+
+  </div>
+
+</section>
+
+
+</body>
+</html>

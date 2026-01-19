@@ -27,10 +27,10 @@ ALLOWED_HOSTS = [
 
 
 # ALLOWED_HOSTS = []
-CSRF_TRUSTED_ORIGINS = [
-    "https://cybexel.com",
-    "https://www.cybexel.com",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://cybexel.com",
+#     "https://www.cybexel.com",
+# ]
 
 # Applications
 INSTALLED_APPS = [
@@ -117,10 +117,10 @@ DATABASES = {
 }
 
 
-# CSRF_TRUSTED_ORIGINS = [
-#     "https://cybexel.com",
-#     "https://www.cybexel.com",
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://cybexel.com",
+    "https://www.cybexel.com",
+]
   
 # DATABASES = {
 #     'default': {
