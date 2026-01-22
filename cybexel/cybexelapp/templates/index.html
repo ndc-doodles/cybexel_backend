@@ -1317,9 +1317,11 @@ We also provide complete solutions for digital classroom setups, network configu
       <div>
         <div class="text-purple-300 text-6xl leading-none mb-6">“</div>
 
-        <p class="text-[15px] leading-7 text-gray-100 text-left break-words whitespace-normal">
-          {{ t.message|linebreaksbr }}
-        </p>
+       <p class="text-[15px] leading-7 text-gray-100 text-left break-words whitespace-normal
+          max-h-40 overflow-y-auto pr-2">
+  {{ t.message|truncatewords:40|linebreaksbr }}
+</p>
+
       </div>
 
       <!-- Profile -->
