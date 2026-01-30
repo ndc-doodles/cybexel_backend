@@ -629,14 +629,17 @@ Fuel sustainable growth and drive your business forward with confidence.     </p
 
   <!-- LEFT SIDE -->
   <div class="relative flex items-center justify-center bg-[#151a37] min-h-[400px] md:min-h-auto">
-    <img src="{% static 'images/india.png' %}" alt="Political Analysis"
-      class="absolute inset-0 w-full h-full object-cover opacity-60">
-    <div class="absolute inset-0 bg-[#151a37]/70"></div>
+    {% comment %} <img src="{% static 'videos/INDIA1.mp4' %}" alt="Political Analysis"
+      class="absolute inset-0 w-full h-full object-cover opacity-60"> {% endcomment %}
+      
+    <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover   opacity-60"> <source src="{% static 'videos/IND2.mp4' %}" type="video/mp4">   Your browser does not support the video tag. 
+    </video>
+    <div class="absolute inset-0 bg-[#151a37]/30"></div>
 
     <div class="relative z-10 px-6 sm:px-10 md:px-12 lg:px-16 text-white max-w-lg text-center md:text-left">
       <p class="uppercase tracking-wider text-xs sm:text-sm text-blue-200 mb-2 sm:mb-3">The Insights</p>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 sm:mb-6">
-  Our <span class="text-[#6873AE] italic">Political</span> 
+  Our <span class="text-[#6873AE]">Political</span> 
   Research & Campaign Support
 </h1>
 
