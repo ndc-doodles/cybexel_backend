@@ -49,6 +49,7 @@ path('work/<slug:slug>/', views.work_detail, name='work_detail'),
     path('get-blog/<int:blog_id>/', views.get_blog, name='get_blog'),
     path("update-blog/", views.update_blog, name="update_blog"),
     path('admin_careers', views.admin_careers, name='admin_careers'),
+    path('politics', views.politics, name='politics'),
     path('submit_job_application/', views.submit_job_application, name='submit_application'),
 
     path("delete-department/<int:pk>/", views.delete_department, name="delete_department"),

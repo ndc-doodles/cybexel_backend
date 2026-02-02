@@ -1002,3 +1002,6 @@ def admin_testimonials(request):
     return render(request, "admin_testimonial.html", {
         "testimonials": testimonials
     })
+
+def politics(request):
+    return render(request,'politics.html')

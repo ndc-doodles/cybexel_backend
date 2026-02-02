@@ -1,0 +1,562 @@
+{% load static %}
+
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<title>Cybexel</title>
+
+  
+<link rel="icon" href="{% static 'images/logo2.png' %}" sizes="32x32">
+  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://cdn-uicons.flaticon.com">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400;1,700&family=Comfortaa:wght@300..700&family=Michroma&family=Oswald:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" media="print" onload="this.media='all'">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZK27XGNPQM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZK27XGNPQM');
+</script>
+
+
+
+</head>
+<body class="relative min-h-screen">
+
+  <div class="absolute inset-0 bg-cover bg-center opacity-20 -z-10" style="background-image: url('./static/images/bg2.jpg');"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<header class="relative z-[9999] w-full">
+  <nav id="navbar"
+       class="fixed top-0 left-0 w-full bg-transparent px-4 py-[0.8rem] transition-all duration-300 z-[9999] backdrop-blur-sm">
+    
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      
+      <a href="{% url 'index' %}" class="flex items-center">
+<img id="logo" 
+     src="{% static 'images/logo1.png' %}"
+     data-logo-default="{% static 'images/logo1.png' %}"
+     data-logo-scrolled="{% static 'images/logo2.png' %}"
+     alt="Wise Logo"
+     class="w-44 h-auto transition duration-300" />
+</a>
+
+
+      <div class="hidden md:flex items-center gap-8 text-base font-semibold nav-links text-white">
+        <a href="{% url 'index' %}" class="nav-link hover:text-purple-300 transition">Home</a>
+        <a href="{% url 'services' %}" class="nav-link hover:text-purple-300 transition">Services</a>
+        <a href="{% url 'careers' %}" class="nav-link hover:text-purple-300 transition">Careers</a>
+<div class="relative inline-block nav-link active-link group">
+  <button
+    id="about-toggle"
+    class="hover:text-purple-300 text-purple-500 transition flex items-center gap-1 focus:outline-none"
+  >
+    About
+  </button>
+  <div
+    id="about-dropdown"
+    class="absolute left-0 top-full w-48 bg-white text-black rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50"
+  >
+    <a href="{% url 'about' %}" class="block px-4 py-2 hover:bg-purple-50">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block px-4 py-2 hover:bg-purple-50">Cybexel Life</a>
+        {% comment %} <a href="{% url 'works' %}" class="block px-4 py-2 hover:bg-purple-50">Our works</a> {% endcomment %}
+
+  </div>
+</div>        <a href="{% url 'blog' %}" class="nav-link hover:text-purple-300 transition">Blog</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="{% url 'contact' %}" class="hidden md:inline-block">
+          <button id="enquire-btn"
+            class="bg-white text-[#151a37] text-sm px-5 py-2 rounded-full font-medium transition">
+            Contact Us
+          </button>
+        </a>
+
+
+<div class="md:hidden">
+  <button id="menu-toggle" class="focus:outline-none">
+    <svg id="menu-icon" class="w-6 h-6 text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2"
+         viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+</div>
+
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobile-menu"
+       class="md:hidden fixed top-0 right-0 w-3/4 h-full bg-white shadow-lg px-6 py-10 space-y-6 transform translate-x-full transition-transform duration-300 ease-in-out z-[9999]">
+
+  
+
+    <a href="{% url 'index' %}" class="block text-black font-medium hover:text-purple-300">Home</a>
+    <a href="{% url 'services' %}" class="block text-black font-medium hover:text-purple-300">Services</a>
+    <a href="{% url 'careers' %}" class="block text-black font-medium hover:text-purple-300">Careers</a>
+    <a href="{% url 'about' %}" class="block text-purple-500 font-bold hover:text-purple-300">About Company</a>
+    <a href="{% url 'cybexel_life' %}" class="block text-black font-bold hover:text-purple-300">Cybexel Life</a>
+    <a href="{% url 'works' %}" class="block text-black font-medium hover:text-purple-300">Our works</a>
+
+    <a href="{% url 'blog' %}" class="block text-black font-medium hover:text-purple-300">Blog</a>
+
+    <a href="{% url 'contact' %}">
+      <button class="w-full bg-[#151a37] mt-4 text-white text-sm px-5 py-2 rounded-full font-medium transition">
+        Contact Us
+      </button>
+    </a>
+  </div>
+</header>
+
+
+<section class="w-full bg-[#151a37] text-white h-[400px] px-6 sm:px-12 md:px-24">
+  <div class="max-w-7xl mx-auto h-full flex flex-col justify-center">
+    
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 px-4">
+      Our support 
+    </h1>
+
+    <p class="text-base sm:text-lg text-gray-300 max-w-2xl px-4">
+      We help political teams connect with people and share their vision effectively.
+    </p>
+
+  </div>
+</section>
+<style>
+.grid-8-hover {
+  position: relative;
+  overflow: hidden;
+  
+}
+
+.grid-8-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+
+ background:
+  /* top row — right aligned */
+  linear-gradient(rgba(21,26,55,0.08), rgba(21,26,55,0.2)) right 0 top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.06), rgba(21,26,55,0.08)) right 80px top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.05), rgba(21,26,55,0.05)) right 160px top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.04), rgba(21,26,55,0.01)) right 240px top 0 / 80px 80px no-repeat,
+
+  /* right column */
+  linear-gradient(rgba(21,26,55,0.06), rgba(21,26,55,0.06)) right 0 top 80px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.05), rgba(21,26,55,0.05)) right 0 top 160px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.04), rgba(21,26,55,0.04)) right 0 top 240px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.03), rgba(21,26,55,0.03)) right 0 top 320px / 80px 80px no-repeat;
+
+}
+
+.grid-8-hover:hover::after {
+  opacity: 1;
+}
+</style>
+
+
+
+<section class="bg-white py-16 px-6 md:px-16">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="text-center mb-14">
+      <h2 class="text-4xl md:text-5xl font-bold text-[#151a37] mb-4">
+        Political Data Analyst
+      </h2>
+      <p class="text-gray-500 max-w-2xl mx-auto text-lg">
+        Data-driven insights and strategic execution to strengthen campaign performance and voter engagement.
+      </p>
+    </div>
+
+<!-- GRID -->
+<div class="grid md:grid-cols-3 gap-10">
+
+  <!-- CARD 1 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="#151a37" d="M8 10h8v2H8zm0-4h12v2H8zm0-4h12v2H8z"/><path fill="#151a37" d="m4.711 28l5.631-9.996l7.434 6.49a2 2 0 0 0 3.084-.534l6.97-10.403l-1.661-1.114l-7 10.448l-.07.103l-7.435-6.49a2.003 2.003 0 0 0-3.08.53L4 25.183V2H2v26a2 2 0 0 0 2 2h26v-2Z"/></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Candidate Analysis</h3>
+      <p class="text-gray-500 text-base">
+        Performance profiling and strategy insights. Evaluate candidate strengths, identify improvement areas, and create optimized engagement strategies to maximize campaign success.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16"><path fill="#151a37" d="M7.384 2.497a1 1 0 0 1 1.365-.366L11 3.431a1 1 0 0 1 .366 1.366L10.095 7H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.675a1 1 0 0 1-.181-1.229zM7.621 7H8.94l1.56-2.703l-2.25-1.3l-1.89 3.274zM4.515 5h.269l-.157.271c-.137.238-.22.492-.252.749a.5.5 0 0 0-.267.19L2.114 9h11.772l-1.994-2.79a.5.5 0 0 0-.118-.118l.458-.795q.021-.036.04-.074a1.5 1.5 0 0 1 .434.405l2.015 2.82c.181.255.279.56.279.872v3.18a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5V9.32a1.5 1.5 0 0 1 .28-.871l2.014-2.82A1.5 1.5 0 0 1 4.514 5M14 10H2v2.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z"/></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Voter Analysis</h3>
+      <p class="text-gray-500 text-base">
+        Segmentation and behavioral insights of voter groups. Understand voter demographics, preferences, and tendencies to craft targeted outreach strategies.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26"><path fill="#151a37" d="M8.813 0A1 1 0 0 0 8 1v1H4.406C3.606 2 3 2.606 3 3.406V24.5c0 .9.606 1.5 1.406 1.5H21.5c.8 0 1.406-.606 1.406-1.406V3.406c.1-.8-.512-1.406-1.312-1.406H18V1a1 1 0 0 0-1-1H9a1 1 0 0 0-.094 0a1 1 0 0 0-.094 0zM10 2h6v2h-6zM5 4h3v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4h3v20H5zm2 5v4h4V9zm1 1h2v2H8zm5 0v2h6v-2zm-6 5v4h4v-4zm6 1v2h6v-2z"/></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Survey Management</h3>
+      <p class="text-gray-500 text-base">
+        Survey design, execution, and response analytics. Collect structured data, analyze feedback patterns, and generate actionable insights for campaigns.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#151a37" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"><path d="m13.05 19.14l-3.72.53l.53-3.67l9.55-9.54a2.25 2.25 0 0 1 3.18 3.18zM5.5.75h7s.75 0 .75.75V4s0 .75-.75.75h-7s-.75 0-.75-.75V1.5s0-.75.75-.75m7.75 2h2.5a1.5 1.5 0 0 1 1.5 1.5"/><path d="M17.25 18.75v3a1.5 1.5 0 0 1-1.5 1.5H2.25a1.5 1.5 0 0 1-1.5-1.5V4.25a1.5 1.5 0 0 1 1.5-1.5h2.5m.5 6h7m-7 4.5h2.5"/></g></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Booth Level (Grassroot)</h3>
+      <p class="text-gray-500 text-base">
+        Micro-level booth data and grassroots tracking. Monitor on-ground operations, record voter engagement, and ensure precise execution of field strategies.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#151a37" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"><path d="M1.773 2.284h20.454s1.023 0 1.023 1.023v14.318s0 1.023-1.023 1.023H1.773s-1.023 0-1.023-1.023V3.307s0-1.023 1.023-1.023m9.716 16.364v3.068m-4.091 0h8.182"/><path d="m10.555 13.728l-1.106.523a2.039 2.039 0 0 1-1.744-3.685l1.106-.524zm0 0a12.1 12.1 0 0 1 6.945-1.036l.733.108L14.4 4.691l-.382.635a12.1 12.1 0 0 1-5.206 4.716zm0 0a3.94 3.94 0 0 0 2.327 2.057"/></g></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Digital Marketing</h3>
+      <p class="text-gray-500 text-base">
+        Targeted outreach and campaign amplification. Plan ads, social media campaigns, and email marketing to increase visibility and voter engagement.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="#151a37" d="M24 21h2v5h-2zm-4-5h2v10h-2zm-9 10a5.006 5.006 0 0 1-5-5h2a3 3 0 1 0 3-3v-2a5 5 0 0 1 0 10"/><path fill="#151a37" d="M28 2H4a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h24a2.003 2.003 0 0 0 2-2V4a2 2 0 0 0-2-2m0 9H14V4h14ZM12 4v7H4V4ZM4 28V13h24l.002 15Z"/></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Election War Room</h3>
+      <p class="text-gray-500 text-base">
+        Real-time monitoring and campaign control center. Track ongoing campaigns, coordinate teams, and quickly respond to dynamic situations on the ground.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 14 14"><g fill="none" stroke="#151a37" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9"><path d="M11.953 5.482a4.956 4.956 0 1 1-9.912 0a4.956 4.956 0 0 1 9.912 0"/><path d="m7.2 2.791l.683 1.374a.21.21 0 0 0 .174.127l1.517.23a.23.23 0 0 1 .127.397L8.58 5.983a.22.22 0 0 0 0 .206l.215 1.508a.23.23 0 0 1-.342.246l-1.35-.714a.27.27 0 0 0-.222 0l-1.35.714a.23.23 0 0 1-.34-.246l.254-1.508a.22.22 0 0 0-.04-.206L4.286 4.91a.23.23 0 0 1 .128-.39L5.93 4.3a.21.21 0 0 0 .174-.127l.683-1.374a.23.23 0 0 1 .413-.008M2.704 7.913L.5 11.731l2.381-.638l.639 2.381l1.912-3.312m5.864-2.249l2.204 3.818l-2.382-.638l-.638 2.381l-1.912-3.312"/></g></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Personal Branding</h3>
+      <p class="text-gray-500 text-base">
+        Reputation positioning and public image building. Strengthen public perception, maintain consistent messaging, and manage media presence effectively.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#151a37" fill-rule="evenodd" d="M9 3.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m8.5 15a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5M13 23v-2s1.5-1.5 4.5-1.5S22 21 22 21v2zM2 10.5v-2S3.5 7 6.5 7S11 8.5 11 8.5v2zM18 5h-4.5V3H20v6.5h-2zM4 14.5V21h6.5v-2H6v-4.5z" clip-rule="evenodd"/></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">D2D Campaign</h3>
+      <p class="text-gray-500 text-base">
+        Door-to-door outreach planning and execution. Organize field teams, track visits, and engage voters personally to build strong local connections.
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 9 -->
+  <div class="grid-8-hover border-l border-gray-200 p-8 bg-white rounded-xl min-h-[260px] flex flex-col transition shadow-md">
+    <div class="relative z-10">
+      <div class="w-14 h-14 mb-6 flex items-center justify-center hover:bg-gray-300 border-2 rounded-full text-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none" stroke="#151a37" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="M21.417 18.583a6 6 0 1 0 8 8"/><path d="M28.28 11.72C26.94 11.255 25.5 11 24 11c-7.18 0-13 5.82-13 13s5.82 13 13 13s13-5.82 13-13c0-1.5-.254-2.94-.72-4.28"/><path d="M33.568 6.433A19.9 19.9 0 0 0 24 4C12.954 4 4 12.954 4 24s8.954 20 20 20s20-8.954 20-20a19.9 19.9 0 0 0-2.432-9.567M44 4L24 24"/></g></svg>
+      </div>
+      <h3 class="font-semibold text-xl mb-3">Political Marketing</h3>
+      <p class="text-gray-500 text-base">
+        Integrated campaign messaging and promotion. Coordinate media, events, and communications to enhance voter outreach, influence perception, and drive engagement.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+
+  </div>
+</section>
+
+
+
+<section class="w-full bg-white py-20 px-6">
+  <div class="max-w-6xl mx-auto relative">
+
+    <!-- CONNECTOR LINES -->
+    <svg class="hidden md:block absolute inset-0 w-full h-full pointer-events-none"
+         viewBox="0 0 1200 900"
+         preserveAspectRatio="none">
+
+      <!-- 1 → 2 -->
+      <path d="M260 180 C 480 260, 720 40, 940 260"
+            stroke="black" stroke-width="2" fill="none"/>
+
+      <!-- 2 → 3 -->
+      <path d="M940 430 C 720 480, 480 260, 260 470"
+            stroke="black" stroke-width="2" fill="none"/>
+
+      <!-- 3 → 4 -->
+      <path d="M260 635 C 500 720, 720 520, 940 730"
+            stroke="black" stroke-width="2" fill="none"/>
+    </svg>
+
+    <!-- STEP 1 -->
+    <div class="relative mb-14  md:mb-10">
+      <!-- CARD -->
+      <div class="relative w-[260px] border-2 border-black rounded-2xl p-6 bg-white">
+        <!-- NUMBER -->
+        <div class="text-xl font-bold mb-4">01</div>
+        <!-- OVERLAY TAG -->
+        <div class="text-[14px] inline-block bg-[#151a37] text-white px-4 py-2 rounded-full font-bold">
+          Campaign Strategy
+        </div>
+      </div>
+      <!-- DESCRIPTION -->
+      <p class="max-md:text-[10px] absolute md:left-[620px] top-36 md:top-8 max-w-sm">
+        Understand the political goals, target audience, and campaign objectives.
+      </p>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="relative mb-12 md:mb-2 flex justify-end">
+      <div class="w-[260px] border-2 border-black rounded-2xl p-6 bg-white">
+        <div class="text-xl font-bold mb-4 text-right">02</div>
+        <div class="text-[14px] inline-block bg-[#151a37] text-white px-4 py-2 rounded-full font-bold">
+          Digital Audit & Analysis
+        </div>
+      </div>
+      <p class="absolute max-md:top-36  max-md:text-[10px] max-md:max-w-[16rem] top-8 md:right-[540px] max-w-sm text-right">
+  Research current online presence, competitor activity, and voter sentiment.
+</p>
+
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="relative mb-12 md:mb-10">
+      <div class="w-[260px] border-2 border-black rounded-2xl p-6 bg-white">
+        <div class="text-xl font-bold mb-4">03</div>
+        <div class="text-[14px] inline-block bg-[#151a37] text-white px-4 py-2 rounded-full font-bold">
+          Content & Creative Design
+        </div>
+      </div>
+      <p class="max-md:text-[10px] absolute md:left-[620px] top-36 md:top-10 max-w-sm">
+        Create targeted social media content, graphics, and multimedia campaigns.
+      </p>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="relative flex justify-end">
+      <div class="relative w-[260px] border-2 border-black rounded-2xl p-6 bg-white">
+        <div class="text-xl font-bold mb-4 text-right">04</div>
+        <div class="text-[14px] inline-block bg-[#151a37] text-white px-4 py-2 rounded-full font-bold">
+          Campaign Management
+        </div>
+      </div>
+      <p class="absolute max-md:top-36  max-md:text-[10px] max-md:max-w-[16rem] top-8 md:right-[540px] max-w-sm text-right">
+        Run campaigns across platforms, monitor performance, and optimize for engagement.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="w-full bg-[#151a37] py-16 px-6">
+  <div class="max-w-6xl mx-auto text-center text-white">
+
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+      Let’s Work Together
+    </h2>
+
+    <p class="text-gray-300 max-w-2xl mx-auto mb-8 text-lg">
+      Have questions or ready to start your project? Get in touch with our team and we’ll help you move forward.
+    </p>
+
+    <a href="{% url 'contact' %}"
+        class="bg-white text-[#151a37] font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-md inline-block hover:bg-blue-100 transition text-sm sm:text-base">
+        Contact Us
+      </a>
+
+  </div>
+</section>
+
+
+<div class="fixed bottom-6 right-6 z-[9999]">
+  <div id="fabOptions" class="relative  w-16 h-[2rem] max-md:w-12 max-md:h-0">
+
+    <a href="https://wa.me/+919072919991" target="_blank"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-16 scale-0 opacity-0 transition-all duration-300 bg-white border border-[#151a37] text-white rounded-full shadow-lg w-12 h-12 max-md:w-10 max-md:h-10 flex items-center justify-center pointer-events-none"
+   id="whatsappBtn">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#151a37" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.39-4.19-1.15l-.3-.17l-3.12.82l.83-3.04l-.2-.32a8.2 8.2 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.25-8.24M8.53 7.33c-.16 0-.43.06-.66.31c-.22.25-.87.86-.87 2.07c0 1.22.89 2.39 1 2.56c.14.17 1.76 2.67 4.25 3.73c.59.27 1.05.42 1.41.53c.59.19 1.13.16 1.56.1c.48-.07 1.46-.6 1.67-1.18s.21-1.07.15-1.18c-.07-.1-.23-.16-.48-.27c-.25-.14-1.47-.74-1.69-.82c-.23-.08-.37-.12-.56.12c-.16.25-.64.81-.78.97c-.15.17-.29.19-.53.07c-.26-.13-1.06-.39-2-1.23c-.74-.66-1.23-1.47-1.38-1.72c-.12-.24-.01-.39.11-.5c.11-.11.27-.29.37-.44c.13-.14.17-.25.25-.41c.08-.17.04-.31-.02-.43c-.06-.11-.56-1.35-.77-1.84c-.2-.48-.4-.42-.56-.43c-.14 0-.3-.01-.47-.01"/></svg>
+</a>
+
+<a href="tel:+919072919991"
+   class="absolute left-1/2 transform -translate-x-1/2 -translate-y-32 scale-0 opacity-0 transition-all duration-300 bg-white border border-[#151a37] text-white p-3 max-md:p-2 rounded-full shadow-lg pointer-events-none"
+   id="callBtn">
+
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#151a37" d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98"/></svg>
+</a>
+
+  </div>
+
+  <button onclick="toggleFab()" id="fabBtn"
+    class="bg-[#151a37] hover:bg-[#1e2247] text-white p-5 max-md:p-3 mt-[-2rem] rounded-full shadow-xl transition relative z-10 border border-gray-300">
+    <svg class="w-6 h-6 max-md:w-4 max-md:h-4 transition-transform duration-300" id="fabIcon"
+         fill="none" stroke="#ffffff" stroke-width="2"
+         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M12 4v16"></path>
+    </svg>
+  </button>
+</div>
+
+
+<footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
+
+    <div>
+  <img src="{% static '/images/logo2.png' %}" class="w-[14rem] xl:mt-[-1.5rem] h-auto">
+  <p class="text-sm leading-6 text-gray-500 md:pl-6">
+    Empowering enterprises with smart, scalable and secure digital solutions across the globe.
+  </p>
+  </div>
+
+
+    <div class="ml-16 max-md:ml-0">
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Company</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'index' %}" class="hover:text-[#151a37] transition">Home</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Services</a></li>
+        <li><a href="{% url 'careers' %}" class="hover:text-[#151a37] transition">Careers</a></li>
+        <li><a href="{% url 'about' %}" class="hover:text-[#151a37] transition">About Us</a></li>
+        <li><a href="{% url 'cybexel_life' %}" class="hover:text-[#151a37] transition">Cybexel Life</a></li>
+        <li><a href="{% url 'blog' %}" class="hover:text-[#151a37] transition">Blog</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-[#151a37] transition">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold text-gray-500 mb-3">Services</h3>
+      <ul class="space-y-8 text-sm mt-6 text-gray-500">
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom App Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Branding & Designing</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Web Development</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">UI/UX Design</a></li>
+        <li><a href="{% url 'services' %}" class="hover:text-[#151a37] transition">Custom Software Solutions</a></li>
+
+      </ul>
+    </div>
+
+    <div>
+  <h3 class="text-lg font-semibold text-gray-500 mb-3">Get in Touch</h3>
+  <ul class="space-y-6 text-sm text-gray-500 mt-6">
+
+    <li class="flex items-start">
+      <span class="min-w-[70px] font-medium">Email:</span>
+      <div>
+      <a href="mailto:info@cybexel.com" class="hover:text-[#151a37]">info@cybexel.com</a>
+      <a href="mailto:cybexeltechnologies@gmail.com" class="hover:text-[#151a37]">cybexeltechnologies@gmail.com</a>
+      </div>
+
+    </li>
+
+   <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Phone:</span>
+  <div>
+    <a href="tel:+919072919991" class="hover:text-[#151a37] block">+91 9072919991</a>
+    <a href="tel:+919745109190" class="hover:text-[#151a37] block">+91 9745109190</a>
+  </div>
+</li>
+
+
+  <li class="flex items-start">
+  <span class="min-w-[70px] font-medium">Locations:</span>
+  <span>
+    Kochi<br>
+    Coimbatore<br>
+    Bangalore<br>
+    Chennai<br>
+    Dubai
+  </span>
+</li>
+
+
+  </ul>
+</div>
+
+  </div>
+
+  <div class="border-t border-gray-600 mt-32 pt-6 text-sm flex flex-col md:flex-row justify-between items-center">
+    <p class="text-gray-500">&copy; 2025 Cybexel. All rights reserved.</p>
+    <div class="mt-4 md:mt-0 flex space-x-4">
+  <a href="https://www.linkedin.com/company/cybexel/" aria-label="LinkedIn" class="hover:text-[#151a37] transition">
+    <i class="fab fa-linkedin text-xl"></i>
+  </a>
+  <a href="https://www.facebook.com/Cybexel.pvt.ltd" aria-label="Facebook" class="hover:text-[#151a37] transition">
+    <i class="fab fa-facebook-f text-xl"></i>
+  </a>
+  <a href="https://www.instagram.com/cybexel_pvtltd/?hl=en" aria-label="Instagram" class="hover:text-[#151a37] transition">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
+</div>
+
+  </div>
+</footer>
+
+<script src="{% static 'js/other_script.js' %}"></script>
+</body>
+</html>
