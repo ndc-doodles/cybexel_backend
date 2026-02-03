@@ -401,3 +401,39 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
   -ms-overflow-style: none;  /* IE & Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+
+
+.grid-8-hover {
+  position: relative;
+  overflow: hidden;
+  
+}
+
+.grid-8-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+
+ background:
+  /* top row — right aligned */
+  linear-gradient(rgba(21,26,55,0.08), rgba(21,26,55,0.2)) right 0 top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.06), rgba(21,26,55,0.08)) right 80px top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.05), rgba(21,26,55,0.05)) right 160px top 0 / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.04), rgba(21,26,55,0.01)) right 240px top 0 / 80px 80px no-repeat,
+
+  /* right column */
+  linear-gradient(rgba(21,26,55,0.06), rgba(21,26,55,0.06)) right 0 top 80px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.05), rgba(21,26,55,0.05)) right 0 top 160px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.04), rgba(21,26,55,0.04)) right 0 top 240px / 80px 80px no-repeat,
+  linear-gradient(rgba(21,26,55,0.03), rgba(21,26,55,0.03)) right 0 top 320px / 80px 80px no-repeat;
+
+}
+
+.grid-8-hover:hover::after {
+  opacity: 1;
+}
+
