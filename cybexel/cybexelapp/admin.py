@@ -10,13 +10,16 @@ admin.site.register(JobApplication)
 admin.site.register(Blog)
 admin.site.register(ClientLogo)
 
-class LifeEventImageInline(admin.TabularInline):
-    model = LifeEventImage
+class LifeEventMediaInline(admin.TabularInline):
+    model = LifeEventMedia
     extra = 1
+    fields = ('file', 'media_type', 'order')
+    ordering = ('order',)
+
 
 @admin.register(LifeEvent)
 class LifeEventAdmin(admin.ModelAdmin):
-    inlines = [LifeEventImageInline]
+    inlines = [LifeEventMediaInline]
     list_display = ('heading', 'category')
 
 

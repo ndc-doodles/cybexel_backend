@@ -129,20 +129,28 @@
 
 
 
-
-
 <section class="w-full bg-[#151a37] text-white h-[400px] px-6 sm:px-12 md:px-24">
   <div class="max-w-7xl mx-auto h-full flex flex-col justify-center">
-    <h1 class="text-4xl sm:text-5xl font-bold mb-4 px-[0.9rem]">Cybexel Life</h1>
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 px-[0.9rem]">
+      Cybexel Life
+    </h1>
+
     <p class="text-base sm:text-lg text-gray-300 max-w-2xl px-[0.9rem]">
-Explore our culture, milestones and the people who make it all possible. Discover what makes our journey unique.    </p>
+      Explore our culture, milestones and the people who make it all possible.
+    </p>
   </div>
-
-
 </section>
+
+
 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-4xl md:text-6xl font-bold text-gray-200 uppercase mb-4">{{ event.heading }}</h1>
-  <p class="text-gray-500 mb-8 max-w-4xl text-sm">{{ event.description }}</p>
+
+  <h1 class="text-4xl md:text-6xl font-bold text-gray-800 uppercase mb-4">
+    {{ event.heading }}
+  </h1>
+
+  <p class="text-gray-500 mb-8 max-w-4xl text-sm">
+    {{ event.description }}
+  </p>
 
   <div class="space-y-4 text-gray-600 mb-8">
     <p>{{ event.para1 }}</p>
@@ -150,25 +158,63 @@ Explore our culture, milestones and the people who make it all possible. Discove
     <p>{{ event.para3 }}</p>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-    {% for img in event.images.all %}
-<img src="{{ img.image.url }}" class="event-image rounded-lg shadow cursor-pointer" alt="Event Image" />
-    {% endfor %}
-  </div>
+  <!-- MEDIA GRID -->
+ <div class="columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
+
+  {% for media in event.media.all %}
+
+    <div class="break-inside-avoid">
+
+      {% if media.media_type == "image" %}
+
+        <img src="{{ media.file.url }}"
+             class="w-full rounded-lg shadow cursor-pointer event-media"
+             data-type="image"
+             data-src="{{ media.file.url }}">
+
+      {% else %}
+
+        <video
+            class="w-full rounded-lg shadow cursor-pointer event-media"
+            data-type="video"
+            data-src="{{ media.file.url }}"
+            muted>
+            <source src="{{ media.file.url }}">
+        </video>
+
+      {% endif %}
+
+    </div>
+
+  {% endfor %}
+
+</div>
+
 </div>
 
 
+<!-- MODAL -->
+<div id="mediaModal"
+     class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999] hidden">
 
+  <button id="closeModal"
+          class="absolute top-4 right-6 text-white text-4xl">
+          &times;
+  </button>
 
+  <button id="prevMedia"
+          class="absolute left-4 md:left-10 text-white text-4xl">
+          &#10094;
+  </button>
 
-<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[9999] hidden ">
-  <button id="closeModal" class="absolute top-4 right-6 text-white text-4xl hover:text-gray-300 font-light max-md:text-black max-md:hidden">&times;</button>
-  <button id="prevImage" class="absolute left-4 md:left-10 text-white text-4xl hover:text-gray-300 font-light max-md:text-black">&#10094;</button>
-  <img id="modalImage" src="" alt="" class="max-h-[80vh] max-w-[90vw] rounded shadow-lg transition duration-300 ease-in-out">
-  <button id="nextImage" class="absolute right-4 md:right-10 text-white text-4xl hover:text-gray-300 font-light max-md:text-black" >&#10095;</button>
+  <div id="modalContent"></div>
+
+  <button id="nextMedia"
+          class="absolute right-4 md:right-10 text-white text-4xl">
+          &#10095;
+  </button>
+
 </div>
-
-
 
 <footer class="bg-white text-gray-300 pt-20 pb-2 px-6 md:px-20 min-h-[400px]">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-[1rem]">
@@ -385,46 +431,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const modal = document.getElementById('imageModal');
-  const modalImage = document.getElementById('modalImage');
-  const closeModal = document.getElementById('closeModal');
-  const prevButton = document.getElementById('prevImage');
-  const nextButton = document.getElementById('nextImage');
 
-  const images = Array.from(document.querySelectorAll('.event-image'));
+  const modal = document.getElementById('mediaModal');
+  const modalContent = document.getElementById('modalContent');
+  const closeModal = document.getElementById('closeModal');
+  const prevButton = document.getElementById('prevMedia');
+  const nextButton = document.getElementById('nextMedia');
+
+  const mediaItems = Array.from(document.querySelectorAll('.event-media'));
   let currentIndex = 0;
 
-  images.forEach((img, index) => {
-    img.dataset.index = index;
-    img.addEventListener('click', () => {
+  function loadMedia(index) {
+    const item = mediaItems[index];
+    const type = item.dataset.type;
+    const src = item.dataset.src;
+
+    if(type === "image"){
+        modalContent.innerHTML =
+          `<img src="${src}" class="max-h-[80vh] max-w-[90vw] rounded shadow">`;
+    }
+    else{
+        modalContent.innerHTML =
+          `<video controls autoplay class="max-h-[80vh] max-w-[90vw] rounded shadow">
+             <source src="${src}">
+           </video>`;
+    }
+  }
+
+  mediaItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
       currentIndex = index;
-      modalImage.src = img.src;
+      loadMedia(currentIndex);
       modal.classList.remove('hidden');
     });
   });
 
-  closeModal.addEventListener('click', () => {
-    modal.classList.add('hidden');
-  });
+  closeModal.onclick = () => modal.classList.add('hidden');
 
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
+  modal.onclick = (e) => {
+    if(e.target === modal){
       modal.classList.add('hidden');
     }
-  });
+  };
 
-  prevButton.addEventListener('click', (e) => {
+  prevButton.onclick = (e) => {
     e.stopPropagation();
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    modalImage.src = images[currentIndex].src;
-  });
+    currentIndex = (currentIndex - 1 + mediaItems.length) % mediaItems.length;
+    loadMedia(currentIndex);
+  };
 
-  nextButton.addEventListener('click', (e) => {
+  nextButton.onclick = (e) => {
     e.stopPropagation();
-    currentIndex = (currentIndex + 1) % images.length;
-    modalImage.src = images[currentIndex].src;
-  });
+    currentIndex = (currentIndex + 1) % mediaItems.length;
+    loadMedia(currentIndex);
+  };
+
 });
+
 </script>
 
 <script src="{% static 'js/other_script.js' %}"></script>

@@ -160,16 +160,14 @@ def contact(request):
 def services(request):
     return render(request,'services.html')
 
-
 def cybexel_life(request):
-    entries = LifeEvent.objects.prefetch_related('images').all()
+    entries = LifeEvent.objects.prefetch_related('media').all()
     return render(request, 'cybexelife.html', {'entries': entries})
 
-
-
 def detail(request, pk):
-    event = get_object_or_404(LifeEvent, pk=pk)
+    event = LifeEvent.objects.prefetch_related('media').get(pk=pk)
     return render(request, 'detail.html', {'event': event})
+
 
 
 
@@ -733,7 +731,9 @@ def delete_job_application(request, id):
 @never_cache
 @login_required(login_url='admin_login')
 def admin_cybexelife(request):
+
     if request.method == 'POST':
+
         event_id = request.POST.get('edit_id')
         heading = request.POST.get('heading')
         description = request.POST.get('description')
@@ -742,8 +742,10 @@ def admin_cybexelife(request):
         para3 = request.POST.get('paragraph3')
         category = request.POST.get('keyword')
 
-        if event_id:  # ✅ Edit existing
+        # ---------- CREATE / UPDATE EVENT ----------
+        if event_id:
             event = get_object_or_404(LifeEvent, id=event_id)
+
             event.heading = heading
             event.description = description
             event.para1 = para1
@@ -751,7 +753,8 @@ def admin_cybexelife(request):
             event.para3 = para3
             event.category = category
             event.save()
-        else:  # ✅ Create new
+
+        else:
             event = LifeEvent.objects.create(
                 heading=heading,
                 description=description,
@@ -761,13 +764,36 @@ def admin_cybexelife(request):
                 category=category
             )
 
-        # ✅ Handle new image uploads (for both new/edit)
-        for img in request.FILES.getlist('images[]'):
-            LifeEventImage.objects.create(event=event, image=img)
+        # ---------- SAVE MEDIA ORDER ----------
+        for key, value in request.POST.items():
+
+            if key.startswith("media_order_"):
+
+                media_id = key.split("_")[-1]
+
+                try:
+                    media = LifeEventMedia.objects.get(id=media_id)
+                    media.order = int(value)
+                    media.save()
+                except:
+                    pass
+
+        # ---------- UPLOAD NEW MEDIA ----------
+        for file in request.FILES.getlist('media[]'):
+
+            # Set order automatically to last
+            last_order = LifeEventMedia.objects.filter(event=event).count()
+
+            LifeEventMedia.objects.create(
+                event=event,
+                file=file,
+                order=last_order
+            )
 
         return redirect('admin_cybexelife')
 
     events = LifeEvent.objects.all()
+
     return render(request, 'admin_cybexelife.html', {'Events': events})
 
 
@@ -775,14 +801,24 @@ def delete_event(request, event_id):
     event = get_object_or_404(LifeEvent, id=event_id)
     event.delete()
     return redirect('admin_cybexelife')
+
 def get_event_images(request, event_id):
-    images = LifeEventImage.objects.filter(event_id=event_id)
-    data = {
-        "images": [{"id": img.id, "url": img.image.url} for img in images]
-    }
-    return JsonResponse(data)
+    media = LifeEventMedia.objects.filter(event_id=event_id)
+
+    data = []
+    for m in media:
+        data.append({
+            "id": m.id,
+            "url": m.file.url,
+            "type": m.media_type,
+            "order": m.order
+        })
+
+    return JsonResponse({"media": data})
+
+
 def delete_event_image(request, id):
-    image = get_object_or_404(LifeEventImage, id=id)
+    image = get_object_or_404(LifeEventMedia, id=id)
     image.delete()
     return redirect('admin_cybexelife') 
 

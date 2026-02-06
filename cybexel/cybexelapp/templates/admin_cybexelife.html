@@ -102,7 +102,7 @@
 
     <div class="col-span-2">
       <label class="block font-medium mb-1">Upload Event Images</label>
-      <input type="file" name="images[]" id="images" class="w-full border p-2 border-gray-300 rounded" multiple>
+      <input type="file" name="media[]" accept="image/*,video/*" class="w-full border p-2 border-gray-300 rounded" multiple>
     </div>
 
     <div class="col-span-2">
@@ -138,11 +138,18 @@
           <td class="px-6 py-4">{{ Event.heading|truncatechars:40 }}</td>
           <td class="px-6 py-4">{{ Event.description|truncatechars:40 }}</td>
           <td class="px-6 py-4">
-            {% if Event.images.first %}
-              <img src="{{ Event.images.first.image.url }}" class="w-20 h-12 object-cover rounded">
-            {% else %}
-              <span class="text-gray-400 italic">No image</span>
-            {% endif %}
+            {% if Event.media.first %}
+    {% if Event.media.first.media_type == "image" %}
+        <img src="{{ Event.media.first.file.url }}" class="w-20 h-12 object-cover rounded">
+    {% else %}
+        <video class="w-20 h-12 rounded" controls>
+            <source src="{{ Event.media.first.file.url }}">
+        </video>
+    {% endif %}
+{% else %}
+    <span class="text-gray-400 italic">No Media</span>
+{% endif %}
+
           </td>
           <td class="px-6 py-4 text-center space-x-2">
             <button type="button" onclick="openEditModal(this)"
@@ -203,16 +210,27 @@
       <!-- Existing Images -->
       <div class="mb-4">
         <label class="block font-medium mb-2">Existing Images</label>
-        <div class="grid grid-cols-3 gap-4">
-          {% for img in modal_event_images %}
-          <div class="relative">
-            <img src="{{ img.image.url }}" class="w-full h-24 object-cover rounded">
-            <a href="{% url 'delete_event_image' img.id %}" onclick="return confirm('Delete this image?')"
-              class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">&times;</a>
-          </div>
-          {% empty %}
-          <p class="col-span-3 text-gray-500 italic">No images uploaded</p>
-          {% endfor %}
+        <div class="grid grid-cols-3 gap-4" id="mediaContainer">
+          {% for media in modal_event_media %}
+<div class="relative">
+
+  {% if media.media_type == "image" %}
+    <img src="{{ media.file.url }}" class="w-full h-24 object-cover rounded">
+  {% else %}
+    <video class="w-full h-24 rounded" controls>
+        <source src="{{ media.file.url }}">
+    </video>
+  {% endif %}
+
+  <a href="{% url 'delete_event_media' media.id %}"
+     onclick="return confirm('Delete this file?')"
+     class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">
+     &times;
+  </a>
+
+</div>
+{% endfor %}
+
         </div>
       </div>
 
@@ -245,25 +263,48 @@
   document.getElementById('modal_para3').value = button.dataset.para3;
 
   // Load images for this event
-  fetch(`/get-event-images/${eventId}/`)
-    .then(response => response.json())
-    .then(data => {
-      const container = document.querySelector('#editModal .grid');
-      container.innerHTML = ''; // Clear old images
-      if (data.images.length > 0) {
-        data.images.forEach(img => {
-          const div = document.createElement('div');
-          div.classList.add('relative');
-          div.innerHTML = `
-            <img src="${img.url}" class="w-full h-24 object-cover rounded">
-            <a href="/delete-event-image/${img.id}/" onclick="return confirm('Delete this image?')" class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">&times;</a>
-          `;
-          container.appendChild(div);
-        });
-      } else {
-        container.innerHTML = '<p class="col-span-3 text-gray-500 italic">No images uploaded</p>';
+fetch(`/get-event-images/${eventId}/`)
+  .then(response => response.json())
+  .then(data => {
+
+    const container = document.getElementById('mediaContainer');
+    container.innerHTML = '';
+
+    data.media.forEach(media => {
+
+      const div = document.createElement('div');
+      div.classList.add('relative','border','p-2','rounded');
+
+      let preview = '';
+
+      if(media.type === "image"){
+        preview = `<img src="${media.url}" class="w-full h-24 object-cover rounded">`;
+      }else{
+        preview = `
+          <video class="w-full h-24 rounded" controls>
+            <source src="${media.url}">
+          </video>`;
       }
+
+      div.innerHTML = `
+        ${preview}
+
+        <label class="block text-xs mt-2">Order</label>
+        <input type="number" name="media_order_${media.id}" value="${media.order}"
+          class="w-full border p-1 rounded text-sm">
+
+        <a href="/delete-event-media/${media.id}/"
+          onclick="return confirm('Delete this file?')"
+          class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">
+          &times;
+        </a>
+      `;
+
+      container.appendChild(div);
     });
+
+  });
+
 
   document.getElementById('editModal').classList.remove('hidden');
 }

@@ -114,12 +114,40 @@ class LifeEvent(models.Model):
     def __str__(self):
         return self.heading
 
-class LifeEventImage(models.Model):
-    event = models.ForeignKey(LifeEvent, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='life_events/')
+class LifeEventMedia(models.Model):
+    event = models.ForeignKey(
+        LifeEvent,
+        on_delete=models.CASCADE,
+        related_name='media'
+    )
+
+    file = models.FileField(upload_to='life_events/')
+    media_type = models.CharField(max_length=10, blank=True)
+
+    order = models.PositiveIntegerField(default=0)   # ⭐ NEW FIELD
+
+    class Meta:
+        ordering = ['order']   # ⭐ Controls display order
+
+    def save(self, *args, **kwargs):
+
+        # Detect media type
+        if self.file:
+            if self.file.name.lower().endswith(('.mp4', '.mov', '.avi', '.webm')):
+                self.media_type = 'video'
+            else:
+                self.media_type = 'image'
+
+        # ⭐ Auto assign order if not set
+        if self.order == 0:
+            last_order = LifeEventMedia.objects.filter(event=self.event).count()
+            self.order = last_order + 1
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.event.heading} - Image"
+        return f"{self.event.heading} - {self.media_type}"
+
 
 
 
