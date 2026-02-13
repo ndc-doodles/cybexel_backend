@@ -750,195 +750,244 @@ document.addEventListener("DOMContentLoaded", () => {
 <script src="https://kit.fontawesome.com/a2e0d6b64f.js" crossorigin="anonymous"></script>
 
 
-  <!-- PORTFOLIO TABS -->
-  <section class="max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16">
-    <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
+<!-- DESKTOP PORTFOLIO -->
+<section class="hidden md:block max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16">
+  <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 relative">
-      {% for category in categories %}
-        <div class="text-center relative">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 relative">
+    {% for category in categories %}
+      <div class="text-center relative">
 
-          <!-- CATEGORY -->
-          <a href="{% url 'work_detail' category.slug %}"
-            class="flex flex-col items-center group category-btn"
-            data-has-sub="{{ category.subcategories.exists }}"
-            data-category="{{ category.id }}">
+        <!-- CATEGORY -->
+        <a href="{% url 'work_detail' category.slug %}"
+           class="flex flex-col items-center group category-btn"
+           data-has-sub="{{ category.subcategories.exists }}"
+           data-category="{{ category.id }}">
 
-            <div class="w-28 h-28 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
-              {% if category.icon %}
-                <img src="{{ category.icon.url }}"
-                    class="w-full h-full rounded-full object-cover bg-white p-1">
-              {% endif %}
-            </div>
-
-            <p class="mt-2 font-semibold text-[#151a37]">
-              {{ category.name }}
-            </p>
-          </a>
-
-          <!-- ⭐ RADIAL MENU -->
-          <div id="radial-{{ category.id }}"
-              class="radial-menu hidden absolute top-1/2 left-1/2 pointer-events-none">
+          <div class="w-28 h-28 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
+            {% if category.icon %}
+              <img src="{{ category.icon.url }}"
+                   class="w-full h-full rounded-full object-cover bg-white p-1">
+            {% endif %}
           </div>
 
-          <!-- Subcategory JSON -->
-          <script type="application/json" id="sub-data-{{ category.id }}">
-            [
-              {% for sub in category.subcategories.all %}
-              {
-                "name": "{{ sub.name }}",
-                "slug": "{{ sub.slug }}",
-                "icon": "{% if sub.icon %}{{ sub.icon.url }}{% endif %}"
-              }{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            ]
-          </script>
+          <p class="mt-2 font-semibold text-[#151a37]">
+            {{ category.name }}
+          </p>
+        </a>
 
+        <!-- RADIAL MENU -->
+        <div id="radial-{{ category.id }}" class="radial-menu hidden absolute top-1/2 left-1/2 pointer-events-none"></div>
+
+        <!-- Subcategory JSON -->
+        <script type="application/json" id="sub-data-{{ category.id }}">
+          [
+            {% for sub in category.subcategories.all %}
+            {
+              "name": "{{ sub.name }}",
+              "slug": "{{ sub.slug }}",
+              "icon": "{% if sub.icon %}{{ sub.icon.url }}{% endif %}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+          ]
+        </script>
+
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="block md:hidden max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16 relative" id="mobile-portfolio-section">
+  <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
+
+  <div class="flex relative overflow-x-auto snap-x snap-mandatory no-scrollbar">
+  {% for category in categories %}
+    <div class="text-center relative flex-shrink-0 w-full snap-center px-6"> <!-- full width + padding -->
+
+      <!-- CATEGORY -->
+      <a href="{% url 'work_detail' category.slug %}"
+         class="flex flex-col items-center group category-btn"
+         data-has-sub="{{ category.subcategories.exists }}"
+         data-category="{{ category.id }}">
+
+        <div class="w-24 h-24 rounded-full p-[2px] bg-[#151a37] group-hover:scale-110 transition">
+          {% if category.icon %}
+            <img src="{{ category.icon.url }}"
+                 class="w-full h-full rounded-full object-cover bg-white p-1">
+          {% endif %}
         </div>
-      {% endfor %}
+
+        <p class="mt-2 font-semibold text-[#151a37]">
+          {{ category.name }}
+        </p>
+      </a>
+
+      <!-- Subcategory JSON -->
+      <script type="application/json" id="sub-data-{{ category.id }}">
+        [
+          {% for sub in category.subcategories.all %}
+          {
+            "name": "{{ sub.name }}",
+            "slug": "{{ sub.slug }}",
+            "icon": "{% if sub.icon %}{{ sub.icon.url }}{% endif %}"
+          }{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
+      </script>
+
     </div>
-  </section>
-  <script>
+  {% endfor %}
+</div>
 
-  document.querySelectorAll(".category-btn").forEach(btn => {
+  <!-- Mobile radial menu container -->
+  <div id="mobile-radial-container" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50"></div>
+</section>
 
-    btn.addEventListener("click", function(e) {
 
-      const hasSub = this.dataset.hasSub === "True";
-      if (!hasSub) return;
+<script>
+document.querySelectorAll(".category-btn").forEach(btn => {
+  btn.addEventListener("click", function(e) {
+    const hasSub = this.dataset.hasSub === "True";
+    if (!hasSub) return;
 
-      e.preventDefault();
+    e.preventDefault();
 
-      const catId = this.dataset.category;
-      const jsonElement = document.getElementById("sub-data-" + catId);
-      if (!jsonElement) return;
+    const catId = this.dataset.category;
+    const jsonElement = document.getElementById("sub-data-" + catId);
+    if (!jsonElement) return;
 
-      const radial = document.getElementById("radial-" + catId);
-      if (!radial) return;
+    const data = JSON.parse(jsonElement.textContent);
+    const isMobile = window.innerWidth <= 768;
 
-      const data = JSON.parse(jsonElement.textContent);
+    // Remove padding from all category buttons
+    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13rem]"));
 
-      // ⭐ Hide all radial menus
+    // Determine radial container
+    let radial;
+    if (isMobile) {
+      // Use parent container for mobile radial
+      radial = this.parentElement.querySelector(".radial-menu");
+      if (!radial) {
+        radial = document.createElement("div");
+        radial.className = "radial-menu absolute top-1/2 left-1/2 pointer-events-none";
+        this.parentElement.appendChild(radial);
+      }
+    } else {
+      // Desktop radial menu by ID
+      radial = document.getElementById("radial-" + catId);
       document.querySelectorAll(".radial-menu").forEach(r => {
-        r.classList.add("hidden");
-        r.innerHTML = "";
+        if (r !== radial) {
+          r.classList.add("hidden");
+          r.innerHTML = "";
+        }
       });
+    }
 
-      radial.classList.remove("hidden");
+    // Toggle visibility
+    if (!radial.classList.contains("hidden")) {
+      radial.classList.add("hidden");
+      radial.innerHTML = "";
+      return; // Already open → close
+    }
 
-      const radius = 150;
-      const total = data.length;
+    // Add mobile padding
+    if (isMobile) this.classList.add("pt-[13rem]"); // reduced padding for better spacing
 
-      // ⭐ ARC POSITION (Top Curve)
-      const startAngle = -160 * (Math.PI / 180);
-      const endAngle = -20 * (Math.PI / 180);
-  data.forEach((sub, index) => {
+    radial.classList.remove("hidden");
+    radial.innerHTML = ""; // clear any previous
 
-    const angle = startAngle +
-      (index / (total - 1 || 1)) * (endAngle - startAngle);
+    // Adjust radius and angles
+    const radius = isMobile ? 120 : 150;   // Increased mobile distance
+const total = data.length;
 
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius;
+const startAngle = isMobile ? -185 * (Math.PI / 180) : -160 * (Math.PI / 180);
+const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
 
-    // Create element
-    const item = document.createElement("a");
 
-    item.href = `/works/${sub.slug}/`;
-    item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
+    data.forEach((sub, index) => {
+      const angle = startAngle + (index / (total - 1 || 1)) * (endAngle - startAngle);
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
 
-    // ⭐ Start from center
-    item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
-    item.style.transitionDelay = `${index * 0.12}s`;
+      const item = document.createElement("a");
+      item.href = `/works/${sub.slug}/`;
+      item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
+      item.style.transform = "translate(0px,0px) translate(-50%, -50%)";
+      item.style.transitionDelay = `${index * 0.12}s`;
 
-    item.innerHTML = `
-        <div class="w-20 h-20 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
+      const bubbleSizeRem = isMobile ? 4 : 5;
+      const bubblePx = bubbleSizeRem * 16;
+
+      item.innerHTML = `
+        <div class="rounded-full p-[2px] bg-[#151a37] group-hover:scale-110 transition"
+             style="width:${bubblePx}px; height:${bubblePx}px;">
           ${sub.icon ? `<img src="${sub.icon}" class="w-full h-full rounded-full object-cover bg-white p-1">` : ""}
         </div>
+        <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">${sub.name}</p>
+      `;
 
-        <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">
-          ${sub.name}
-        </p>
-    `;
+      radial.appendChild(item);
 
-    radial.appendChild(item);
-
-    // ⭐ Move outward smoothly (next frame)
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-        item.style.opacity = "1";
-      }, 50);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+          item.style.opacity = "1";
+        }, 50);
+      });
     });
+  });
+});
 
+// Close radial menu on clicking outside
+document.addEventListener("click", function(e) {
+  if (e.target.closest(".category-btn") || e.target.closest(".radial-menu")) return;
+
+  document.querySelectorAll(".radial-menu").forEach(menu => {
+    menu.classList.add("hidden");
+    menu.innerHTML = "";
   });
 
+  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13rem]"));
+});
+</script>
+
+<style>
+.radial-menu {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.sub-item {
+  opacity: 0;
+  transition:
+    transform 0.6s cubic-bezier(.22,1,.36,1),
+    opacity 0.4s ease;
+}
+
+/* Bounce / Shrink Grow */
+@keyframes popBounce {
+  0% {opacity:0; transform: scale(0.3);}
+  60% {opacity:1; transform: scale(1.15);}
+  80% {transform: scale(0.95);}
+  100% {opacity:1;}
+}
+
+/* Mobile horizontal scroll */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+@media (max-width: 768px) {
+  .no-scrollbar { scroll-behavior: smooth; }
+}
+</style>
 
 
-    });
-
-  });
-
-
-  // ⭐ CLOSE WHEN CLICKING OUTSIDE
-  document.addEventListener("click", function(e) {
-
-    if (e.target.closest(".category-btn") || e.target.closest(".radial-menu")) {
-      return;
-    }
-
-    document.querySelectorAll(".radial-menu").forEach(menu => {
-      menu.classList.add("hidden");
-      menu.innerHTML = "";
-    });
-
-  });
-
-  </script>
 
 
 
-  <style>
-  /* Radial Container */
-  .radial-menu {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-  }
 
-  /* ⭐ Stagger Pop Bounce Animation */
-  .sub-item {
-    opacity: 0;
-    transition:
-      transform 0.6s cubic-bezier(.22,1,.36,1),
-      opacity 0.4s ease;
-  }
-
-
-  /* ⭐ Bounce / Shrink Grow */
-  @keyframes popBounce {
-
-    0% {
-      opacity: 0;
-      transform: scale(0.3);
-    }
-
-    60% {
-      opacity: 1;
-      transform: scale(1.15);
-    }
-
-    80% {
-      transform: scale(0.95);
-    }
-
-    100% {
-      opacity: 1;
-    }
-  }
-
-  </style>
 
 
 
