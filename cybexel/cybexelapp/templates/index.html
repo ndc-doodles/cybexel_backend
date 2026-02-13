@@ -860,7 +860,7 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     const isMobile = window.innerWidth <= 768;
 
     // Remove padding from all category buttons
-    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13rem]"));
+    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
 
     // Determine radial container
     let radial;
@@ -891,7 +891,7 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     }
 
     // Add mobile padding
-    if (isMobile) this.classList.add("pt-[13rem]"); // reduced padding for better spacing
+    if (isMobile) this.classList.add("pt-[13.5rem]"); // reduced padding for better spacing
 
     radial.classList.remove("hidden");
     radial.innerHTML = ""; // clear any previous
@@ -947,7 +947,7 @@ document.addEventListener("click", function(e) {
     menu.innerHTML = "";
   });
 
-  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13rem]"));
+  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
 });
 </script>
 
