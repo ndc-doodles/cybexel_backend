@@ -798,9 +798,40 @@ document.addEventListener("DOMContentLoaded", () => {
       {% endfor %}
     </div>
   </section>
-  <script>
+  <style>
+/* ================= MOBILE CATEGORY SLIDER ================= */
+@media (max-width: 640px) {
 
-let activeRadial = null;   // ⭐ Track opened menu
+  section .grid {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px; /* ✅ Reduced gap */
+    padding-bottom: 10px;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  section .grid::-webkit-scrollbar {
+    display: none; /* Chrome */
+  }
+
+  section .grid > div {
+    min-width: 90%; /* Slight preview of next item */
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ✅ Prevent radial overlap with heading */
+  .radial-menu {
+    margin-top: 60px !important;
+  }
+}
+</style>
+
+<script>
+
+let activeRadial = null;
 let activeButton = null;
 
 document.querySelectorAll(".category-btn").forEach(btn => {
@@ -817,7 +848,9 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     const jsonElement = document.getElementById("sub-data-" + catId);
     if (!radial || !jsonElement) return;
 
-    // ⭐ IF SAME CATEGORY CLICKED AGAIN → CLOSE WITH SHRINK
+    const parentBlock = this.closest(".text-center");
+
+    // ⭐ IF SAME CATEGORY CLICKED AGAIN → CLOSE
     if (activeRadial === radial) {
       closeRadial(radial);
       activeRadial = null;
@@ -825,7 +858,7 @@ document.querySelectorAll(".category-btn").forEach(btn => {
       return;
     }
 
-    // ⭐ Close any opened radial first
+    // ⭐ Close previous radial
     if (activeRadial) {
       closeRadial(activeRadial);
     }
@@ -838,7 +871,13 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     activeRadial = radial;
     activeButton = this;
 
-    const radius = 150;
+    // ⭐ MOBILE ONLY → Add padding-top
+    if (window.innerWidth <= 640 && parentBlock) {
+      parentBlock.style.paddingTop = "11rem";
+    }
+
+    const radius = window.innerWidth <= 640 ? 125 : 150;
+
     const total = data.length;
 
     const startAngle = -160 * (Math.PI / 180);
@@ -857,7 +896,6 @@ document.querySelectorAll(".category-btn").forEach(btn => {
       item.href = `/works/${sub.slug}/`;
       item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
 
-      // ⭐ Start center
       item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
       item.style.opacity = "0";
       item.style.transitionDelay = `${index * 0.1}s`;
@@ -873,7 +911,6 @@ document.querySelectorAll(".category-btn").forEach(btn => {
 
       radial.appendChild(item);
 
-      // ⭐ Animate outward
       requestAnimationFrame(() => {
         setTimeout(() => {
           item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
@@ -888,20 +925,26 @@ document.querySelectorAll(".category-btn").forEach(btn => {
 });
 
 
-// ⭐ CLOSE FUNCTION WITH SHRINK ANIMATION
+// ⭐ CLOSE FUNCTION
 function closeRadial(radial) {
+
+  const parentBlock = radial.closest(".text-center");
 
   const items = radial.querySelectorAll(".sub-item");
 
   items.forEach((item, index) => {
 
     item.style.transitionDelay = `${index * 0.05}s`;
-
     item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
     item.style.opacity = "0";
+
   });
 
-  // ⭐ Remove after animation
+  // ⭐ Remove mobile padding
+  if (window.innerWidth <= 640 && parentBlock) {
+    parentBlock.style.paddingTop = "";
+  }
+
   setTimeout(() => {
     radial.classList.add("hidden");
     radial.innerHTML = "";
@@ -970,6 +1013,20 @@ document.addEventListener("click", function(e) {
       opacity: 1;
     }
   }
+@media (max-width: 640px) {
+
+  /* Subcategory Circle Size */
+  .sub-item div:first-child {
+    width: 4rem !important;
+    height: 4rem !important;
+  }
+
+}
+@media (max-width: 640px) {
+  .radial-menu {
+    top: 40%;
+  }
+}
 
   </style>
 
