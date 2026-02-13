@@ -798,178 +798,102 @@ document.addEventListener("DOMContentLoaded", () => {
       {% endfor %}
     </div>
   </section>
-  <style>
-/* ================= MOBILE CATEGORY SLIDER ================= */
-@media (max-width: 640px) {
+  <script>
 
-  section .grid {
-    display: flex !important;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    gap: 8px; /* ✅ Reduced gap */
-    padding-bottom: 10px;
-    scrollbar-width: none; /* Firefox */
-  }
+  document.querySelectorAll(".category-btn").forEach(btn => {
 
-  section .grid::-webkit-scrollbar {
-    display: none; /* Chrome */
-  }
+    btn.addEventListener("click", function(e) {
 
-  section .grid > div {
-    min-width: 90%; /* Slight preview of next item */
-    scroll-snap-align: center;
-    flex-shrink: 0;
-  }
+      const hasSub = this.dataset.hasSub === "True";
+      if (!hasSub) return;
 
-  /* ✅ Prevent radial overlap with heading */
-  .radial-menu {
-    margin-top: 60px !important;
-  }
-}
-</style>
+      e.preventDefault();
 
-<script>
+      const catId = this.dataset.category;
+      const jsonElement = document.getElementById("sub-data-" + catId);
+      if (!jsonElement) return;
 
-let activeRadial = null;
-let activeButton = null;
+      const radial = document.getElementById("radial-" + catId);
+      if (!radial) return;
 
-document.querySelectorAll(".category-btn").forEach(btn => {
+      const data = JSON.parse(jsonElement.textContent);
 
-  btn.addEventListener("click", function(e) {
+      // ⭐ Hide all radial menus
+      document.querySelectorAll(".radial-menu").forEach(r => {
+        r.classList.add("hidden");
+        r.innerHTML = "";
+      });
 
-    const hasSub = this.dataset.hasSub === "True";
-    if (!hasSub) return;
+      radial.classList.remove("hidden");
 
-    e.preventDefault();
+      const radius = 150;
+      const total = data.length;
 
-    const catId = this.dataset.category;
-    const radial = document.getElementById("radial-" + catId);
-    const jsonElement = document.getElementById("sub-data-" + catId);
-    if (!radial || !jsonElement) return;
+      // ⭐ ARC POSITION (Top Curve)
+      const startAngle = -160 * (Math.PI / 180);
+      const endAngle = -20 * (Math.PI / 180);
+  data.forEach((sub, index) => {
 
-    const parentBlock = this.closest(".text-center");
+    const angle = startAngle +
+      (index / (total - 1 || 1)) * (endAngle - startAngle);
 
-    // ⭐ IF SAME CATEGORY CLICKED AGAIN → CLOSE
-    if (activeRadial === radial) {
-      closeRadial(radial);
-      activeRadial = null;
-      activeButton = null;
-      return;
-    }
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
 
-    // ⭐ Close previous radial
-    if (activeRadial) {
-      closeRadial(activeRadial);
-    }
+    // Create element
+    const item = document.createElement("a");
 
-    const data = JSON.parse(jsonElement.textContent);
+    item.href = `/works/${sub.slug}/`;
+    item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
 
-    radial.classList.remove("hidden");
-    radial.innerHTML = "";
+    // ⭐ Start from center
+    item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
+    item.style.transitionDelay = `${index * 0.12}s`;
 
-    activeRadial = radial;
-    activeButton = this;
-
-    // ⭐ MOBILE ONLY → Add padding-top
-    if (window.innerWidth <= 640 && parentBlock) {
-      parentBlock.style.paddingTop = "11rem";
-    }
-
-    const radius = window.innerWidth <= 640 ? 125 : 150;
-
-    const total = data.length;
-
-    const startAngle = -160 * (Math.PI / 180);
-    const endAngle = -20 * (Math.PI / 180);
-
-    data.forEach((sub, index) => {
-
-      const angle = startAngle +
-        (index / (total - 1 || 1)) * (endAngle - startAngle);
-
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-
-      const item = document.createElement("a");
-
-      item.href = `/works/${sub.slug}/`;
-      item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
-
-      item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
-      item.style.opacity = "0";
-      item.style.transitionDelay = `${index * 0.1}s`;
-
-      item.innerHTML = `
+    item.innerHTML = `
         <div class="w-20 h-20 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
           ${sub.icon ? `<img src="${sub.icon}" class="w-full h-full rounded-full object-cover bg-white p-1">` : ""}
         </div>
+
         <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">
           ${sub.name}
         </p>
-      `;
+    `;
 
-      radial.appendChild(item);
+    radial.appendChild(item);
 
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-          item.style.opacity = "1";
-        }, 50);
-      });
+    // ⭐ Move outward smoothly (next frame)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        item.style.opacity = "1";
+      }, 50);
+    });
+
+  });
+
+
 
     });
 
   });
 
-});
 
+  // ⭐ CLOSE WHEN CLICKING OUTSIDE
+  document.addEventListener("click", function(e) {
 
-// ⭐ CLOSE FUNCTION
-function closeRadial(radial) {
+    if (e.target.closest(".category-btn") || e.target.closest(".radial-menu")) {
+      return;
+    }
 
-  const parentBlock = radial.closest(".text-center");
-
-  const items = radial.querySelectorAll(".sub-item");
-
-  items.forEach((item, index) => {
-
-    item.style.transitionDelay = `${index * 0.05}s`;
-    item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
-    item.style.opacity = "0";
+    document.querySelectorAll(".radial-menu").forEach(menu => {
+      menu.classList.add("hidden");
+      menu.innerHTML = "";
+    });
 
   });
 
-  // ⭐ Remove mobile padding
-  if (window.innerWidth <= 640 && parentBlock) {
-    parentBlock.style.paddingTop = "";
-  }
-
-  setTimeout(() => {
-    radial.classList.add("hidden");
-    radial.innerHTML = "";
-  }, 600);
-}
-
-
-// ⭐ CLOSE WHEN CLICK OUTSIDE
-document.addEventListener("click", function(e) {
-
-  if (
-    e.target.closest(".category-btn") ||
-    e.target.closest(".radial-menu")
-  ) return;
-
-  if (activeRadial) {
-    closeRadial(activeRadial);
-    activeRadial = null;
-    activeButton = null;
-  }
-
-});
-
-</script>
-
+  </script>
 
 
 
@@ -1013,20 +937,6 @@ document.addEventListener("click", function(e) {
       opacity: 1;
     }
   }
-@media (max-width: 640px) {
-
-  /* Subcategory Circle Size */
-  .sub-item div:first-child {
-    width: 4rem !important;
-    height: 4rem !important;
-  }
-
-}
-@media (max-width: 640px) {
-  .radial-menu {
-    top: 40%;
-  }
-}
 
   </style>
 
