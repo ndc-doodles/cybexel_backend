@@ -16,7 +16,7 @@ urlpatterns = [
 
 
     # urls.py
-path('work/<slug:slug>/', views.work_detail, name='work_detail'),
+path('works/<slug:slug>/', views.work_detail, name='work_detail'),
 
 
 

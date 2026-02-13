@@ -750,29 +750,229 @@ document.addEventListener("DOMContentLoaded", () => {
 <script src="https://kit.fontawesome.com/a2e0d6b64f.js" crossorigin="anonymous"></script>
 
 
-<!-- PORTFOLIO TABS -->
-<section class="max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16">
-  <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
+  <!-- PORTFOLIO TABS -->
+  <section class="max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16">
+    <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
 
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-10">
-    {% for category in categories %}
-    <a href="{% url 'work_detail' category.slug %}" class="flex flex-col items-center group">
-      <div class="w-28 h-28 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
-        {% if category.icon %}
-          <img src="{{ category.icon.url }}"
-               class="w-full h-full rounded-full object-cover bg-white p-1"
-               alt="{{ category.name }}">
-        {% else %}
-          <img src="{% static 'img/default-category.png' %}"
-               class="w-full h-full rounded-full object-cover bg-white p-1" 
-               alt="Category">
-        {% endif %}
-      </div>
-      <p class="mt-2 font-semibold text-[#151a37]">{{ category.name }}</p>
-    </a>
-    {% endfor %}
-  </div>
-</section>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 relative">
+      {% for category in categories %}
+        <div class="text-center relative">
+
+          <!-- CATEGORY -->
+          <a href="{% url 'work_detail' category.slug %}"
+            class="flex flex-col items-center group category-btn"
+            data-has-sub="{{ category.subcategories.exists }}"
+            data-category="{{ category.id }}">
+
+            <div class="w-28 h-28 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
+              {% if category.icon %}
+                <img src="{{ category.icon.url }}"
+                    class="w-full h-full rounded-full object-cover bg-white p-1">
+              {% endif %}
+            </div>
+
+            <p class="mt-2 font-semibold text-[#151a37]">
+              {{ category.name }}
+            </p>
+          </a>
+
+          <!-- ⭐ RADIAL MENU -->
+          <div id="radial-{{ category.id }}"
+              class="radial-menu hidden absolute top-1/2 left-1/2 pointer-events-none">
+          </div>
+
+          <!-- Subcategory JSON -->
+          <script type="application/json" id="sub-data-{{ category.id }}">
+            [
+              {% for sub in category.subcategories.all %}
+              {
+                "name": "{{ sub.name }}",
+                "slug": "{{ sub.slug }}",
+                "icon": "{% if sub.icon %}{{ sub.icon.url }}{% endif %}"
+              }{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            ]
+          </script>
+
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  <script>
+
+let activeRadial = null;   // ⭐ Track opened menu
+let activeButton = null;
+
+document.querySelectorAll(".category-btn").forEach(btn => {
+
+  btn.addEventListener("click", function(e) {
+
+    const hasSub = this.dataset.hasSub === "True";
+    if (!hasSub) return;
+
+    e.preventDefault();
+
+    const catId = this.dataset.category;
+    const radial = document.getElementById("radial-" + catId);
+    const jsonElement = document.getElementById("sub-data-" + catId);
+    if (!radial || !jsonElement) return;
+
+    // ⭐ IF SAME CATEGORY CLICKED AGAIN → CLOSE WITH SHRINK
+    if (activeRadial === radial) {
+      closeRadial(radial);
+      activeRadial = null;
+      activeButton = null;
+      return;
+    }
+
+    // ⭐ Close any opened radial first
+    if (activeRadial) {
+      closeRadial(activeRadial);
+    }
+
+    const data = JSON.parse(jsonElement.textContent);
+
+    radial.classList.remove("hidden");
+    radial.innerHTML = "";
+
+    activeRadial = radial;
+    activeButton = this;
+
+    const radius = 150;
+    const total = data.length;
+
+    const startAngle = -160 * (Math.PI / 180);
+    const endAngle = -20 * (Math.PI / 180);
+
+    data.forEach((sub, index) => {
+
+      const angle = startAngle +
+        (index / (total - 1 || 1)) * (endAngle - startAngle);
+
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+
+      const item = document.createElement("a");
+
+      item.href = `/works/${sub.slug}/`;
+      item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
+
+      // ⭐ Start center
+      item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
+      item.style.opacity = "0";
+      item.style.transitionDelay = `${index * 0.1}s`;
+
+      item.innerHTML = `
+        <div class="w-20 h-20 rounded-full p-[3px] bg-[#151a37] group-hover:scale-110 transition">
+          ${sub.icon ? `<img src="${sub.icon}" class="w-full h-full rounded-full object-cover bg-white p-1">` : ""}
+        </div>
+        <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">
+          ${sub.name}
+        </p>
+      `;
+
+      radial.appendChild(item);
+
+      // ⭐ Animate outward
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+          item.style.opacity = "1";
+        }, 50);
+      });
+
+    });
+
+  });
+
+});
+
+
+// ⭐ CLOSE FUNCTION WITH SHRINK ANIMATION
+function closeRadial(radial) {
+
+  const items = radial.querySelectorAll(".sub-item");
+
+  items.forEach((item, index) => {
+
+    item.style.transitionDelay = `${index * 0.05}s`;
+
+    item.style.transform = "translate(0px, 0px) translate(-50%, -50%)";
+    item.style.opacity = "0";
+  });
+
+  // ⭐ Remove after animation
+  setTimeout(() => {
+    radial.classList.add("hidden");
+    radial.innerHTML = "";
+  }, 600);
+}
+
+
+// ⭐ CLOSE WHEN CLICK OUTSIDE
+document.addEventListener("click", function(e) {
+
+  if (
+    e.target.closest(".category-btn") ||
+    e.target.closest(".radial-menu")
+  ) return;
+
+  if (activeRadial) {
+    closeRadial(activeRadial);
+    activeRadial = null;
+    activeButton = null;
+  }
+
+});
+
+</script>
+
+
+
+
+  <style>
+  /* Radial Container */
+  .radial-menu {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+  }
+
+  /* ⭐ Stagger Pop Bounce Animation */
+  .sub-item {
+    opacity: 0;
+    transition:
+      transform 0.6s cubic-bezier(.22,1,.36,1),
+      opacity 0.4s ease;
+  }
+
+
+  /* ⭐ Bounce / Shrink Grow */
+  @keyframes popBounce {
+
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    60% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    80% {
+      transform: scale(0.95);
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  </style>
+
 
 
 <section class="relative w-[90%] mx-auto h-[500px] bg-[#151a37] overflow-hidden text-black">

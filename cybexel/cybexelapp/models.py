@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
+from django.utils.text import slugify
+
 
 
 
@@ -163,11 +165,38 @@ class AdminProfile(models.Model):
 # -------------------
 class PortfolioCategory(models.Model):
     name = models.CharField(max_length=500)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     icon = models.ImageField(upload_to="portfolio/category/icons/", blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
+
+
+class PortfolioSubCategory(models.Model):
+    category = models.ForeignKey(
+        PortfolioCategory,
+        on_delete=models.CASCADE,
+        related_name="subcategories"
+    )
+
+    name = models.CharField(max_length=500)
+    slug = models.SlugField(unique=True, blank=True)
+    icon = models.ImageField(upload_to="portfolio/subcategory/icons/", blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.category.name}-{self.name}")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.category.name} → {self.name}"
+
+
 
 # -------------------
 # BULLET POINTS
@@ -189,12 +218,30 @@ class PortfolioProcessStep(models.Model):
 # PORTFOLIO DETAIL
 # -------------------
 class PortfolioDetail(models.Model):
-    category = models.OneToOneField(PortfolioCategory, on_delete=models.CASCADE, related_name="portfoliodetail")
+    category = models.ForeignKey(
+        PortfolioCategory,
+        on_delete=models.CASCADE,
+        related_name="details",
+        blank=True,
+        null=True
+    )
+
+    subcategory = models.OneToOneField(
+        PortfolioSubCategory,
+        on_delete=models.CASCADE,
+        related_name="detail",
+        blank=True,
+        null=True
+    )
+
     heading = models.CharField(max_length=500)
-    intro_paragraph = models.TextField()
+    intro_paragraph = models.TextField(default="No intro provided yet.")  # ✅ Default added
     main_image = models.ImageField(upload_to="portfolio/detail/main/")
     process_heading = models.CharField(max_length=200)
     process_description = models.TextField()
+
+    def __str__(self):
+        return self.heading
 
 # -------------------
 # RECENT WORK

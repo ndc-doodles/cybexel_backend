@@ -231,6 +231,219 @@ function closeEditModal() {
 
 
 
+<!-- ADD SUBCATEGORY SECTION -->
+<div class="bg-white shadow-md p-6 rounded-lg border mb-10">
+  <h3 class="text-lg font-semibold mb-4 text-[#151a37]">Add New SubCategory</h3>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="subcategory">
+
+    <!-- CATEGORY -->
+    <div>
+      <label class="block text-sm font-medium">Select Category</label>
+      <select name="category_id" required class="w-full p-2 border rounded-md">
+        <option value="">-- Select Category --</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- NAME -->
+    <div>
+      <label class="block text-sm font-medium">SubCategory Name</label>
+      <input type="text" name="name" required
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <!-- SLUG -->
+    <div>
+      <label class="block text-sm font-medium">Slug</label>
+      <input type="text" name="slug"
+             placeholder="Auto generate if empty"
+             class="w-full p-2 border rounded-md">
+    </div>
+
+    <!-- ICON -->
+    <div>
+      <label class="block text-sm font-medium">Upload Icon (Optional)</label>
+      <input type="file" name="icon" accept="image/*"
+             class="w-full p-2 border rounded-md bg-gray-50">
+    </div>
+
+    <button type="submit"
+      class="bg-[#151a37] text-white px-6 py-2 rounded-lg font-semibold">
+      Add SubCategory
+    </button>
+  </form>
+</div>
+<div class="bg-white shadow-md p-6 rounded-lg border mt-6">
+  <h3 class="text-lg font-semibold mb-4 text-[#151a37]">Existing SubCategories</h3>
+
+  {% if subcategories %}
+  <table class="w-full border">
+    <thead>
+      <tr class="bg-gray-100 text-left text-sm">
+        <th class="p-2 border">Category</th>
+        <th class="p-2 border">Icon</th>
+        <th class="p-2 border">Name</th>
+        <th class="p-2 border">Slug</th>
+        <th class="p-2 border text-center">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for sub in subcategories %}
+      <tr class="text-sm">
+
+        <td class="border p-2">{{ sub.category.name }}</td>
+
+        <td class="border p-2">
+          {% if sub.icon %}
+          <img src="{{ sub.icon.url }}" class="w-10 h-10 object-cover rounded">
+          {% else %}
+          -
+          {% endif %}
+        </td>
+
+        <td class="border p-2">{{ sub.name }}</td>
+        <td class="border p-2">{{ sub.slug }}</td>
+
+        <td class="border p-2 text-center">
+
+          <!-- EDIT -->
+          <button
+            onclick="openSubEditModal('{{ sub.id }}',
+                                      '{{ sub.category.id }}',
+                                      '{{ sub.name|escapejs }}',
+                                      '{{ sub.slug|escapejs }}')"
+            class="text-blue-600 hover:underline">
+            Edit
+          </button>
+          |
+
+          <!-- DELETE -->
+          <form method="POST" class="inline"
+                onsubmit="return confirm('Delete this subcategory?');">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="delete_subcategory">
+            <input type="hidden" name="delete_id" value="{{ sub.id }}">
+            <button type="submit"
+              class="text-red-600 hover:underline bg-transparent border-0 p-0">
+              Delete
+            </button>
+          </form>
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% else %}
+  <p class="text-gray-500 text-sm">No subcategories added yet.</p>
+  {% endif %}
+</div>
+<div id="editSubModal"
+     class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+  <div class="bg-white p-6 rounded-lg w-[400px] shadow-xl">
+
+    <h3 class="text-lg font-semibold mb-4">Edit SubCategory</h3>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="edit_subcategory">
+      <input type="hidden" name="edit_id" id="sub_edit_id">
+
+      <!-- CATEGORY -->
+      <div>
+        <label class="text-sm font-medium">Category</label>
+        <select name="edit_category_id"
+                id="sub_edit_category"
+                class="w-full border rounded p-2"
+                required>
+
+          {% for cat in categories %}
+          <option value="{{ cat.id }}">{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- NAME -->
+      <div>
+        <label class="text-sm font-medium">SubCategory Name</label>
+        <input type="text" name="edit_name"
+               id="sub_edit_name"
+               class="w-full border rounded p-2"
+               required>
+      </div>
+
+      <!-- SLUG -->
+      <div>
+        <label class="text-sm font-medium">Slug</label>
+        <input type="text" name="edit_slug"
+               id="sub_edit_slug"
+               class="w-full border rounded p-2">
+      </div>
+
+      <!-- ICON -->
+      <div>
+        <label class="text-sm font-medium">Update Icon</label>
+        <input type="file" name="edit_icon"
+               class="w-full border p-2">
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button"
+                onclick="closeSubEditModal()"
+                class="px-4 py-2 bg-gray-300 rounded">
+          Cancel
+        </button>
+
+        <button type="submit"
+                class="px-4 py-2 bg-[#151a37] text-white rounded">
+          Update
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+<script>
+function openSubEditModal(id, categoryId, name, slug) {
+
+  document.getElementById("sub_edit_id").value = id;
+  document.getElementById("sub_edit_category").value = categoryId;
+  document.getElementById("sub_edit_name").value = name;
+  document.getElementById("sub_edit_slug").value = slug;
+
+  document.getElementById("editSubModal").classList.remove("hidden");
+  document.getElementById("editSubModal").classList.add("flex");
+}
+
+function closeSubEditModal() {
+  document.getElementById("editSubModal").classList.add("hidden");
+  document.getElementById("editSubModal").classList.remove("flex");
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- ADD WORK SECTION -->
@@ -242,15 +455,29 @@ function closeEditModal() {
     <input type="hidden" name="form_type" value="work">
 
     <!-- Category Select -->
-    <div>
-      <label class="block text-sm font-medium">Select Category</label>
-      <select name="category" required class="w-full p-2 border rounded-md">
-        <option value="" disabled selected>-- Choose Category --</option>
-        {% for cat in categories %}
-        <option value="{{ cat.id }}">{{ cat.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+<!-- Category Select -->
+<div>
+  <label class="block text-sm font-medium">Select Category</label>
+  <select name="category" id="categorySelect" required class="w-full p-2 border rounded-md">
+    <option value="" disabled selected>-- Choose Category --</option>
+    {% for cat in categories %}
+      <option value="{{ cat.id }}">{{ cat.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<!-- Subcategory Select -->
+<div>
+  <label for="subcategory">Subcategory (optional)</label>
+  <select name="subcategory" id="subcategorySelect" class="w-full p-2 border rounded-md">
+    <option value="">-- Select Subcategory --</option>
+    {% for sub in subcategories %}
+      <option value="{{ sub.id }}" data-category="{{ sub.category.id }}">{{ sub.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+
 
     <!-- Main Section -->
     <h4 class="text-md font-semibold text-[#151a37]">Main Section</h4>
@@ -352,115 +579,80 @@ function closeEditModal() {
 <div class="bg-white shadow-lg p-6 rounded-lg border mt-10">
   <h3 class="text-lg font-semibold mb-4 text-[#151a37]">Existing Works</h3>
 
-{% if categories %}
-<div class="overflow-x-auto">
- <table class="min-w-full border-collapse border border-gray-300 text-sm">
-  <thead>
-    <tr class="bg-gray-100 text-[#151a37]">
-      <th class="border p-3 text-left">#</th>
-      <th class="border p-3 text-left">Category</th>
-      <th class="border p-3 text-left">Upload Icon</th>
-      <th class="border p-3 text-left">Works Count</th>
-      <th class="border p-3 text-left">Actions</th>
-    </tr>
-  </thead>
+  {% if categories %}
+  <div class="overflow-x-auto">
+    <table class="min-w-full border-collapse border border-gray-300 text-sm">
+      <thead>
+        <tr class="bg-gray-100 text-[#151a37]">
+          <th class="border p-3 text-left">#</th>
+          <th class="border p-3 text-left">Category</th>
+          <th class="border p-3 text-left">Works Count</th>
+          <th class="border p-3 text-left">Actions</th>
+        </tr>
+      </thead>
 
-  <tbody>
-    {% for cat in categories %}
-    <tr class="hover:bg-gray-50">
-      
-      <!-- Counter -->
-      <td class="border p-3">{{ forloop.counter }}</td>
+<tbody>
+{% for cat in categories %}
+    {% comment %} Get all details for this category, including subcategory works {% endcomment %}
+    {% for detail in cat.details.all %}
+        <tr class="hover:bg-gray-50">
+            <td class="border p-3">{{ forloop.parentloop.counter }}.{{ forloop.counter }}</td>
 
-      <!-- Category Name -->
-      <td class="border p-3">{{ cat.name }}</td>
+            <td class="border p-3">
+                {{ cat.name }}
+                {% if detail.subcategory %}
+                    / {{ detail.subcategory.name }}
+                {% endif %}
+            </td>
 
-      <!-- Category Icon -->
-      <td class="border p-3">
-        {% if cat.icon %}
-          <img src="{{ cat.icon.url }}" alt="{{ cat.name }} icon" 
-               class="w-10 h-10 rounded-md object-cover border">
-        {% else %}
-          <span class="text-gray-500 text-xs">No Icon</span>
-        {% endif %}
-      </td>
+            <td class="border p-3">{{ detail.works.count }}</td>
 
-      <!-- Number of works -->
-      <td class="border p-3">
-        {% if cat.portfoliodetail %}
-          {{ cat.portfoliodetail.works.count }}
-        {% else %}
-          0
-        {% endif %}
-      </td>
+            <td class="border p-3 flex gap-2">
+                <!-- Edit Button -->
+                <button type="button"
+                        class="px-3 py-1 bg-blue-600 text-white rounded-md text-xs edit-btn"
+                        data-detail-id="{{ detail.id }}"
+                        data-category-id="{{ cat.id }}"
+                        data-subcategory-id="{{ detail.subcategory.id|default:'' }}"
+                        data-title="{{ detail.heading|default_if_none:''|escapejs }}"
+                        data-description="{{ detail.intro_paragraph|default_if_none:''|escapejs }}"
+                        data-process-heading="{{ detail.process_heading|default_if_none:''|escapejs }}"
+                        data-process-desc="{{ detail.process_description|default_if_none:''|escapejs }}"
+                        data-bullets='[{% for b in detail.points.all %}"{{ b.title|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]'
+                        data-process-steps='[{% for s in detail.steps.all %}{"title":"{{ s.title|escapejs }}","desc":"{{ s.description|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'
+                        data-works='[{% for w in detail.works.all %}{
+                            "id": {{ w.id }},
+                            "name": "{{ w.name|escapejs }}",
+                            "thumbnail": "{% if w.thumbnail %}{{ w.thumbnail.url }}{% endif %}",
+                            "images": [{% for img in w.images.all %}"{{ img.image.url }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+                            "video": "{% if w.video %}{{ w.video.url }}{% endif %}",
+                            "subcategory_id": "{{ detail.subcategory.id|default:"" }}"
+                        }{% if not forloop.last %},{% endif %}{% endfor %}]'>
+                    Edit
+                </button>
 
-      <!-- Actions -->
-      <td class="border p-3 flex gap-2">
-
-{% if cat.portfoliodetail and cat.portfoliodetail.works.exists %}
-    {% with first_work=cat.portfoliodetail.works.first %}
-<button type="button"
-    class="px-3 py-1 bg-blue-600 text-white rounded-md text-xs edit-btn"
-    data-category-id="{{ cat.id }}"
-    data-title="{{ cat.portfoliodetail.heading|default_if_none:''|escapejs }}"
-    data-description="{{ cat.portfoliodetail.intro_paragraph|default_if_none:''|escapejs }}"
-    data-process-heading="{{ cat.portfoliodetail.process_heading|default_if_none:''|escapejs }}"
-    data-process-desc="{{ cat.portfoliodetail.process_description|default_if_none:''|escapejs }}"
-    data-bullets='[{% for b in cat.portfoliodetail.points.all %}"{{ b.title|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]'
-    data-process-steps='[{% for s in cat.portfoliodetail.steps.all %}{"title":"{{ s.title|escapejs }}","desc":"{{ s.description|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'
-data-works='[
-    {% for w in cat.portfoliodetail.works.all %}
-    {
-        {% if w.id %}"id": {{ w.id }},{% endif %}
-        "name": "{{ w.name|escapejs }}",
-        "thumbnail": "{% if w.thumbnail %}{{ w.thumbnail.url }}{% endif %}",
-        "images": [{% for img in w.images.all %}"{{ img.image.url }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
-        "video": "{% if w.video %}{{ w.video.url }}{% endif %}"
-    }{% if not forloop.last %},{% endif %}
+                <!-- Delete Button -->
+                <button type="button"
+                        class="px-3 py-1 bg-red-600 text-white rounded-md text-xs delete-btn"
+                        data-category-id="{{ cat.id }}"
+                        data-detail-id="{{ detail.id }}">
+                    Delete
+                </button>
+            </td>
+        </tr>
     {% endfor %}
-]'
+{% endfor %}
+</tbody>
 
 
->
-Edit
-</button>
-
-
-
-{% endwith %}
-
-{% else %}
-    <button type="button"
-        class="px-3 py-1 bg-blue-600 text-white rounded-md text-xs edit-btn"
-        data-category-id="{{ cat.id }}">
-        Edit
-    </button>
-{% endif %}
-
-
-
-        <!-- DELETE BUTTON -->
-        <button type="button"
-            class="px-3 py-1 bg-red-600 text-white rounded-md text-xs delete-btn"
-            data-category-id="{{ cat.id }}"
-            data-category-name="{{ cat.name }}">
-          Delete
-        </button>
-
-      </td>
-
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+    </table>
+  </div>
+  {% else %}
+    <p class="text-sm text-gray-500 text-center py-6">No categories available.</p>
+  {% endif %}
 </div>
-{% else %}
-<p class="text-sm text-gray-500 text-center py-6">No categories available.</p>
-{% endif %}
 
 
-</div>
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
   <div class="bg-white p-6 rounded-md w-[350px] shadow">
@@ -531,6 +723,16 @@ function closeDeleteModal() {
           {% endfor %}
         </select>
       </div>
+      <div>
+  <label class="block text-sm font-medium">Subcategory</label>
+  <select name="subcategory" id="editSubcategorySelect" class="w-full p-2 border rounded-md">
+    <option value="" disabled selected>-- Choose Subcategory --</option>
+    {% for sub in subcategories %}
+      <option value="{{ sub.id }}" data-category="{{ sub.category.id }}">{{ sub.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 
       <!-- MAIN SECTION -->
       <h4 class="text-md font-semibold text-[#151a37] mt-4">Main Section</h4>
@@ -601,85 +803,6 @@ function closeDeleteModal() {
   </div>
 </div>
 <script>
-  // -------- BULLETS --------
-  document.getElementById("add-bullet").addEventListener("click", () => {
-      const container = document.getElementById("bullet-container");
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "bullet_titles[]";
-      input.placeholder = "Enter bullet point";
-      input.className = "w-full p-2 border rounded-md";
-      container.appendChild(input);
-  });
-
-  // -------- PROCESS STEPS --------
-  document.getElementById("add-process").addEventListener("click", () => {
-      const container = document.getElementById("process-container");
-      const div = document.createElement("div");
-      div.className = "flex gap-2 mt-1";
-
-      const title = document.createElement("input");
-      title.type = "text";
-      title.name = "process_titles[]";
-      title.placeholder = "Step Title";
-      title.className = "w-1/3 p-2 border rounded-md";
-
-      const desc = document.createElement("input");
-      desc.type = "text";
-      desc.name = "process_descs[]";
-      desc.placeholder = "Step Description";
-      desc.className = "w-2/3 p-2 border rounded-md";
-
-      div.appendChild(title);
-      div.appendChild(desc);
-      container.appendChild(div);
-  });
-
-  // -------- RECENT WORKS --------
-  let workIndex = 1; // because 0 already exists
-  document.getElementById("addNewWorkBtn").addEventListener("click", () => {
-      const container = document.getElementById("works-container");
-      const div = document.createElement("div");
-      div.className = "work-item border p-4 rounded-md relative";
-
-      div.innerHTML = `
-          <button type="button" class="absolute top-2 right-2 text-red-600 text-xs remove-work">Remove</button>
-
-          <div>
-              <label class="block text-sm font-medium">Work Name</label>
-              <input type="text" name="works[${workIndex}][name]" class="w-full p-2 border rounded-md" placeholder="ABCSEFG" required>
-          </div>
-
-          <div>
-              <label class="block text-sm font-medium">Thumbnail Image</label>
-              <input type="file" name="works[${workIndex}][thumbnail]" accept="image/*" class="w-full p-2 border rounded-md bg-gray-50" required>
-          </div>
-
-          <div>
-              <label class="block text-sm font-medium">Supporting Images</label>
-              <input type="file" name="works[${workIndex}][images]" accept="image/*" multiple class="w-full p-2 border rounded-md bg-gray-50">
-              <p class="text-xs text-gray-500">You can upload multiple images</p>
-          </div>
-
-          <div>
-              <label class="block text-sm font-medium">Video (Optional)</label>
-              <input type="file" name="works[${workIndex}][video]" accept="video/*" class="w-full p-2 border rounded-md bg-gray-50">
-          </div>
-      `;
-      
-      // Remove work button
-      div.querySelector(".remove-work").addEventListener("click", () => div.remove());
-
-      container.appendChild(div);
-      workIndex++;
-  });
-
-  // -------- REMOVE BUTTONS FOR INITIAL WORK ITEM --------
-  document.querySelectorAll(".work-item .remove-work").forEach(btn => {
-      btn.addEventListener("click", e => btn.closest(".work-item").remove());
-  });
-</script>
-<script>
 // ------------------------------------------
 // Decode helper
 // ------------------------------------------
@@ -693,7 +816,6 @@ function decodeText(str) {
               .replace(/\\u003E/g, ">");
 }
 
-
 // ------------------------------------------
 // Create Work Item Div (Used for add + edit)
 // ------------------------------------------
@@ -703,21 +825,16 @@ function createWorkDiv(index, work = {}) {
 
     div.innerHTML = `
         <button type="button" class="absolute top-2 right-2 text-red-600 text-xs remove-work">Remove</button>
-
         ${work.id ? `<input type="hidden" name="works[${index}][id]" value="${work.id}">` : ""}
-
         <div>
             <label>Work Name</label>
-            <input type="text" name="works[${index}][name]" value="${work.name || ''}" required 
-                   class="w-full p-2 border rounded-md">
+            <input type="text" name="works[${index}][name]" value="${work.name || ''}" required class="w-full p-2 border rounded-md">
         </div>
-
         <div>
             <label>Thumbnail</label>
             <input type="file" name="works[${index}][thumbnail]" class="w-full p-2 border rounded-md">
             ${work.thumbnail ? `<img src="${work.thumbnail}" class="w-32 h-32 object-cover mt-2 rounded-md">` : ""}
         </div>
-
         <div>
             <label>Supporting Images</label>
             <input type="file" name="works[${index}][images]" multiple class="w-full p-2 border rounded-md">
@@ -727,15 +844,10 @@ function createWorkDiv(index, work = {}) {
                 : ""
             }
         </div>
-
         <div>
             <label>Video</label>
             <input type="file" name="works[${index}][video]" class="w-full p-2 border rounded-md">
-            ${
-                work.video 
-                ? `<video src="${work.video}" controls class="w-40 h-28 mt-2 rounded-md"></video>`
-                : ""
-            }
+            ${work.video ? `<video src="${work.video}" controls class="w-40 h-28 mt-2 rounded-md"></video>` : ""}
         </div>
     `;
 
@@ -743,108 +855,21 @@ function createWorkDiv(index, work = {}) {
     return div;
 }
 
-
-
-// ---------------------------------------------------------------------
-// ------------------------ ADD WORK (MAIN FORM) ------------------------
-// ---------------------------------------------------------------------
-let addWorkIndex = 0;
-
-document.getElementById("addNewWorkBtn")?.addEventListener("click", () => {
-    const container = document.getElementById("addWorkContainer");
-    if (!container) return;
-
-    const div = createWorkDiv(addWorkIndex);
-    container.appendChild(div);
-    addWorkIndex++;
-});
-
-
-
-// ---------------------------------------------------------------------
-// ------------------------ EDIT WORK (MODAL) ---------------------------
-// ---------------------------------------------------------------------
-const modal = document.getElementById("editWorkModal");
-const closeModal = document.getElementById("closeModal");
-const editBtns = document.querySelectorAll(".edit-btn");
-
-let editWorkIndex = 0;
-
-// Open modal & fill data
-editBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-        modal.classList.remove("hidden");
-
-        document.getElementById("editCategoryId").value = btn.dataset.categoryId;
-        document.getElementById("editCategorySelect").value = btn.dataset.categoryId;
-
-        document.getElementById("editMainTitle").value = decodeText(btn.dataset.title || "");
-        document.getElementById("editMainDescription").value = decodeText(btn.dataset.description || "");
-        document.getElementById("editProcessTitle").value = decodeText(btn.dataset.processHeading || "");
-        document.getElementById("editProcessDesc").value = decodeText(btn.dataset.processDesc || "");
-
-        // Bullets
-        const bulletContainer = document.getElementById("editBulletContainer");
-        bulletContainer.innerHTML = "";
-        const bullets = btn.dataset.bullets ? JSON.parse(btn.dataset.bullets) : [];
-
-        bullets.forEach(b => {
-            const input = document.createElement("input");
-            input.type = "text";
-            input.name = "bullet_titles[]";
-            input.value = decodeText(b);
-            input.className = "w-full p-2 border rounded-md";
-            bulletContainer.appendChild(input);
-        });
-
-        // Process Steps
-        const processContainer = document.getElementById("editProcessContainer");
-        processContainer.innerHTML = "";
-        const steps = btn.dataset.processSteps ? JSON.parse(btn.dataset.processSteps) : [];
-
-        steps.forEach(s => {
-            const div = document.createElement("div");
-            div.className = "flex gap-2 mt-1";
-            div.innerHTML = `
-                <input type="text" name="process_titles[]" value="${decodeText(s.title)}" placeholder="Step Title" class="w-1/3 p-2 border rounded-md">
-                <input type="text" name="process_descs[]" value="${decodeText(s.desc)}" placeholder="Step Description" class="w-2/3 p-2 border rounded-md">
-            `;
-            processContainer.appendChild(div);
-        });
-
-        // Works
-        const worksContainer = document.getElementById("editWorksContainer");
-        worksContainer.innerHTML = "";
-
-        const works = btn.dataset.works ? JSON.parse(btn.dataset.works) : [];
-        editWorkIndex = 0;
-
-        works.forEach(w => {
-            const div = createWorkDiv(editWorkIndex, w);
-            worksContainer.appendChild(div);
-            editWorkIndex++;
-        });
-    });
-});
-
-// Close modal
-closeModal?.addEventListener("click", () => modal.classList.add("hidden"));
-
-
-// Add Bullet
-document.getElementById("editAddBullet")?.addEventListener("click", () => {
-    const container = document.getElementById("editBulletContainer");
+// ------------------------------------------
+// BULLETS & PROCESS STEPS (Main Form)
+// ------------------------------------------
+document.getElementById("add-bullet")?.addEventListener("click", () => {
+    const container = document.getElementById("bullet-container");
     const input = document.createElement("input");
     input.type = "text";
     input.name = "bullet_titles[]";
     input.placeholder = "Enter bullet point";
-    input.className = "w-full p-2 border rounded-md";
+    input.className = "w-full p-2 border rounded-md mt-1";
     container.appendChild(input);
 });
 
-// Add Process Step
-document.getElementById("editAddProcess")?.addEventListener("click", () => {
-    const container = document.getElementById("editProcessContainer");
+document.getElementById("add-process")?.addEventListener("click", () => {
+    const container = document.getElementById("process-container");
     const div = document.createElement("div");
     div.className = "flex gap-2 mt-1";
 
@@ -856,12 +881,115 @@ document.getElementById("editAddProcess")?.addEventListener("click", () => {
     container.appendChild(div);
 });
 
-// Add Work Inside Edit Modal
-document.getElementById("editAddWork")?.addEventListener("click", () => {
-    const container = document.getElementById("editWorksContainer");
-    const div = createWorkDiv(editWorkIndex);
+// ------------------------------------------
+// ADD NEW WORK (Main Form)
+// ------------------------------------------
+let workIndex = document.querySelectorAll("#works-container .work-item").length || 0;
+document.getElementById("addNewWorkBtn")?.addEventListener("click", () => {
+    const container = document.getElementById("works-container");
+    const div = createWorkDiv(workIndex);
     container.appendChild(div);
-    editWorkIndex++;
+    workIndex++;
+});
+
+// ------------------------------------------
+// EDIT MODAL LOGIC
+// ------------------------------------------
+const modal = document.getElementById("editWorkModal");
+const closeModal = document.getElementById("closeModal");
+const editBtns = document.querySelectorAll(".edit-btn");
+
+editBtns.forEach(btn => btn.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+
+    const categoryId = btn.dataset.categoryId;
+    const subcategoryId = btn.dataset.subcategoryId || "";
+    const detailId = btn.dataset.detailId;
+
+    document.getElementById("editCategoryId").value = categoryId;
+    document.getElementById("editCategorySelect").value = categoryId;
+
+    const subcatSelect = document.getElementById("editSubcategorySelect");
+    subcatSelect.value = subcategoryId;
+
+    document.getElementById("editWorkId").value = detailId;
+
+    // Main Fields
+    document.getElementById("editMainTitle").value = decodeText(btn.dataset.title || "");
+    document.getElementById("editMainDescription").value = decodeText(btn.dataset.description || "");
+    document.getElementById("editProcessTitle").value = decodeText(btn.dataset.processHeading || "");
+    document.getElementById("editProcessDesc").value = decodeText(btn.dataset.processDesc || "");
+
+    // Bullet Points
+    const bulletContainer = document.getElementById("editBulletContainer");
+    bulletContainer.innerHTML = "";
+    const bullets = btn.dataset.bullets ? JSON.parse(btn.dataset.bullets) : [];
+    bullets.forEach(b => {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "bullet_titles[]";
+        input.value = decodeText(b);
+        input.className = "w-full p-2 border rounded-md mt-1";
+        bulletContainer.appendChild(input);
+    });
+
+    // Process Steps
+    const processContainer = document.getElementById("editProcessContainer");
+    processContainer.innerHTML = "";
+    const steps = btn.dataset.processSteps ? JSON.parse(btn.dataset.processSteps) : [];
+    steps.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "flex gap-2 mt-1";
+        div.innerHTML = `
+            <input type="text" name="process_titles[]" value="${decodeText(s.title)}" class="w-1/3 p-2 border rounded-md">
+            <input type="text" name="process_descs[]" value="${decodeText(s.desc)}" class="w-2/3 p-2 border rounded-md">
+        `;
+        processContainer.appendChild(div);
+    });
+
+    // Works
+    const worksContainer = document.getElementById("editWorksContainer");
+    worksContainer.innerHTML = "";
+    const works = btn.dataset.works ? JSON.parse(btn.dataset.works) : [];
+    let editWorkIndex = 0;
+    works.forEach(w => {
+        const div = createWorkDiv(editWorkIndex, w);
+        worksContainer.appendChild(div);
+        editWorkIndex++;
+    });
+
+    // Add Work Button inside modal
+    document.getElementById("editAddWork")?.addEventListener("click", () => {
+        const div = createWorkDiv(editWorkIndex);
+        worksContainer.appendChild(div);
+        editWorkIndex++;
+    });
+}));
+
+// Close Modal
+closeModal?.addEventListener("click", () => modal.classList.add("hidden"));
+
+// Add Bullet inside modal
+document.getElementById("editAddBullet")?.addEventListener("click", () => {
+    const container = document.getElementById("editBulletContainer");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "bullet_titles[]";
+    input.placeholder = "Enter bullet point";
+    input.className = "w-full p-2 border rounded-md mt-1";
+    container.appendChild(input);
+});
+
+// Add Process Step inside modal
+document.getElementById("editAddProcess")?.addEventListener("click", () => {
+    const container = document.getElementById("editProcessContainer");
+    const div = document.createElement("div");
+    div.className = "flex gap-2 mt-1";
+    div.innerHTML = `
+        <input type="text" name="process_titles[]" placeholder="Step Title" class="w-1/3 p-2 border rounded-md">
+        <input type="text" name="process_descs[]" placeholder="Step Description" class="w-2/3 p-2 border rounded-md">
+    `;
+    container.appendChild(div);
 });
 </script>
 
@@ -869,7 +997,31 @@ document.getElementById("editAddWork")?.addEventListener("click", () => {
 
 
 
+
 </section>
+<script>
+const categorySelect = document.getElementById("categorySelect");
+const subcategorySelect = document.getElementById("subcategorySelect");
+
+categorySelect.addEventListener("change", () => {
+    const selectedCategory = categorySelect.value;
+
+    Array.from(subcategorySelect.options).forEach(option => {
+        const catId = option.getAttribute("data-category");
+        if (!catId) return; // skip placeholder
+
+        if (catId === selectedCategory) {
+            option.style.display = "block";
+        } else {
+            option.style.display = "none";
+        }
+    });
+
+    // Reset selected value
+    subcategorySelect.value = "";
+});
+</script>
+
 
 
 </body>
