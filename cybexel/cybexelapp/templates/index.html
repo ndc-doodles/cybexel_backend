@@ -859,50 +859,24 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     const data = JSON.parse(jsonElement.textContent);
     const isMobile = window.innerWidth <= 768;
 
-    // Remove padding from all category buttons
+    // Remove previous sub-items / menus
+    document.querySelectorAll(".radial-menu").forEach(menu => menu.remove());
+
+    // Create radial menu container
+    const radial = document.createElement("div");
+    radial.className = "radial-menu absolute pointer-events-none";
+    this.parentElement.appendChild(radial);
+
+    // Add padding to clicked category
     document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
+    this.classList.add("pt-[13.5rem]");
 
-    // Determine radial container
-    let radial;
-    if (isMobile) {
-      // Use parent container for mobile radial
-      radial = this.parentElement.querySelector(".radial-menu");
-      if (!radial) {
-        radial = document.createElement("div");
-        radial.className = "radial-menu absolute top-1/2 left-1/2 pointer-events-none";
-        this.parentElement.appendChild(radial);
-      }
-    } else {
-      // Desktop radial menu by ID
-      radial = document.getElementById("radial-" + catId);
-      document.querySelectorAll(".radial-menu").forEach(r => {
-        if (r !== radial) {
-          r.classList.add("hidden");
-          r.innerHTML = "";
-        }
-      });
-    }
+    const radius = isMobile ? 120 : 150; // radius for mobile vs desktop
+    const total = data.length;
 
-    // Toggle visibility
-    if (!radial.classList.contains("hidden")) {
-      radial.classList.add("hidden");
-      radial.innerHTML = "";
-      return; // Already open → close
-    }
-
-    // Add mobile padding
-    if (isMobile) this.classList.add("pt-[13.5rem]"); // reduced padding for better spacing
-
-    radial.classList.remove("hidden");
-    radial.innerHTML = ""; // clear any previous
-
-    // Adjust radius and angles
-    const radius = isMobile ? 120 : 150;   // Increased mobile distance
-const total = data.length;
-
-const startAngle = isMobile ? -185 * (Math.PI / 180) : -160 * (Math.PI / 180);
-const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
-
+    // Angle range for subcategories
+    const startAngle = isMobile ? -185 * (Math.PI / 180) : -160 * (Math.PI / 180);
+    const endAngle = isMobile ? 0 : -20 * (Math.PI / 180);
 
     data.forEach((sub, index) => {
       const angle = startAngle + (index / (total - 1 || 1)) * (endAngle - startAngle);
@@ -913,10 +887,10 @@ const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
       item.href = `/works/${sub.slug}/`;
       item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
       item.style.transform = "translate(0px,0px) translate(-50%, -50%)";
+      item.style.transition = "transform 0.5s cubic-bezier(.22,1,.36,1), opacity 0.4s ease";
       item.style.transitionDelay = `${index * 0.12}s`;
 
-      const bubbleSizeRem = isMobile ? 4 : 5;
-      const bubblePx = bubbleSizeRem * 16;
+      const bubblePx = isMobile ? 4 * 16 : 5 * 16;
 
       item.innerHTML = `
         <div class="rounded-full p-[2px] bg-[#151a37] group-hover:scale-110 transition"
@@ -928,6 +902,7 @@ const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
 
       radial.appendChild(item);
 
+      // Animate outwards
       requestAnimationFrame(() => {
         setTimeout(() => {
           item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
@@ -942,14 +917,11 @@ const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
 document.addEventListener("click", function(e) {
   if (e.target.closest(".category-btn") || e.target.closest(".radial-menu")) return;
 
-  document.querySelectorAll(".radial-menu").forEach(menu => {
-    menu.classList.add("hidden");
-    menu.innerHTML = "";
-  });
-
+  document.querySelectorAll(".radial-menu").forEach(menu => menu.remove());
   document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
 });
 </script>
+
 
 <style>
 .radial-menu {
