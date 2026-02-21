@@ -834,50 +834,33 @@ def works(request):
 
 def work_detail(request, slug):
 
-    # ----------------------------
-    # CHECK IF CATEGORY
-    # ----------------------------
+    # First check category
     category = PortfolioCategory.objects.filter(slug=slug).first()
 
     if category:
 
         subcategories = category.subcategories.all()
 
-        # If category has subcategories → show list
+        # If subcategories exist → show them
         if subcategories.exists():
             return render(request, "works-detail.html", {
                 "category": category,
                 "subcategories": subcategories
             })
 
-        # Otherwise show category-level detail
+        # Otherwise show category detail
         detail = category.details.first()
 
     else:
-        # ----------------------------
-        # MUST BE SUBCATEGORY
-        # ----------------------------
+        # Then check subcategory
         subcategory = get_object_or_404(PortfolioSubCategory, slug=slug)
+        detail = getattr(subcategory, "detail", None)
         category = subcategory.category
 
-        # 🔥 THIS IS THE FIX
-        detail = subcategory.details.first()
 
-
-    # Safety check
-    if not detail:
-        return render(request, "works-detail.html", {
-            "category": category,
-            "detail": None,
-            "points": [],
-            "steps": [],
-            "works": [],
-        })
-
-    # Prefetch related data
-    points = detail.points.all()
-    steps = detail.steps.all()
-    works = detail.works.prefetch_related("images").all()
+    points = detail.points.all() if detail else []
+    steps = detail.steps.all() if detail else []
+    works = detail.works.prefetch_related('images').all() if detail else []
 
     return render(request, "works-detail.html", {
         "category": category,
@@ -887,40 +870,42 @@ def work_detail(request, slug):
         "works": works,
     })
 
-def admin_portfolio(request):
 
+
+def admin_portfolio(request):
     # ======================
-    # FETCH DATA
+    # FETCH CATEGORIES WITH DETAILS, WORKS, AND RELATED FIELDS
     # ======================
     categories = PortfolioCategory.objects.prefetch_related(
-        "subcategories",
-        "details__works__images",
-        "details__points",
-        "details__steps",
-        "subcategories__details__works__images",
-        "subcategories__details__points",
-        "subcategories__details__steps",
+    "subcategories",
+    "details__works__images",
+    "details__points",
+    "details__steps",
+    "subcategories__detail__works__images",  # include subcategory works
+    "subcategories__detail__points",
+    "subcategories__detail__steps"
+).all()
+
+
+    subcategories = PortfolioSubCategory.objects.select_related(
+        "category"
     ).all()
 
-    subcategories = PortfolioSubCategory.objects.select_related("category").all()
-
     # ======================
-    # HANDLE POST
+    # CATEGORY CREATE / EDIT / DELETE
     # ======================
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
-        # =====================================
-        # CATEGORY CRUD
-        # =====================================
+        # ---------- CREATE CATEGORY ----------
         if form_type == "category":
-            PortfolioCategory.objects.create(
-                name=request.POST.get("name"),
-                slug=request.POST.get("slug") or slugify(request.POST.get("name")),
-                icon=request.FILES.get("icon")
-            )
+            name = request.POST.get("name")
+            slug = request.POST.get("slug") or slugify(name)
+            icon = request.FILES.get("icon")
+            PortfolioCategory.objects.create(name=name, slug=slug, icon=icon)
             return redirect("admin_portfolio")
 
+        # ---------- EDIT CATEGORY ----------
         elif form_type == "edit_category":
             cat = get_object_or_404(PortfolioCategory, id=request.POST.get("edit_id"))
             cat.name = request.POST.get("edit_name")
@@ -930,19 +915,14 @@ def admin_portfolio(request):
             cat.save()
             return redirect("admin_portfolio")
 
+        # ---------- DELETE CATEGORY ----------
         elif form_type == "delete_category":
             PortfolioCategory.objects.filter(id=request.POST.get("delete_id")).delete()
             return redirect("admin_portfolio")
 
-        # =====================================
-        # SUBCATEGORY CRUD
-        # =====================================
+        # ---------- CREATE SUBCATEGORY ----------
         elif form_type == "subcategory":
-            category = get_object_or_404(
-                PortfolioCategory,
-                id=request.POST.get("category_id")
-            )
-
+            category = get_object_or_404(PortfolioCategory, id=request.POST.get("category_id"))
             PortfolioSubCategory.objects.create(
                 category=category,
                 name=request.POST.get("name"),
@@ -951,37 +931,24 @@ def admin_portfolio(request):
             )
             return redirect("admin_portfolio")
 
+        # ---------- EDIT SUBCATEGORY ----------
         elif form_type == "edit_subcategory":
-            sub = get_object_or_404(
-                PortfolioSubCategory,
-                id=request.POST.get("edit_id")
-            )
-
-            sub.category = get_object_or_404(
-                PortfolioCategory,
-                id=request.POST.get("edit_category_id")
-            )
-
+            sub = get_object_or_404(PortfolioSubCategory, id=request.POST.get("edit_id"))
+            sub.category = get_object_or_404(PortfolioCategory, id=request.POST.get("edit_category_id"))
             sub.name = request.POST.get("edit_name")
             sub.slug = request.POST.get("edit_slug") or slugify(sub.name)
-
             if request.FILES.get("edit_icon"):
                 sub.icon = request.FILES.get("edit_icon")
-
             sub.save()
             return redirect("admin_portfolio")
 
+        # ---------- DELETE SUBCATEGORY ----------
         elif form_type == "delete_subcategory":
-            PortfolioSubCategory.objects.filter(
-                id=request.POST.get("delete_id")
-            ).delete()
+            PortfolioSubCategory.objects.filter(id=request.POST.get("delete_id")).delete()
             return redirect("admin_portfolio")
 
-        # =====================================
-        # CREATE DETAIL + WORKS (FIXED VERSION)
-        # =====================================
+        # ---------- CREATE WORK / DETAIL ----------
         elif form_type == "work":
-
             category_id = request.POST.get("category")
             subcategory_id = request.POST.get("subcategory")
 
@@ -992,31 +959,22 @@ def admin_portfolio(request):
             process_title = request.POST.get("process_section_title")
             process_desc = request.POST.get("process_section_desc")
 
-            # -----------------------------
-            # CREATE NEW DETAIL (ALWAYS NEW)
-            # -----------------------------
-            if subcategory_id:
-                sub = get_object_or_404(
-                    PortfolioSubCategory,
-                    id=subcategory_id
-                )
+            detail = None
 
-                detail = PortfolioDetail.objects.create(
-                    category=sub.category,   # IMPORTANT
+            if subcategory_id:  # attach to subcategory
+                sub = get_object_or_404(PortfolioSubCategory, id=subcategory_id)
+                detail, created = PortfolioDetail.objects.get_or_create(
                     subcategory=sub,
-                    heading=main_title,
-                    intro_paragraph=main_description,
-                    main_image=main_image,
-                    process_heading=process_title,
-                    process_description=process_desc
+                    defaults={
+                        "heading": main_title,
+                        "intro_paragraph": main_description,
+                        "main_image": main_image,
+                        "process_heading": process_title,
+                        "process_description": process_desc
+                    }
                 )
-
-            else:
-                cat = get_object_or_404(
-                    PortfolioCategory,
-                    id=category_id
-                )
-
+            else:  # attach to category
+                cat = get_object_or_404(PortfolioCategory, id=category_id)
                 detail = PortfolioDetail.objects.create(
                     category=cat,
                     heading=main_title,
@@ -1026,35 +984,26 @@ def admin_portfolio(request):
                     process_description=process_desc
                 )
 
-            # -----------------------------
+            # --------------------
             # BULLET POINTS
-            # -----------------------------
+            # --------------------
             for bullet in request.POST.getlist("bullet_titles[]"):
                 if bullet:
-                    PortfolioPoint.objects.create(
-                        title=bullet,
-                        category_detail=detail
-                    )
+                    PortfolioPoint.objects.create(title=bullet, category_detail=detail)
 
-            # -----------------------------
+            # --------------------
             # PROCESS STEPS
-            # -----------------------------
+            # --------------------
             titles = request.POST.getlist("process_titles[]")
             descs = request.POST.getlist("process_descs[]")
-
             for t, d in zip(titles, descs):
                 if t and d:
-                    PortfolioProcessStep.objects.create(
-                        title=t,
-                        description=d,
-                        category_detail=detail
-                    )
+                    PortfolioProcessStep.objects.create(title=t, description=d, category_detail=detail)
 
-            # -----------------------------
+            # --------------------
             # WORK ITEMS
-            # -----------------------------
+            # --------------------
             index = 0
-
             while True:
                 name = request.POST.get(f"works[{index}][name]")
                 if not name:
@@ -1078,14 +1027,12 @@ def admin_portfolio(request):
     # ======================
     # PAGE LOAD
     # ======================
-    return render(
-        request,
-        "admin_portfolio.html",
-        {
-            "categories": categories,
-            "subcategories": subcategories,
-        },
-    )
+    return render(request, "admin_portfolio.html", {
+        "categories": categories,
+        "subcategories": subcategories
+    })
+
+
 
 def testimonials(request):
     testimonials_qs = Testimonial.objects.all().order_by("-created_at")
