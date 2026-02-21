@@ -103,14 +103,15 @@ WSGI_APPLICATION = 'cybexel.wsgi.application'
 import os
   # Load .env file
 
+# ---------------- DATABASE ----------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": os.getenv("DB_NAME", "cybexeldb"),
+        "USER": os.getenv("DB_USER", "cybexel"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "nme2025cxl"),
+        "HOST": os.getenv("DB_HOST", "194.164.149.56"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
