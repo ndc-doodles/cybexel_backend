@@ -108,11 +108,11 @@ load_dotenv()  # Load .env file
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+        "NAME": os.getenv("DB_NAME", "cybexel_admin_db"),
+        "USER": os.getenv("DB_USER", "cybexel_admin"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "Cybexel@2025"),
+        "HOST": os.getenv("DB_HOST", "194.164.149.56"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
