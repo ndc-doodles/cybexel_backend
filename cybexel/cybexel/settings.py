@@ -101,9 +101,7 @@ WSGI_APPLICATION = 'cybexel.wsgi.application'
 
 
 import os
-from dotenv import load_dotenv
-
-load_dotenv()  # Load .env file
+  # Load .env file
 
 DATABASES = {
     "default": {
