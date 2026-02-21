@@ -226,14 +226,13 @@ class PortfolioDetail(models.Model):
         null=True
     )
 
-    subcategory = models.OneToOneField(
-        PortfolioSubCategory,
-        on_delete=models.CASCADE,
-        related_name="detail",
-        blank=True,
-        null=True
-    )
-
+    subcategory = models.ForeignKey(
+    PortfolioSubCategory,
+    on_delete=models.CASCADE,
+    related_name="details",
+    blank=True,
+    null=True
+)
     heading = models.CharField(max_length=500)
     intro_paragraph = models.TextField(default="No intro provided yet.")  # ✅ Default added
     main_image = models.ImageField(upload_to="portfolio/detail/main/")
