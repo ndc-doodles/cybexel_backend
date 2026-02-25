@@ -10,7 +10,8 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
 # SECURITY
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-emohm$#-n%0%ade0@a6xe_tj&+yc+gxgqh*d$p)wt$vormu%t3')
 DEBUG = True
@@ -109,11 +110,11 @@ import os
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "cybexeldb"),
-        "USER": os.getenv("DB_USER", "cybexel"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "nme2025cxl"),
-        "HOST": os.getenv("DB_HOST", "194.164.149.56"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 
@@ -151,13 +152,12 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # for collectstatic in production
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 import cloudinary
 
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", "djedeaw0l"),
-    api_key=os.getenv("CLOUDINARY_API_KEY", "986742714234527"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET", "z3hTv485ai58jAz-K-MFXaTRLKE"),
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True
 )
 # Default primary key field type
