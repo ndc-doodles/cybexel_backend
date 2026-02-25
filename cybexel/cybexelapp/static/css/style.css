@@ -279,32 +279,21 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
 .marquee-container {
   overflow: hidden;
   width: 100%;
-  position: relative;
 }
 
 .marquee-track {
   display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
 }
 
 .marquee-content {
   display: flex;
+  gap: 2rem; /* adjust spacing between logos */
+  animation: marquee 20s linear infinite;
 }
 
 .logo {
-  height: 5rem; /* Default logo size */
+  height: 50px; /* adjust as needed */
   width: auto;
-  margin: 0 2rem; /* Default gap between logos */
-  flex-shrink: 0;
-}
-
-/* Responsive adjustments for mobile screens */
-@media (max-width: 768px) {
-  .logo {
-    height: 3.1rem; /* Smaller logo on mobile to fit 3 logos */
-    margin: 0 0.5rem; /* Reduced gap between logos */
-  }
 }
 
 @keyframes marquee {
@@ -312,10 +301,9 @@ background: rgba(255, 255, 255, 0.1); /* Increase from 0.1 to 0.3 or 0.5 */
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* scroll exactly half of the content width */
   }
 }
-
 
 
 @keyframes vibrate {
