@@ -152,12 +152,13 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # for collectstatic in production
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 import cloudinary
 
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", "djedeaw0l"),
+    api_key=os.getenv("CLOUDINARY_API_KEY", "986742714234527"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET", "z3hTv485ai58jAz-K-MFXaTRLKE"),
     secure=True
 )
 # Default primary key field type
