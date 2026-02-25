@@ -10,8 +10,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv(os.path.join(BASE_DIR, '.env'))
-
+load_dotenv(BASE_DIR / ".env")
 # SECURITY
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-emohm$#-n%0%ade0@a6xe_tj&+yc+gxgqh*d$p)wt$vormu%t3')
 DEBUG = True
