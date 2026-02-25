@@ -1222,10 +1222,12 @@ def testimonials(request):
     return render(request, "testimonials.html", {
         "page_obj": page_obj
     })
+
+import cloudinary.uploader
+
 @never_cache
 @login_required(login_url='admin_login')
 def admin_testimonials(request):
-
     if not request.user.is_staff:
         return redirect('admin_login')
 
@@ -1254,9 +1256,9 @@ def admin_testimonials(request):
             testimonial.message = request.POST.get("message", "").strip()
 
             if request.FILES.get("image"):
-                # Delete old image from Cloudinary
-                if testimonial.image:
-                    testimonial.image.delete()
+                # Delete old image from Cloudinary if it exists
+                if testimonial.image and hasattr(testimonial.image, 'public_id'):
+                    cloudinary.uploader.destroy(testimonial.image.public_id)
                 testimonial.image = request.FILES.get("image")
 
             testimonial.save()
@@ -1269,17 +1271,19 @@ def admin_testimonials(request):
                 id=request.POST.get("delete_id")
             )
 
-            # Delete image from Cloudinary before deleting record
-            if testimonial.image:
-                testimonial.image.delete()
+            # Delete image from Cloudinary if it exists
+            if testimonial.image and hasattr(testimonial.image, 'public_id'):
+                cloudinary.uploader.destroy(testimonial.image.public_id)
 
             testimonial.delete()
             return redirect("admin_testimonials")
 
+    # Fetch all testimonials
     testimonials = Testimonial.objects.all().order_by("-id")
 
     return render(request, "admin_testimonial.html", {
         "testimonials": testimonials
     })
+
 def politics(request):
     return render(request,'politics.html')
