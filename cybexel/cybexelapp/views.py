@@ -173,7 +173,7 @@ def detail(request, pk):
 
 
 
-
+import threading
 logger = logging.getLogger(__name__)
 
 ALLOWED_EXTENSIONS = ['pdf']
@@ -185,13 +185,62 @@ def contains_url(text):
     return bool(re.search(r'(http[s]?://|www\.|\.\w{2,})', text))
 
 
+def send_application_emails(application_id):
+    try:
+        application = JobApplication.objects.get(id=application_id)
+
+        # --- Admin Email ---
+        admin_subject = f"New Job Application: {application.position} - {application.label}"
+        admin_body = (
+            f"A new job application was submitted.\n\n"
+            f"Name: {application.name}\n"
+            f"Email: {application.email}\n"
+            f"Department: {application.department.name}\n"
+            f"Position: {application.position}\n"
+            f"Label: {application.label}"
+        )
+
+        admin_email = EmailMessage(
+            subject=admin_subject,
+            body=admin_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['info@cybexel.com'],
+            reply_to=[application.email]
+        )
+
+        if application.resume:
+            application.resume.open()
+            admin_email.attach(
+                application.resume.name,
+                application.resume.read(),
+                'application/pdf'
+            )
+
+        admin_email.send(fail_silently=False)
+
+        # --- Confirmation Email ---
+        html_message = render_to_string("job_confirmation.html", {
+            "name": application.name,
+            "position": application.position
+        })
+
+        confirmation_email = EmailMessage(
+            subject="Thank You for Your Application",
+            body=html_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[application.email]
+        )
+        confirmation_email.content_subtype = "html"
+        confirmation_email.send(fail_silently=False)
+
+    except Exception as e:
+        logger.exception("Background email error: %s", str(e))
 def submit_job_application(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'errors': {'__all__': 'Invalid request method'}})
 
     errors = {}
 
-    # --- Get Form Data ---
     department_name = request.POST.get('department', '').strip()
     position = request.POST.get('position', '').strip()
     label = request.POST.get('label', '').strip()
@@ -199,7 +248,7 @@ def submit_job_application(request):
     email = request.POST.get('email', '').strip()
     resume = request.FILES.get('resume')
 
-    # --- Required fields ---
+    # -------- Required Fields --------
     if not department_name:
         errors['department'] = 'Department required.'
     if not position:
@@ -214,22 +263,23 @@ def submit_job_application(request):
     if errors:
         return JsonResponse({'success': False, 'errors': errors})
 
-    # --- Department lookup ---
+    # -------- Department --------
     try:
         department = Department.objects.get(name=department_name)
     except Department.DoesNotExist:
         errors['department'] = 'Selected department is invalid.'
+        return JsonResponse({'success': False, 'errors': errors})
 
-    # --- Name validation ---
+    # -------- Name Validation --------
     if not re.fullmatch(r'^[A-Za-z ]+$', name):
         errors['name'] = 'Name must contain only letters and spaces.'
 
-    # --- URL guard ---
+    # -------- URL Guard --------
     for field_name, field_value in [('name', name), ('label', label), ('position', position)]:
         if contains_url(field_value):
             errors[field_name] = 'No links or URLs allowed.'
 
-    # --- Email validation ---
+    # -------- Email Validation --------
     try:
         validate_email(email)
         domain = email.split('@')[-1].lower()
@@ -238,7 +288,7 @@ def submit_job_application(request):
     except ValidationError:
         errors['email'] = 'Enter a valid email address from allowed domains.'
 
-    # --- Resume validation ---
+    # -------- Resume Validation --------
     if resume:
         if not resume.name.lower().endswith('.pdf') or resume.content_type != 'application/pdf':
             errors['resume'] = 'Only PDF files are allowed.'
@@ -248,7 +298,7 @@ def submit_job_application(request):
     if errors:
         return JsonResponse({'success': False, 'errors': errors})
 
-    # --- Save & Email ---
+    # -------- Save Application --------
     try:
         application = JobApplication.objects.create(
             department=department,
@@ -259,46 +309,22 @@ def submit_job_application(request):
             resume=resume
         )
 
-        # --- Notify Admin ---
-        admin_subject = f"New Job Application: {position} - {label}"
-        admin_body = (
-            f"A new job application was submitted.\n\n"
-            f"Name: {name}\nEmail: {email}\nDepartment: {department.name}\n"
-            f"Position: {position}\nLabel: {label}"
-        )
+        # -------- Start Background Email Thread --------
+        threading.Thread(
+            target=send_application_emails,
+            args=(application.id,),
+            daemon=True
+        ).start()
 
-        admin_email = EmailMessage(
-            subject=admin_subject,
-            body=admin_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['info@cybexel.com'],
-            reply_to=[email]
-        )
-        if resume:
-            resume.seek(0)
-            admin_email.attach(resume.name, resume.read(), resume.content_type)
-        admin_email.send(fail_silently=False)
-
-        # --- Send Confirmation Email ---
-        html_message = render_to_string("job_confirmation.html", {
-            "name": name,
-            "position": position
-        })
-        confirmation_email = EmailMessage(
-            subject="Thank You for Your Application",
-            body=html_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[email]
-        )
-        confirmation_email.content_subtype = "html"
-        confirmation_email.send(fail_silently=False)
-
+        # Immediately return success (no waiting for emails)
         return JsonResponse({'success': True})
+
     except Exception as e:
         logger.exception("Error processing job application: %s", str(e))
-        return JsonResponse({'success': False, 'errors': {'__all__': f'Internal server error: {str(e)}'}})
-
-
+        return JsonResponse({
+            'success': False,
+            'errors': {'__all__': 'Internal server error.'}
+        })
 # def admin_register(request):
 #     if request.method == 'POST':
 #         username = request.POST.get('username', '').strip()
@@ -420,19 +446,25 @@ def admin_dashboard(request):
         return redirect('admin_login')
 
     stats = Statistic.objects.all()
-    logos = ClientLogo.objects.all()
+    logos = ClientLogo.objects.all().order_by('-id')
 
     if request.method == "POST":
-        alt_text = request.POST.get("alt_text", "")
-        images = request.FILES.getlist("images")  
+        alt_text = request.POST.get("alt_text", "").strip()
+        images = request.FILES.getlist("images")
 
-        for image in images:
-            ClientLogo.objects.create(image=image, alt_text=alt_text)
+        if images:
+            for image in images:
+                ClientLogo.objects.create(
+                    image=image,
+                    alt_text=alt_text
+                )
 
         return redirect("admin_dashboard")
 
-    return render(request, "admin_dashboard.html", {"stats": stats, "logos": logos})
-
+    return render(request, "admin_dashboard.html", {
+        "stats": stats,
+        "logos": logos
+    })
 
 def delete_client_logo(request, id):
     logo = get_object_or_404(ClientLogo, id=id)
@@ -479,10 +511,8 @@ def bulk_delete_contacts(request):
 def admin_blog(request):
     if request.method == "POST":
         blog_id = request.POST.get("edit_id")
-        if blog_id:
-            blog = Blog.objects.get(id=blog_id)
-        else:
-            blog = Blog()
+
+        blog = Blog.objects.filter(id=blog_id).first() if blog_id else Blog()
 
         blog.keyword = request.POST.get("keyword")
         blog.date = request.POST.get("date")
@@ -493,15 +523,15 @@ def admin_blog(request):
         blog.paragraph3 = request.POST.get("paragraph3")
         blog.paragraph4 = request.POST.get("paragraph4")
 
+        # Cloudinary auto handles upload
         if request.FILES.get("image"):
-            blog.image = request.FILES.get("image")
+            blog.image = request.FILES["image"]
 
         blog.save()
         return redirect("admin_blog")
 
     blogs = Blog.objects.all().order_by("-date")
     return render(request, "admin_blog.html", {"blogs": blogs})
-
 
 def delete_blog(request, id):
     blog = get_object_or_404(Blog, id=id)
@@ -734,17 +764,20 @@ def delete_job_application(request, id):
 @login_required(login_url='admin_login')
 def admin_cybexelife(request):
 
+    if not request.user.is_staff:
+        return redirect('admin_login')
+
     if request.method == 'POST':
 
         event_id = request.POST.get('edit_id')
-        heading = request.POST.get('heading')
-        description = request.POST.get('description')
-        para1 = request.POST.get('paragraph1')
-        para2 = request.POST.get('paragraph2')
-        para3 = request.POST.get('paragraph3')
-        category = request.POST.get('keyword')
+        heading = request.POST.get('heading', '').strip()
+        description = request.POST.get('description', '').strip()
+        para1 = request.POST.get('paragraph1', '').strip()
+        para2 = request.POST.get('paragraph2', '').strip()
+        para3 = request.POST.get('paragraph3', '').strip()
+        category = request.POST.get('keyword', '').strip()
 
-        # ---------- CREATE / UPDATE EVENT ----------
+        # ---------- CREATE / UPDATE ----------
         if event_id:
             event = get_object_or_404(LifeEvent, id=event_id)
 
@@ -766,65 +799,82 @@ def admin_cybexelife(request):
                 category=category
             )
 
-        # ---------- SAVE MEDIA ORDER ----------
+        # ---------- UPDATE MEDIA ORDER (Optimized) ----------
         for key, value in request.POST.items():
-
             if key.startswith("media_order_"):
-
                 media_id = key.split("_")[-1]
-
-                try:
-                    media = LifeEventMedia.objects.get(id=media_id)
-                    media.order = int(value)
-                    media.save()
-                except:
-                    pass
+                LifeEventMedia.objects.filter(
+                    id=media_id,
+                    event=event
+                ).update(order=int(value))
 
         # ---------- UPLOAD NEW MEDIA ----------
         for file in request.FILES.getlist('media[]'):
 
-            # Set order automatically to last
-            last_order = LifeEventMedia.objects.filter(event=event).count()
+            # Optional validation
+            if file.size > 20 * 1024 * 1024:  # 20MB limit
+                continue
 
             LifeEventMedia.objects.create(
                 event=event,
-                file=file,
-                order=last_order
+                file=file   # Let model auto-handle order
             )
 
         return redirect('admin_cybexelife')
 
-    events = LifeEvent.objects.all()
+    # Optimized query (prevents N+1 problem)
+    events = LifeEvent.objects.prefetch_related('media').all()
 
-    return render(request, 'admin_cybexelife.html', {'Events': events})
+    return render(request, 'admin_cybexelife.html', {
+        'Events': events
+    })
 
-
+@never_cache
+@login_required(login_url='admin_login')
 def delete_event(request, event_id):
+
     event = get_object_or_404(LifeEvent, id=event_id)
+
+    # Delete all media files from Cloudinary
+    for media in event.media.all():
+        if media.file:
+            media.file.delete()
+
     event.delete()
+
     return redirect('admin_cybexelife')
 
-def get_event_images(request, event_id):
-    media = LifeEventMedia.objects.filter(event_id=event_id)
+@never_cache
+@login_required(login_url='admin_login')
+def delete_event_image(request, id):
 
-    data = []
-    for m in media:
-        data.append({
+    image = get_object_or_404(LifeEventMedia, id=id)
+
+    if image.file:
+        image.file.delete()
+
+    image.delete()
+
+    return redirect('admin_cybexelife')
+
+@login_required(login_url='admin_login')
+def get_event_images(request, event_id):
+
+    media = LifeEventMedia.objects.filter(
+        event_id=event_id
+    ).order_by('order')
+
+    data = [
+        {
             "id": m.id,
             "url": m.file.url,
             "type": m.media_type,
             "order": m.order
-        })
+        }
+        for m in media
+    ]
 
     return JsonResponse({"media": data})
-
-
-def delete_event_image(request, id):
-    image = get_object_or_404(LifeEventMedia, id=id)
-    image.delete()
-    return redirect('admin_cybexelife') 
-
-
 
 def founder(request):
     return render(request,'founder.html')
@@ -889,68 +939,77 @@ def work_detail(request, slug):
 
 def admin_portfolio(request):
 
-    # ======================
-    # FETCH DATA
-    # ======================
-    categories = PortfolioCategory.objects.prefetch_related(
-        "subcategories",
-        "details__works__images",
-        "details__points",
-        "details__steps",
-        "subcategories__details__works__images",
-        "subcategories__details__points",
-        "subcategories__details__steps",
-    ).all()
-
-    subcategories = PortfolioSubCategory.objects.select_related("category").all()
-
-    # ======================
-    # HANDLE POST
-    # ======================
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
-        # =====================================
-        # CATEGORY CRUD
-        # =====================================
-        if form_type == "category":
+        # ==========================
+        # ADD CATEGORY
+        # ==========================
+        if form_type == "add_category":
+            name = request.POST.get("name")
+            slug = request.POST.get("slug") or slugify(name)
+            icon = request.FILES.get("icon")
+
             PortfolioCategory.objects.create(
-                name=request.POST.get("name"),
-                slug=request.POST.get("slug") or slugify(request.POST.get("name")),
-                icon=request.FILES.get("icon")
+                name=name,
+                slug=slug,
+                icon=icon
             )
             return redirect("admin_portfolio")
 
+        # ==========================
+        # EDIT CATEGORY
+        # ==========================
         elif form_type == "edit_category":
-            cat = get_object_or_404(PortfolioCategory, id=request.POST.get("edit_id"))
-            cat.name = request.POST.get("edit_name")
-            cat.slug = request.POST.get("edit_slug") or slugify(cat.name)
+            category = get_object_or_404(
+                PortfolioCategory,
+                id=request.POST.get("edit_id")
+            )
+
+            category.name = request.POST.get("edit_name")
+            category.slug = request.POST.get("edit_slug") or slugify(category.name)
+
             if request.FILES.get("edit_icon"):
-                cat.icon = request.FILES.get("edit_icon")
-            cat.save()
+                category.icon = request.FILES.get("edit_icon")
+
+            category.save()
             return redirect("admin_portfolio")
 
+        # ==========================
+        # DELETE CATEGORY
+        # ==========================
         elif form_type == "delete_category":
-            PortfolioCategory.objects.filter(id=request.POST.get("delete_id")).delete()
+            category = get_object_or_404(
+                PortfolioCategory,
+                id=request.POST.get("category_id")
+            )
+            category.delete()
             return redirect("admin_portfolio")
 
-        # =====================================
-        # SUBCATEGORY CRUD
-        # =====================================
-        elif form_type == "subcategory":
+        # ==========================
+        # ADD SUBCATEGORY
+        # ==========================
+        elif form_type == "add_subcategory":
             category = get_object_or_404(
                 PortfolioCategory,
                 id=request.POST.get("category_id")
             )
 
+            name = request.POST.get("name")
+            slug = request.POST.get("slug") or slugify(f"{category.name}-{name}")
+            icon = request.FILES.get("icon")
+
             PortfolioSubCategory.objects.create(
                 category=category,
-                name=request.POST.get("name"),
-                slug=request.POST.get("slug") or slugify(request.POST.get("name")),
-                icon=request.FILES.get("icon")
+                name=name,
+                slug=slug,
+                icon=icon
             )
             return redirect("admin_portfolio")
 
+        # ==========================
+        # EDIT SUBCATEGORY
+        # ==========================
         elif form_type == "edit_subcategory":
             sub = get_object_or_404(
                 PortfolioSubCategory,
@@ -963,7 +1022,9 @@ def admin_portfolio(request):
             )
 
             sub.name = request.POST.get("edit_name")
-            sub.slug = request.POST.get("edit_slug") or slugify(sub.name)
+            sub.slug = request.POST.get("edit_slug") or slugify(
+                f"{sub.category.name}-{sub.name}"
+            )
 
             if request.FILES.get("edit_icon"):
                 sub.icon = request.FILES.get("edit_icon")
@@ -971,103 +1032,78 @@ def admin_portfolio(request):
             sub.save()
             return redirect("admin_portfolio")
 
+        # ==========================
+        # DELETE SUBCATEGORY
+        # ==========================
         elif form_type == "delete_subcategory":
-            PortfolioSubCategory.objects.filter(
+            sub = get_object_or_404(
+                PortfolioSubCategory,
                 id=request.POST.get("delete_id")
-            ).delete()
+            )
+            sub.delete()
             return redirect("admin_portfolio")
 
-        # =====================================
-        # CREATE DETAIL + WORKS (FIXED VERSION)
-        # =====================================
-        elif form_type == "work":
+        # ==========================
+        # ADD WORK
+        # ==========================
+        elif form_type == "add_work":
 
-            category_id = request.POST.get("category")
-            subcategory_id = request.POST.get("subcategory")
+            category = get_object_or_404(
+                PortfolioCategory,
+                id=request.POST.get("category_id")
+            )
 
-            main_title = request.POST.get("main_title")
-            main_description = request.POST.get("main_description")
-            main_image = request.FILES.get("main_image")
+            sub_id = request.POST.get("subcategory")
 
-            process_title = request.POST.get("process_section_title")
-            process_desc = request.POST.get("process_section_desc")
+            detail = PortfolioDetail.objects.create(
+                category=category,
+                subcategory_id=sub_id if sub_id else None,
+                heading=request.POST.get("main_title"),
+                intro_paragraph=request.POST.get("main_description"),
+                process_heading=request.POST.get("process_section_title"),
+                process_description=request.POST.get("process_section_desc"),
+                main_image=request.FILES.get("main_image"),
+            )
 
-            # -----------------------------
-            # CREATE NEW DETAIL (ALWAYS NEW)
-            # -----------------------------
-            if subcategory_id:
-                sub = get_object_or_404(
-                    PortfolioSubCategory,
-                    id=subcategory_id
-                )
-
-                detail = PortfolioDetail.objects.create(
-                    category=sub.category,   # IMPORTANT
-                    subcategory=sub,
-                    heading=main_title,
-                    intro_paragraph=main_description,
-                    main_image=main_image,
-                    process_heading=process_title,
-                    process_description=process_desc
-                )
-
-            else:
-                cat = get_object_or_404(
-                    PortfolioCategory,
-                    id=category_id
-                )
-
-                detail = PortfolioDetail.objects.create(
-                    category=cat,
-                    heading=main_title,
-                    intro_paragraph=main_description,
-                    main_image=main_image,
-                    process_heading=process_title,
-                    process_description=process_desc
-                )
-
-            # -----------------------------
-            # BULLET POINTS
-            # -----------------------------
+            # Bullets
             for bullet in request.POST.getlist("bullet_titles[]"):
-                if bullet:
+                if bullet.strip():
                     PortfolioPoint.objects.create(
                         title=bullet,
                         category_detail=detail
                     )
 
-            # -----------------------------
-            # PROCESS STEPS
-            # -----------------------------
+            # Steps
             titles = request.POST.getlist("process_titles[]")
             descs = request.POST.getlist("process_descs[]")
 
             for t, d in zip(titles, descs):
-                if t and d:
+                if t.strip() and d.strip():
                     PortfolioProcessStep.objects.create(
                         title=t,
                         description=d,
                         category_detail=detail
                     )
 
-            # -----------------------------
-            # WORK ITEMS
-            # -----------------------------
+            # 🔥 Add Works
             index = 0
-
             while True:
-                name = request.POST.get(f"works[{index}][name]")
-                if not name:
+                work_name = request.POST.get(f"works[{index}][name]")
+                if not work_name:
                     break
+
+                thumbnail = request.FILES.get(f"works[{index}][thumbnail]")
+                video = request.FILES.get(f"works[{index}][video]")
 
                 work = PortfolioWork.objects.create(
                     category_detail=detail,
-                    name=name,
-                    thumbnail=request.FILES.get(f"works[{index}][thumbnail]"),
-                    video=request.FILES.get(f"works[{index}][video]")
+                    name=work_name,
+                    thumbnail=thumbnail,
+                    video=video
                 )
 
-                for img in request.FILES.getlist(f"works[{index}][images]"):
+                images = request.FILES.getlist(f"works[{index}][images]")
+                for img in images:
                     media = WorkMedia.objects.create(image=img)
                     work.images.add(media)
 
@@ -1075,20 +1111,107 @@ def admin_portfolio(request):
 
             return redirect("admin_portfolio")
 
-    # ======================
-    # PAGE LOAD
-    # ======================
-    return render(
-        request,
-        "admin_portfolio.html",
-        {
-            "categories": categories,
-            "subcategories": subcategories,
-        },
-    )
+        # ==========================
+        # EDIT WORK
+        # ==========================
+        elif form_type == "edit_work":
 
+            detail = get_object_or_404(
+                PortfolioDetail,
+                id=request.POST.get("work_id")
+            )
 
+            detail.heading = request.POST.get("main_title")
+            detail.intro_paragraph = request.POST.get("main_description")
+            detail.process_heading = request.POST.get("process_section_title")
+            detail.process_description = request.POST.get("process_section_desc")
 
+            sub_id = request.POST.get("subcategory")
+            detail.subcategory_id = sub_id if sub_id else None
+
+            if request.FILES.get("main_image"):
+                detail.main_image = request.FILES.get("main_image")
+
+            detail.save()
+
+            # Reset bullets & steps
+            detail.points.all().delete()
+            detail.steps.all().delete()
+
+            for bullet in request.POST.getlist("bullet_titles[]"):
+                if bullet.strip():
+                    PortfolioPoint.objects.create(
+                        title=bullet,
+                        category_detail=detail
+                    )
+
+            titles = request.POST.getlist("process_titles[]")
+            descs = request.POST.getlist("process_descs[]")
+
+            for t, d in zip(titles, descs):
+                if t.strip() and d.strip():
+                    PortfolioProcessStep.objects.create(
+                        title=t,
+                        description=d,
+                        category_detail=detail
+                    )
+
+            # 🔥 RESET AND RECREATE WORKS
+            detail.works.all().delete()
+
+            index = 0
+            while True:
+                work_name = request.POST.get(f"works[{index}][name]")
+                if not work_name:
+                    break
+
+                thumbnail = request.FILES.get(f"works[{index}][thumbnail]")
+                video = request.FILES.get(f"works[{index}][video]")
+
+                work = PortfolioWork.objects.create(
+                    category_detail=detail,
+                    name=work_name,
+                    thumbnail=thumbnail,
+                    video=video
+                )
+
+                images = request.FILES.getlist(f"works[{index}][images]")
+                for img in images:
+                    media = WorkMedia.objects.create(image=img)
+                    work.images.add(media)
+
+                index += 1
+
+            return redirect("admin_portfolio")
+
+        # ==========================
+        # DELETE WORK
+        # ==========================
+        elif form_type == "delete_work":
+            detail = get_object_or_404(
+                PortfolioDetail,
+                id=request.POST.get("detail_id")
+            )
+            detail.delete()
+            return redirect("admin_portfolio")
+
+    # ==========================
+    # GET REQUEST
+    # ==========================
+    categories = PortfolioCategory.objects.prefetch_related(
+        "subcategories",
+        "details__points",
+        "details__steps",
+        "details__works__images"
+    ).all()
+
+    subcategories = PortfolioSubCategory.objects.select_related("category").all()
+
+    return render(request, "admin_portfolio.html", {
+        "categories": categories,
+        "subcategories": subcategories,
+    })
+    
 def testimonials(request):
     testimonials_qs = Testimonial.objects.all().order_by("-created_at")
 
@@ -1099,48 +1222,64 @@ def testimonials(request):
     return render(request, "testimonials.html", {
         "page_obj": page_obj
     })
-
+@never_cache
+@login_required(login_url='admin_login')
 def admin_testimonials(request):
 
-    # ADD TESTIMONIAL
-    if request.method == "POST" and request.POST.get("form_type") == "testimonial":
-        Testimonial.objects.create(
-            name=request.POST.get("name"),
-            designation=request.POST.get("designation"),
-            message=request.POST.get("message"),
-            image=request.FILES.get("image")
-        )
-        return redirect("admin_testimonials")
+    if not request.user.is_staff:
+        return redirect('admin_login')
 
+    if request.method == "POST":
+        form_type = request.POST.get("form_type")
 
-    # UPDATE TESTIMONIAL ✅
-    if request.method == "POST" and request.POST.get("form_type") == "edit_testimonial":
-        testimonial_id = request.POST.get("testimonial_id")
-        testimonial = get_object_or_404(Testimonial, id=testimonial_id)
+        # ---------------- ADD ----------------
+        if form_type == "testimonial":
+            Testimonial.objects.create(
+                name=request.POST.get("name", "").strip(),
+                designation=request.POST.get("designation", "").strip(),
+                message=request.POST.get("message", "").strip(),
+                image=request.FILES.get("image")
+            )
+            return redirect("admin_testimonials")
 
-        testimonial.name = request.POST.get("name")
-        testimonial.designation = request.POST.get("designation")
-        testimonial.message = request.POST.get("message")
+        # ---------------- UPDATE ----------------
+        elif form_type == "edit_testimonial":
+            testimonial = get_object_or_404(
+                Testimonial,
+                id=request.POST.get("testimonial_id")
+            )
 
-        # Only replace image if new image uploaded
-        if request.FILES.get("image"):
-            testimonial.image = request.FILES.get("image")
+            testimonial.name = request.POST.get("name", "").strip()
+            testimonial.designation = request.POST.get("designation", "").strip()
+            testimonial.message = request.POST.get("message", "").strip()
 
-        testimonial.save()
-        return redirect("admin_testimonials")
+            if request.FILES.get("image"):
+                # Delete old image from Cloudinary
+                if testimonial.image:
+                    testimonial.image.delete()
+                testimonial.image = request.FILES.get("image")
 
+            testimonial.save()
+            return redirect("admin_testimonials")
 
-    # DELETE TESTIMONIAL
-    if request.method == "POST" and request.POST.get("form_type") == "delete_testimonial":
-        Testimonial.objects.filter(id=request.POST.get("delete_id")).delete()
-        return redirect("admin_testimonials")
+        # ---------------- DELETE ----------------
+        elif form_type == "delete_testimonial":
+            testimonial = get_object_or_404(
+                Testimonial,
+                id=request.POST.get("delete_id")
+            )
 
+            # Delete image from Cloudinary before deleting record
+            if testimonial.image:
+                testimonial.image.delete()
+
+            testimonial.delete()
+            return redirect("admin_testimonials")
 
     testimonials = Testimonial.objects.all().order_by("-id")
 
     return render(request, "admin_testimonial.html", {
         "testimonials": testimonials
     })
-
 def politics(request):
     return render(request,'politics.html')

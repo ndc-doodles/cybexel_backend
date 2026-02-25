@@ -36,7 +36,15 @@
 
   gtag('config', 'G-ZK27XGNPQM');
 </script>
-
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+</style>
 </head>
 <body class="relative min-h-screen">
 
@@ -286,7 +294,7 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     <div class="flex flex-wrap gap-2 mb-4" id="modalTags"></div>
     <div class="flex justify-between">
       <button onclick="closeModal()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">Back</button>
-      <button onclick="openForm()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Apply Job</button>
+      <button onclick="openForm()" class="bg-[#151a37] hover:bg-[#151a37]/80 text-white px-4 py-2 rounded">Apply Job</button>
     </div>
   </div>
 </div>
@@ -299,6 +307,33 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
     <p class="text-gray-600 mt-2">Thank you for applying. We'll get back to you soon.</p>
   </div>
 </div>
+<!-- Loader Overlay -->
+<!-- Professional Loader -->
+<div id="loaderOverlay"
+     class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+
+  <div class="bg-white/90 backdrop-blur-lg px-10 py-8 rounded-2xl shadow-2xl flex flex-col items-center space-y-5 animate-fadeIn">
+
+    <!-- Animated Spinner -->
+    <div class="relative w-16 h-16">
+      <div class="absolute inset-0 border-4 border-[#151a37]/20 rounded-full"></div>
+      <div class="absolute inset-0 border-4 border-[#151a37] border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Loading Text -->
+    <div class="text-center">
+      <p class="text-lg font-semibold text-gray-800">
+        Submitting Application
+      </p>
+      <p class="text-sm text-gray-600 mt-1 animate-pulse">
+        Please wait while we process your request...
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
 <div id="formModal" class="fixed inset-0 z-[999] bg-black/60 hidden overflow-y-auto flex items-center justify-center">
   <div class="bg-white w-full max-w-xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto">
     <button type="button" onclick="closeForm()" class="absolute top-2 right-2 text-gray-600 hover:text-black">&times;</button>
@@ -367,7 +402,7 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
 
       <!-- Submit -->
       <button type="submit" id="jobSubmitBtn"
-              class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">
+              class="bg-[#151a37] hover:bg-[#151a37]/80 text-white px-4 py-2 rounded">
         Submit Application
       </button>
     </form>
@@ -376,80 +411,84 @@ A fulfilling career needs both:      <span class="highlight font-semibold"> room
 
 <script>
 (function () {
+
   const form = document.getElementById('jobApplicationForm');
   if (!form) return;
+
+  const loader = document.getElementById('loaderOverlay');
+  const submitBtn = document.getElementById('jobSubmitBtn');
+
+  let isSubmitting = false;
+
+  // ===============================
+  // Loader Functions (SAFE)
+  // ===============================
+  function showLoader() {
+    if (loader) {
+      loader.classList.remove('hidden');
+      loader.classList.add('flex');
+    }
+  }
+
+  function hideLoader() {
+    if (loader) {
+      loader.classList.add('hidden');
+      loader.classList.remove('flex');
+    }
+  }
 
   // Prevent duplicate listener
   if (form.dataset.listenerAttached === 'true') return;
   form.dataset.listenerAttached = 'true';
 
-  const submitBtn = document.getElementById('jobSubmitBtn');
-  let isSubmitting = false;
-
   const els = {
     formErrors:       document.getElementById('formErrors'),
-    positionError:    document.getElementById('positionError'),
-    labelError:       document.getElementById('labelError'),
-    departmentError:  document.getElementById('departmentError'),
     nameError:        document.getElementById('nameError'),
     emailError:       document.getElementById('emailError'),
-    coverLetterError: document.getElementById('coverLetterError'),
     resumeError:      document.getElementById('resumeError'),
     nameField:        document.getElementById('nameField'),
     emailField:       document.getElementById('emailField'),
-    coverField:       document.getElementById('coverLetterField'),
     resumeInput:      document.getElementById('resumeInput'),
   };
 
   const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'protonmail.com'];
   const letterSpaceRe = /^[A-Za-z ]+$/;
-const coverRe = /^[A-Za-z0-9\s.,!?'":;()\-&\n\r]+$/;
-
-  // Strong URL detection
-  function containsURL(text) {
-  return /(https?:\/\/[^\s]+|www\.[^\s]+)/i.test(text);
-}
-
 
   function clearAllErrors() {
     Object.keys(els).forEach(k => {
-      if (k.endsWith('Error')) {
+      if (k.endsWith('Error') && els[k]) {
         els[k].innerText = '';
         els[k].classList.add('hidden');
       }
     });
-    ['nameField','emailField','coverField','resumeInput',
-     'formPosition','formLabel','formDepartment'].forEach(id => {
+
+    ['nameField','emailField','resumeInput'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.remove('border-red-500');
     });
   }
 
   function showFieldError(field, msg) {
-    const map = {
-      position:    'positionError',
-      label:       'labelError',
-      department:  'departmentError',
-      name:        'nameError',
-      email:       'emailError',
-      coverLetter: 'coverLetterError',
-      resume:      'resumeError'
+    const errorMap = {
+      name: 'nameError',
+      email: 'emailError',
+      resume: 'resumeError'
     };
-    const fieldIdMap = {
-      position:    'formPosition',
-      label:       'formLabel',
-      department:  'formDepartment',
-      name:        'nameField',
-      email:       'emailField',
-      coverLetter: 'coverLetterField',
-      resume:      'resumeInput'
+
+    const fieldMap = {
+      name: 'nameField',
+      email: 'emailField',
+      resume: 'resumeInput'
     };
-    const errEl = els[map[field]];
+
+    const errEl = document.getElementById(errorMap[field]);
+    const inputEl = document.getElementById(fieldMap[field]);
+
     if (errEl) {
       errEl.innerText = msg;
       errEl.classList.remove('hidden');
     }
-    const inputEl = document.getElementById(fieldIdMap[field]);
+
     if (inputEl) inputEl.classList.add('border-red-500');
   }
 
@@ -459,54 +498,36 @@ const coverRe = /^[A-Za-z0-9\s.,!?'":;()\-&\n\r]+$/;
 
     const nameValue = els.nameField.value.trim();
     const emailValue = els.emailField.value.trim();
-    const coverValue = els.coverField.value.trim();
     const file = els.resumeInput.files[0];
 
-    // --- Name ---
+    // Name validation
     if (!nameValue) {
       showFieldError('name', 'Name is required.');
       isValid = false;
     } else if (!letterSpaceRe.test(nameValue)) {
-      showFieldError('name', 'Only letters and spaces are allowed.');
+      showFieldError('name', 'Only letters and spaces allowed.');
       isValid = false;
     }
 
-    // --- Email ---
+    // Email validation
     if (!emailValue) {
       showFieldError('email', 'Email is required.');
       isValid = false;
     } else {
       const domain = emailValue.split('@').pop().toLowerCase();
       if (!allowedDomains.includes(domain)) {
-        showFieldError('email', 'Allowed domains: gmail, yahoo, outlook, hotmail, protonmail.');
+        showFieldError('email', 'Only gmail, yahoo, outlook, hotmail, protonmail allowed.');
         isValid = false;
       }
     }
 
-    // --- Cover Letter ---
-    console.log("Cover Letter:", coverValue);
-    console.log("Contains URL?", containsURL(coverValue));
-
-    // --- Cover Letter ---
-if (coverValue.length > 3000) {
-  showFieldError('coverLetter', 'Cover letter too long (max 3000 chars).');
-  isValid = false;
-} else if (containsURL(coverValue)) {
-  showFieldError('coverLetter', 'Cover letter must not contain links or URLs.');
-  isValid = false;
-} else if (coverValue && !coverRe.test(coverValue)) {
-  showFieldError('coverLetter', 'Cover letter contains invalid characters.');
-  isValid = false;
-}
-
-
-    // --- Resume ---
+    // Resume validation
     if (file) {
       if (!file.name.toLowerCase().endsWith('.pdf')) {
-        showFieldError('resume', 'Only PDF files are allowed.');
+        showFieldError('resume', 'Only PDF files allowed.');
         isValid = false;
       } else if (file.size > 5 * 1024 * 1024) {
-        showFieldError('resume', 'Resume size must not exceed 5MB.');
+        showFieldError('resume', 'File must be under 5MB.');
         isValid = false;
       }
     }
@@ -514,24 +535,22 @@ if (coverValue.length > 3000) {
     return isValid;
   }
 
+  // ===============================
+  // Submit Handler
+  // ===============================
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     if (isSubmitting) return;
 
-    const isValid = validateForm();
-    console.log("Form valid?", isValid);
+    if (!validateForm()) return;
 
-    if (!isValid) {
-      console.warn("Form blocked due to validation errors.");
-      return;  // Stop here if validation fails
-    }
-
-    // Only reach here if form is valid
     isSubmitting = true;
     submitBtn.disabled = true;
     submitBtn.dataset.originalText = submitBtn.textContent;
     submitBtn.textContent = 'Submitting...';
+
+    showLoader();  // ✅ Show loader immediately
 
     const formData = new FormData(form);
 
@@ -550,23 +569,23 @@ if (coverValue.length > 3000) {
       } else if (data.errors) {
         renderErrors(data.errors);
       } else {
-        els.formErrors.innerText = 'Something went wrong. Please try again.';
+        els.formErrors.innerText = 'Something went wrong.';
         els.formErrors.classList.remove('hidden');
       }
     })
-    .catch(err => {
-      console.error('Error:', err);
-      els.formErrors.innerText = 'Something went wrong. Please try again.';
+    .catch(() => {
+      els.formErrors.innerText = 'Something went wrong.';
       els.formErrors.classList.remove('hidden');
     })
     .finally(() => {
       isSubmitting = false;
       submitBtn.disabled = false;
       submitBtn.textContent = submitBtn.dataset.originalText || 'Submit Application';
+      hideLoader();  // ✅ Always hide loader
     });
   });
-})();
 
+})();
 </script>
 
 

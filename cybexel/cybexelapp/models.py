@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 from django.utils.text import slugify
-
+from cloudinary.models import CloudinaryField
 
 
 
@@ -86,7 +86,7 @@ class Blog(models.Model):
     paragraph2 = models.TextField(blank=True, null=True)
     paragraph3 = models.TextField(blank=True, null=True)
     paragraph4 = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='blogs/')
+    image = CloudinaryField('image')
 
     def __str__(self):
         return self.short_heading
@@ -94,7 +94,7 @@ class Blog(models.Model):
 
 
 class ClientLogo(models.Model):
-    image = models.ImageField(upload_to='client_logos/')
+    image = CloudinaryField('image')
     alt_text = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
@@ -123,7 +123,7 @@ class LifeEventMedia(models.Model):
         related_name='media'
     )
 
-    file = models.FileField(upload_to='life_events/')
+    file = CloudinaryField(resource_type='auto')
     media_type = models.CharField(max_length=10, blank=True)
 
     order = models.PositiveIntegerField(default=0)   # ⭐ NEW FIELD
@@ -166,7 +166,11 @@ class AdminProfile(models.Model):
 class PortfolioCategory(models.Model):
     name = models.CharField(max_length=500)
     slug = models.SlugField(unique=True, blank=True)
-    icon = models.ImageField(upload_to="portfolio/category/icons/", blank=True, null=True)
+    icon = CloudinaryField(
+        'image',
+        blank=True,
+        null=True
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -186,7 +190,11 @@ class PortfolioSubCategory(models.Model):
 
     name = models.CharField(max_length=500)
     slug = models.SlugField(unique=True, blank=True)
-    icon = models.ImageField(upload_to="portfolio/subcategory/icons/", blank=True, null=True)
+    icon = CloudinaryField(
+        'image',
+        blank=True,
+        null=True
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -235,7 +243,7 @@ class PortfolioDetail(models.Model):
 )
     heading = models.CharField(max_length=500)
     intro_paragraph = models.TextField(default="No intro provided yet.")  # ✅ Default added
-    main_image = models.ImageField(upload_to="portfolio/detail/main/")
+    main_image = CloudinaryField('image')
     process_heading = models.CharField(max_length=200)
     process_description = models.TextField()
 
@@ -246,13 +254,20 @@ class PortfolioDetail(models.Model):
 # RECENT WORK
 # -------------------
 class WorkMedia(models.Model):
-    image = models.ImageField(upload_to="portfolio/works/images/")
+    image = CloudinaryField('image')
 
 class PortfolioWork(models.Model):
     category_detail = models.ForeignKey(PortfolioDetail, on_delete=models.CASCADE, related_name="works")
     name = models.CharField(max_length=500)
-    thumbnail = models.ImageField(upload_to="portfolio/works/thumbnails/")
-    video = models.FileField(upload_to="portfolio/works/videos/", blank=True, null=True)
+    thumbnail = CloudinaryField('image')
+
+    # ✅ Converted (Video support)
+    video = CloudinaryField(
+        resource_type='video',
+        blank=True,
+        null=True
+    )
+
     images = models.ManyToManyField(WorkMedia, blank=True)
 
     def __str__(self):
@@ -263,7 +278,11 @@ class Testimonial(models.Model):
     name = models.CharField(max_length=100)
     designation = models.CharField(max_length=150)
     message = models.TextField()
-    image = models.ImageField(upload_to="testimonials/", blank=True, null=True)
+    image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
