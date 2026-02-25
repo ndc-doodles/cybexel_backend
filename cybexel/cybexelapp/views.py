@@ -23,6 +23,7 @@ from dateutil.parser import parse as parse_datetime
 import logging
 from django.views.decorators.cache import never_cache
 from django.utils.text import slugify
+import cloudinary.uploader
 
 
 
@@ -835,14 +836,14 @@ def delete_event(request, event_id):
 
     event = get_object_or_404(LifeEvent, id=event_id)
 
-    # Delete all media files from Cloudinary
     for media in event.media.all():
         if media.file:
-            media.file.delete()
+            cloudinary.uploader.destroy(media.file.public_id)
 
     event.delete()
 
     return redirect('admin_cybexelife')
+
 
 @never_cache
 @login_required(login_url='admin_login')
@@ -851,11 +852,12 @@ def delete_event_image(request, id):
     image = get_object_or_404(LifeEventMedia, id=id)
 
     if image.file:
-        image.file.delete()
+        cloudinary.uploader.destroy(image.file.public_id)
 
     image.delete()
 
     return redirect('admin_cybexelife')
+
 
 @login_required(login_url='admin_login')
 def get_event_images(request, event_id):
@@ -1223,7 +1225,6 @@ def testimonials(request):
         "page_obj": page_obj
     })
 
-import cloudinary.uploader
 
 @never_cache
 @login_required(login_url='admin_login')
