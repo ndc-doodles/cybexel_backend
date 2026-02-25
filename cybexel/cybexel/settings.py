@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables
-load_dotenv(BASE_DIR / ".env")
+# Load .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-emohm$#-n%0%ade0@a6xe_tj&+yc+gxgqh*d$p)wt$vormu%t3')
@@ -160,7 +160,6 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True
 )
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
