@@ -164,7 +164,7 @@ def services(request):
     return render(request,'services.html')
 
 def cybexel_life(request):
-    entries = LifeEvent.objects.prefetch_related('media').all()
+    entries = LifeEvent.objects.prefetch_related('media').order_by('-date', '-id')
     return render(request, 'cybexelife.html', {'entries': entries})
 
 def detail(request, pk):
