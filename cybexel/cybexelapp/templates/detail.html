@@ -163,19 +163,19 @@
 
   {% for media in event.media.all %}
 
-    <div class="break-inside-avoid">
+    <div class="relative w-full aspect-[4/3] overflow-hidden rounded-lg shadow">
 
       {% if media.media_type == "image" %}
 
         <img src="{{ media.file.url }}"
-             class="w-full rounded-lg shadow cursor-pointer event-media"
+             class="w-full h-full object-cover cursor-pointer event-media"
              data-type="image"
              data-src="{{ media.file.url }}">
 
       {% else %}
 
         <video
-            class="w-full rounded-lg shadow cursor-pointer event-media"
+            class="w-full h-full object-cover cursor-pointer event-media"
             data-type="video"
             data-src="{{ media.file.url }}"
             muted>
