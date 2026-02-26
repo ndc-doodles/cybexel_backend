@@ -66,7 +66,11 @@ path('works/<slug:slug>/', views.work_detail, name='work_detail'),
     path('custom-admin/delete-event/<int:event_id>/', views.delete_event, name='delete_Event'),
     path('get-event-images/<int:event_id>/', views.get_event_images, name='get_event_images'),
     path('delete-event-image/<int:id>/', views.delete_event_image, name='delete_event_image'),
-    
+    path(
+    'delete-event-media/<int:id>/',views.
+    delete_event_image,
+    name='delete_event_media'
+),
 path("testimonials/", views.testimonials, name="testimonials"),
 path("admin_testimonials/", views.admin_testimonials, name="admin_testimonials"),
 

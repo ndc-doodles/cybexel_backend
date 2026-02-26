@@ -756,7 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="flex flex-wrap justify-center gap-10 relative">
     {% for category in categories %}
-      <div class="text-center relative">
+      <div class="text-center relative category-wrapper transition-all duration-500">
 
         <!-- CATEGORY -->
         <a href="{% url 'work_detail' category.slug %}"
@@ -797,10 +797,10 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </section>
 
-<section class="block md:hidden max-w-7xl mx-auto px-6 sm:px-12 md:px-24 py-16 relative" id="mobile-portfolio-section">
-  <h2 class="text-3xl font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
+<section class="block md:hidden max-w-7xl mx-auto sm:px-12 md:px-24 py-16 relative" id="mobile-portfolio-section">
+  <h2 class="text-3xl pl-4 font-bold mb-10 text-[#151a37]">Our Portfolio</h2>
 
-  <div class="flex relative overflow-x-auto snap-x snap-mandatory no-scrollbar pt-[5px]">
+  <div class="flex relative overflow-x-auto snap-x snap-mandatory no-scrollbar pt-[75px] md:pt-[5px]">
   {% for category in categories %}
     <div class="text-center relative flex-shrink-0 w-full snap-center px-6"> <!-- full width + padding -->
 
@@ -843,10 +843,12 @@ document.addEventListener("DOMContentLoaded", () => {
   <div id="mobile-radial-container" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50"></div>
 </section>
 
-
 <script>
+let activeCategory = null;
+
 document.querySelectorAll(".category-btn").forEach(btn => {
   btn.addEventListener("click", function(e) {
+
     const hasSub = this.dataset.hasSub === "True";
     if (!hasSub) return;
 
@@ -859,95 +861,168 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     const data = JSON.parse(jsonElement.textContent);
     const isMobile = window.innerWidth <= 768;
 
-    // Remove padding from all category buttons
-    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
-
-    // Determine radial container
     let radial;
+
+    // ============================
+    // DESKTOP → Use Fixed Radial Container
+    // ============================
+    if (!isMobile) {
+      radial = document.getElementById("radial-" + catId);
+    }
+
+    // ============================
+    // MOBILE → Create Inside Category
+    // ============================
     if (isMobile) {
-      // Use parent container for mobile radial
       radial = this.parentElement.querySelector(".radial-menu");
+
       if (!radial) {
         radial = document.createElement("div");
-        radial.className = "radial-menu absolute top-1/2 left-1/2 pointer-events-none";
+        radial.className =
+          "radial-menu absolute top-1/2 left-1/2 pointer-events-none";
         this.parentElement.appendChild(radial);
       }
-    } else {
-      // Desktop radial menu by ID
-      radial = document.getElementById("radial-" + catId);
-      document.querySelectorAll(".radial-menu").forEach(r => {
-        if (r !== radial) {
-          r.classList.add("hidden");
-          r.innerHTML = "";
+    }
+
+    if (!radial) return;
+
+    // ============================
+    // TOGGLE CLOSE (CLICK SAME AGAIN)
+    // ============================
+    if (activeCategory === this) {
+
+      radial.classList.add("hidden");
+      radial.innerHTML = "";
+
+      // Reset mobile push
+      if (isMobile) {
+        this.classList.remove("pt-[6rem]");
+      }
+
+      // Reset desktop spacing
+      if (!isMobile) {
+        document.querySelectorAll(".category-wrapper")
+          .forEach(cat => {
+            cat.style.transform = "translateX(0px)";
+          });
+      }
+
+      activeCategory = null;
+      return;
+    }
+
+    // ============================
+    // CLOSE ANY OPEN MENU FIRST
+    // ============================
+    document.querySelectorAll(".radial-menu").forEach(menu => {
+      menu.classList.add("hidden");
+      menu.innerHTML = "";
+    });
+
+    document.querySelectorAll(".category-btn")
+      .forEach(b => b.classList.remove("pt-[6rem]"));
+
+    document.querySelectorAll(".category-wrapper")
+      .forEach(cat => {
+        cat.style.transform = "translateX(0px)";
+      });
+
+    activeCategory = this;
+
+    radial.classList.remove("hidden");
+    radial.innerHTML = "";
+
+    // ============================
+    // MOBILE PUSH DOWN EFFECT
+    // ============================
+    if (isMobile) {
+      this.classList.add("pt-[6rem]");
+    }
+
+    // ============================
+    // DESKTOP SPACING PUSH EFFECT
+    // ============================
+    if (!isMobile) {
+
+      const categories = Array.from(
+        document.querySelectorAll(".category-wrapper")
+      );
+
+      const activeIndex = categories.indexOf(this.parentElement);
+
+      categories.forEach((cat, index) => {
+
+        cat.style.transition = "transform 0.4s ease";
+
+        if (index < activeIndex) {
+          cat.style.transform = "translateX(-120px)";
+        }
+
+        if (index > activeIndex) {
+          cat.style.transform = "translateX(120px)";
+        }
+
+        if (index === activeIndex) {
+          cat.style.transform = "translateX(0px)";
         }
       });
     }
 
-    // Toggle visibility
-    if (!radial.classList.contains("hidden")) {
-      radial.classList.add("hidden");
-      radial.innerHTML = "";
-      return; // Already open → close
-    }
+    // ============================
+    // RADIAL CALCULATION
+    // ============================
+    const radius = isMobile ? 120 : 160;
+    const total = data.length;
 
-    // Add mobile padding
-    if (isMobile) this.classList.add("pt-[13.5rem]"); // reduced padding for better spacing
+    const startAngle = Math.PI + 0.15;
+    const endAngle = 2 * Math.PI - 0.15;
 
-    radial.classList.remove("hidden");
-    radial.innerHTML = ""; // clear any previous
-
-    // Adjust radius and angles
-    const radius = isMobile ? 120 : 150;   // Increased mobile distance
-const total = data.length;
-
-const startAngle = isMobile ? -185 * (Math.PI / 180) : -185 * (Math.PI / 180);
-const endAngle = isMobile ? 0 * (Math.PI / 180) : -20 * (Math.PI / 180);
-
+    const angleStep = (endAngle - startAngle) / (total - 1 || 1);
 
     data.forEach((sub, index) => {
-      const angle = startAngle + (index / (total - 1 || 1)) * (endAngle - startAngle);
+
+      const angle = startAngle + (index * angleStep);
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
 
       const item = document.createElement("a");
       item.href = `/works/${sub.slug}/`;
-      item.className = "absolute flex flex-col items-center group pointer-events-auto sub-item";
-      item.style.transform = "translate(0px,0px) translate(-50%, -50%)";
-      item.style.transitionDelay = `${index * 0.12}s`;
+      item.className =
+        "absolute flex flex-col items-center group pointer-events-auto";
+      item.style.transform =
+        "translate(0px,0px) translate(-50%, -50%)";
+      item.style.transition =
+        "transform 0.4s ease, opacity 0.3s ease";
+      item.style.opacity = "0";
 
-      const bubbleSizeRem = isMobile ? 4 : 5;
-      const bubblePx = bubbleSizeRem * 16;
+      const bubbleSize = isMobile ? 55 : 80;
 
       item.innerHTML = `
-        <div class="rounded-full p-[2px] bg-[#151a37] group-hover:scale-110 transition"
-             style="width:${bubblePx}px; height:${bubblePx}px;">
-          ${sub.icon ? `<img src="${sub.icon}" class="w-full h-full rounded-full object-cover bg-white p-1">` : ""}
+        <div class="rounded-full p-[2px] bg-[#151a37]
+                    shadow-[0px_3px_6px_rgba(0,0,0,0.16),0px_3px_6px_rgba(0,0,0,0.23)]
+                    transition duration-300 group-hover:scale-110"
+             style="width:${bubbleSize}px; height:${bubbleSize}px;">
+          ${sub.icon ? `
+            <img src="${sub.icon}" 
+                 class="w-full h-full rounded-full object-cover bg-white p-1">
+          ` : ""}
         </div>
-        <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">${sub.name}</p>
+
+        <p class="mt-1 text-sm font-semibold text-[#151a37] text-center">
+          ${sub.name}
+        </p>
       `;
 
       radial.appendChild(item);
 
       requestAnimationFrame(() => {
-        setTimeout(() => {
-          item.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-          item.style.opacity = "1";
-        }, 50);
+        item.style.transform =
+          `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        item.style.opacity = "1";
       });
     });
+
   });
-});
-
-// Close radial menu on clicking outside
-document.addEventListener("click", function(e) {
-  if (e.target.closest(".category-btn") || e.target.closest(".radial-menu")) return;
-
-  document.querySelectorAll(".radial-menu").forEach(menu => {
-    menu.classList.add("hidden");
-    menu.innerHTML = "";
-  });
-
-  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("pt-[13.5rem]"));
 });
 </script>
 

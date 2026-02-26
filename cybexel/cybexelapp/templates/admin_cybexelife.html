@@ -236,7 +236,10 @@
 
       <div class="mb-3">
         <label class="block font-medium">Upload New Images (optional)</label>
-        <input type="file" name="images[]" class="w-full p-2 border border-gray-300 rounded" multiple />
+        <input type="file" name="media[]" 
+       accept="image/*,video/*"
+       class="w-full p-2 border border-gray-300 rounded"
+       multiple />
       </div>
       <button type="submit" class="bg-[#151a37] text-white px-6 py-2 rounded hover:bg-[#2a2957]">
         Update
@@ -293,11 +296,11 @@ fetch(`/get-event-images/${eventId}/`)
         <input type="number" name="media_order_${media.id}" value="${media.order}"
           class="w-full border p-1 rounded text-sm">
 
-        <a href="/delete-event-media/${media.id}/"
-          onclick="return confirm('Delete this file?')"
-          class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">
-          &times;
-        </a>
+       <a href="/delete-event-media/${media.id}/"
+   onclick="return confirm('Delete this file?')"
+   class="absolute top-1 right-1 bg-red-500 text-white px-1 rounded text-xs">
+   &times;
+</a>
       `;
 
       container.appendChild(div);

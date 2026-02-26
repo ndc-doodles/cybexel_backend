@@ -1016,6 +1016,81 @@ categorySelect.addEventListener("change", () => {
   });
 </script>
 
+<script>
+let workIndex = 1; // because 0 already exists
 
+const addNewWorkBtn = document.getElementById("addNewWorkBtn");
+const worksContainer = document.getElementById("works-container");
+
+addNewWorkBtn.addEventListener("click", () => {
+
+    const div = document.createElement("div");
+    div.className = "work-item border p-4 rounded-md relative";
+
+    div.innerHTML = `
+        <button type="button" class="absolute top-2 right-2 text-red-600 text-xs remove-work">Remove</button>
+
+        <div>
+            <label class="block text-sm font-medium">Work Name</label>
+            <input type="text" name="works[${workIndex}][name]" 
+                   class="w-full p-2 border rounded-md" required>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Thumbnail Image</label>
+            <input type="file" name="works[${workIndex}][thumbnail]" 
+                   class="w-full p-2 border rounded-md bg-gray-50">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Supporting Images</label>
+            <input type="file" name="works[${workIndex}][images]" 
+                   multiple class="w-full p-2 border rounded-md bg-gray-50">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium">Video</label>
+            <input type="file" name="works[${workIndex}][video]" 
+                   class="w-full p-2 border rounded-md bg-gray-50">
+        </div>
+    `;
+
+    div.querySelector(".remove-work").addEventListener("click", () => {
+        div.remove();
+    });
+
+    worksContainer.appendChild(div);
+    workIndex++;
+});
+</script>
+
+<script>
+const editBulletContainer = document.getElementById("editBulletContainer");
+const editAddBulletBtn = document.getElementById("editAddBullet");
+
+editAddBulletBtn?.addEventListener("click", () => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "bullet_titles[]";
+    input.className = "w-full p-2 border rounded-md mt-1";
+    editBulletContainer.appendChild(input);
+});
+
+
+const editProcessContainer = document.getElementById("editProcessContainer");
+const editAddProcessBtn = document.getElementById("editAddProcess");
+
+editAddProcessBtn?.addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.className = "flex gap-2 mt-1";
+
+    div.innerHTML = `
+        <input type="text" name="process_titles[]" class="w-1/3 p-2 border rounded-md">
+        <input type="text" name="process_descs[]" class="w-2/3 p-2 border rounded-md">
+    `;
+
+    editProcessContainer.appendChild(div);
+});
+</script>
 </body>
 </html>
