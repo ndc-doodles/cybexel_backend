@@ -941,7 +941,6 @@ def work_detail(request, slug):
         "steps": steps,
         "works": works,
     })
-
 def admin_portfolio(request):
 
     if request.method == "POST":
@@ -1023,6 +1022,36 @@ def admin_portfolio(request):
             return redirect("admin_portfolio")
 
         # =====================================================
+        # EDIT SUBCATEGORY  ✅ FIXED
+        # =====================================================
+        elif form_type == "edit_subcategory":
+
+            sub = get_object_or_404(
+                PortfolioSubCategory,
+                id=request.POST.get("edit_id")
+            )
+
+            sub.category = get_object_or_404(
+                PortfolioCategory,
+                id=request.POST.get("edit_category_id")
+            )
+
+            sub.name = request.POST.get("edit_name")
+            sub.slug = request.POST.get("edit_slug") or slugify(
+                f"{sub.category.name}-{sub.name}"
+            )
+
+            if request.FILES.get("edit_icon"):
+                if sub.icon:
+                    sub.icon.delete(save=False)
+                sub.icon = request.FILES.get("edit_icon")
+
+            sub.save()
+
+            messages.success(request, "Subcategory updated successfully.")
+            return redirect("admin_portfolio")
+
+        # =====================================================
         # DELETE SUBCATEGORY
         # =====================================================
         elif form_type == "delete_subcategory":
@@ -1057,7 +1086,7 @@ def admin_portfolio(request):
                 main_image=request.FILES.get("main_image"),
             )
 
-            # -------- BULLETS --------
+            # Bullets
             for bullet in request.POST.getlist("bullet_titles[]"):
                 if bullet.strip():
                     PortfolioPoint.objects.create(
@@ -1065,7 +1094,7 @@ def admin_portfolio(request):
                         category_detail=detail
                     )
 
-            # -------- PROCESS STEPS --------
+            # Steps
             titles = request.POST.getlist("process_titles[]")
             descs = request.POST.getlist("process_descs[]")
 
@@ -1077,7 +1106,7 @@ def admin_portfolio(request):
                         category_detail=detail
                     )
 
-            # -------- WORKS --------
+            # Works
             index = 0
             while True:
                 work_name = request.POST.get(f"works[{index}][name]")
@@ -1148,7 +1177,6 @@ def admin_portfolio(request):
                         category_detail=detail
                     )
 
-            # Smart Work Update
             existing_ids = []
             index = 0
 
@@ -1182,7 +1210,6 @@ def admin_portfolio(request):
 
                 existing_ids.append(work.id)
 
-                # Add new images
                 images = request.FILES.getlist(f"works[{index}][images]")
                 for img in images:
                     media = WorkMedia.objects.create(image=img)
@@ -1190,7 +1217,6 @@ def admin_portfolio(request):
 
                 index += 1
 
-            # Delete removed works
             for old_work in detail.works.all():
                 if old_work.id not in existing_ids:
                     old_work.delete()
@@ -1227,8 +1253,6 @@ def admin_portfolio(request):
         "categories": categories,
         "subcategories": subcategories,
     })
-
-
 
 
 def testimonials(request):
